@@ -1,0 +1,18 @@
+# Bharat Visa Portal
+
+This is a fictional hackathon prototype. It is not affiliated with the Government of India and never submits real visa applications or payments.
+
+## Main services
+
+- /visa — Regular / Paper Visa
+- /evisa — e-Visa
+- /afghanistan — Afghanistan Visa (demo entry point)
+- /demo — demo application records and connection simulator
+
+## Supported agent actions
+
+START_REGULAR_APPLICATION, START_EVISA_APPLICATION, SAVE_APPLICATION, RESUME_APPLICATION, NEXT_STEP, PREVIOUS_STEP, UPLOAD_DOCUMENT, REVIEW_APPLICATION, SUBMIT_APPLICATION, CHECK_STATUS, SIMULATE_PAYMENT, PRINT_APPLICATION
+
+## Documentation
+
+- /agent.md — canonical product and agent specification

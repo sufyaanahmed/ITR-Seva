@@ -1,0 +1,16 @@
+{
+  "name": "bharat-visa-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "animejs": "^4.5.0"
+  }
+}
