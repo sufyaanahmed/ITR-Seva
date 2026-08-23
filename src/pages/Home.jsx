@@ -7,8 +7,7 @@ export default function Home() {
   const navigate = useNavigate();
   
   const startITR = () => {
-    updateState({ type: 'itr1', step: 0, data: { assessment_year: '2026-27', taxpayer_category: 'individual' }, docs: [], submitted: false });
-    navigate('/apply');
+    navigate('/itr/file');
   };
 
   return (
@@ -25,12 +24,12 @@ export default function Home() {
             File your Income Tax Return, make tax payments, verify returns and access income-tax services online.
           </p>
           <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
-            <a href="https://eportal.incometax.gov.in/iec/foservices/#/login" className="bg-white text-primary px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap rounded-sm">
+            <Link to="/login" className="bg-white text-primary px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap rounded-sm">
               Login
-            </a>
-            <a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/register" className="border-2 border-white text-white bg-transparent px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-white hover:text-primary transition whitespace-nowrap rounded-sm">
+            </Link>
+            <Link to="/register" className="border-2 border-white text-white bg-transparent px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-white hover:text-primary transition whitespace-nowrap rounded-sm">
               Register
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -41,39 +40,32 @@ export default function Home() {
         <p className="text-sm font-bold uppercase text-text-secondary tracking-wider mb-2">Access Services</p>
         <h2 className="text-3xl font-serif font-bold mb-8 text-primary">Quick Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/eVerifyReturn-bl" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <div className="text-primary text-3xl mb-4 group-hover:text-secondary transition-colors">✓</div>
-            <h3 className="font-bold text-lg mb-2">e-Verify Return</h3>
+          <Link to="/itr/verify" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
+            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">e-Verify Return</h3>
             <p className="text-text-secondary mb-4 flex-1 text-sm">Verify your Income Tax Return online quickly and securely.</p>
-          </a>
-          <a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/bl-link-aadhaar" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <div className="text-primary text-3xl mb-4 group-hover:text-secondary transition-colors">🔗</div>
-            <h3 className="font-bold text-lg mb-2">Link Aadhaar</h3>
+          </Link>
+          <Link to="/aadhaar/link" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
+            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Link Aadhaar</h3>
             <p className="text-text-secondary mb-4 flex-1 text-sm">Link your Aadhaar with PAN to avoid invalidation of PAN.</p>
-          </a>
-          <a href="https://eportal.incometax.gov.in/iec/foservices/#/know-refund-status/user-information" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <div className="text-primary text-3xl mb-4 group-hover:text-secondary transition-colors">₹</div>
-            <h3 className="font-bold text-lg mb-2">Check Refund Status</h3>
+          </Link>
+          <Link to="/refund-status" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
+            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Check Refund Status</h3>
             <p className="text-text-secondary mb-4 flex-1 text-sm">Track the status of your income tax refund online.</p>
-          </a>
-          <a href="https://eportal.incometax.gov.in/iec/foservices/#/e-pay-tax-prelogin/user-details" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <div className="text-primary text-3xl mb-4 group-hover:text-secondary transition-colors">💳</div>
-            <h3 className="font-bold text-lg mb-2">e-Pay Tax</h3>
+          </Link>
+          <Link to="/tax-payment" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
+            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">e-Pay Tax</h3>
             <p className="text-text-secondary mb-4 flex-1 text-sm">Make tax payments quickly and securely online.</p>
-          </a>
-          <a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/verifyYourPAN" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <div className="text-primary text-3xl mb-4 group-hover:text-secondary transition-colors">🆔</div>
-            <h3 className="font-bold text-lg mb-2">Verify PAN</h3>
+          </Link>
+          <Link to="/pan/verify" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
+            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Verify PAN</h3>
             <p className="text-text-secondary mb-4 flex-1 text-sm">Verify your PAN details.</p>
-          </a>
-          <a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/knowYourTAN" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <div className="text-primary text-3xl mb-4 group-hover:text-secondary transition-colors">🏢</div>
-            <h3 className="font-bold text-lg mb-2">Know TAN Details</h3>
+          </Link>
+          <Link to="/know-tan" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
+            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Know TAN Details</h3>
             <p className="text-text-secondary mb-4 flex-1 text-sm">Search and verify TAN details.</p>
-          </a>
+          </Link>
           <button onClick={startITR} className="border-2 border-primary p-6 rounded-sm bg-primary-light shadow-sm hover:bg-primary hover:text-white transition group flex flex-col text-left">
-            <div className="text-primary text-3xl mb-4 group-hover:text-white transition-colors">📝</div>
-            <h3 className="font-bold text-lg mb-2 group-hover:text-white">File ITR (Demo)</h3>
+            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-white">File ITR (Demo)</h3>
             <p className="text-primary group-hover:text-white mb-4 flex-1 text-sm">Simulate filing an Income Tax Return.</p>
           </button>
         </div>

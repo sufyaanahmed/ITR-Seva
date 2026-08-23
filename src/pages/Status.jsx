@@ -91,7 +91,9 @@ export default function Status() {
                   
                   {/* Step 1: Return Filed */}
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-bold text-lg shrink-0">✓</div>
+                    <div className="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-bold text-lg shrink-0">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
                     <div>
                       <h3 className="font-bold text-lg">Return Filed</h3>
                       <p className="text-sm text-gray-600">Your return was filed on {result.dateFiled}. Acknowledgement: {result.ack}</p>
@@ -100,7 +102,9 @@ export default function Status() {
 
                   {/* Step 2: e-Verified */}
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-bold text-lg shrink-0">✓</div>
+                    <div className="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-bold text-lg shrink-0">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
                     <div>
                       <h3 className="font-bold text-lg">Return e-Verified</h3>
                       <p className="text-sm text-gray-600">Successfully verified.</p>
@@ -110,7 +114,7 @@ export default function Status() {
                   {/* Step 3: Processed */}
                   <div className="flex items-start gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${result.status === 'Processed' || result.status.includes('Refund') ? 'bg-success text-white' : 'bg-gray-200 text-gray-500'}`}>
-                      {result.status === 'Processed' || result.status.includes('Refund') ? '✓' : '3'}
+                      {result.status === 'Processed' || result.status.includes('Refund') ? <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> : '3'}
                     </div>
                     <div>
                       <h3 className="font-bold text-lg">Return Processing</h3>
@@ -123,7 +127,9 @@ export default function Status() {
                   {/* Step 4: Refund (Optional) */}
                   {result.status.includes('Refund') && (
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-bold text-lg shrink-0">✓</div>
+                      <div className="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center font-bold text-lg shrink-0">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                      </div>
                       <div>
                         <h3 className="font-bold text-lg">Refund Issued</h3>
                         <p className="text-sm text-gray-600">Refund has been sent to your registered bank account.</p>
@@ -143,7 +149,9 @@ export default function Status() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <div className="text-4xl mb-4">🔍</div>
+              <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 text-gray-400">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              </div>
               <h3 className="text-xl font-bold mb-2">No Records Found</h3>
               <p className="text-text-secondary">We could not find any filed returns for the given PAN and Assessment Year.</p>
             </div>

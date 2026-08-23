@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Downloads() {
   return (
@@ -14,7 +15,7 @@ export default function Downloads() {
             <p className="text-text-secondary text-sm mb-4">Download offline utilities to prepare your Income Tax Returns (ITR-1 to ITR-7) for various Assessment Years.</p>
           </div>
           <div className="bg-gray-50 p-4 border-t border-border">
-            <a href="https://www.incometax.gov.in/iec/foportal/downloads/income-tax-returns" className="text-primary font-bold hover:underline">Go to ITR Downloads &rarr;</a>
+            <Link to="/downloads/itr" className="text-primary font-bold hover:underline">Go to ITR Downloads &rarr;</Link>
           </div>
         </div>
 
@@ -24,7 +25,7 @@ export default function Downloads() {
             <p className="text-text-secondary text-sm mb-4">Download statutory forms (like Form 15G, Form 15H, Form 10E) and their offline utilities.</p>
           </div>
           <div className="bg-gray-50 p-4 border-t border-border">
-            <a href="https://www.incometax.gov.in/iec/foportal/downloads/income-tax-forms" className="text-primary font-bold hover:underline">Go to Forms Downloads &rarr;</a>
+            <Link to="/downloads/forms" className="text-primary font-bold hover:underline">Go to Forms Downloads &rarr;</Link>
           </div>
         </div>
 
@@ -34,7 +35,7 @@ export default function Downloads() {
             <p className="text-text-secondary text-sm mb-4">Download the emSigner utility required for registering and using Digital Signature Certificates (DSC) on the portal.</p>
           </div>
           <div className="bg-gray-50 p-4 border-t border-border">
-            <a href="https://www.incometax.gov.in/iec/foportal/downloads/dsc-management-utility" className="text-primary font-bold hover:underline">Download Utility &rarr;</a>
+            <Link to="/downloads/utility" className="text-primary font-bold hover:underline">Download Utility &rarr;</Link>
           </div>
         </div>
 

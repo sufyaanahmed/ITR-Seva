@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Help() {
   return (
@@ -56,15 +57,15 @@ export default function Help() {
           <section className="bg-primary-light border-t-4 border-primary p-6 rounded-sm">
             <h2 className="text-xl font-bold mb-2 text-primary">Official Helpdesk</h2>
             <p className="text-sm text-text-secondary mb-4">For official assistance, please visit the Income Tax Department's contact page.</p>
-            <a href="https://www.incometax.gov.in/iec/foportal/contact-us" className="block text-center bg-white border border-primary text-primary px-4 py-2 font-bold hover:bg-primary hover:text-white transition">Visit Contact Us</a>
+            <Link to="/contact" className="block text-center bg-white border border-primary text-primary px-4 py-2 font-bold hover:bg-primary hover:text-white transition">Visit Contact Us</Link>
           </section>
 
           <section className="bg-white border border-border p-6 rounded-sm shadow-sm">
             <h2 className="text-xl font-bold mb-2">Grievances</h2>
             <p className="text-sm text-text-secondary mb-4">Submit or view the status of a grievance.</p>
             <div className="space-y-2">
-              <a href="https://eportal.incometax.gov.in/iec/foservices/#/fo-greivance/submit" className="block text-primary text-sm font-bold hover:underline">Submit Grievance &rarr;</a>
-              <a href="https://eportal.incometax.gov.in/iec/foservices/#/fo-greivance/view" className="block text-primary text-sm font-bold hover:underline">View Grievance &rarr;</a>
+              <Link to="/grievances/new" className="block text-primary text-sm font-bold hover:underline">Submit Grievance &rarr;</Link>
+              <Link to="/grievances" className="block text-primary text-sm font-bold hover:underline">View Grievance &rarr;</Link>
             </div>
           </section>
         </div>

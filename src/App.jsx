@@ -60,22 +60,22 @@ const Footer = () => (
       <div>
         <h3 className="font-bold text-primary mb-4">About</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><a href="#" className="hover:text-primary hover:underline">About Portal</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">History</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">Who We Are</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">RTI</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">Organization & Functions</a></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">About Portal</Link></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">History</Link></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">Who We Are</Link></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">RTI</Link></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">Organization & Functions</Link></li>
         </ul>
       </div>
       <div>
         <h3 className="font-bold text-primary mb-4">Services</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
           <li><Link to="/login" className="hover:text-primary hover:underline">Login</Link></li>
-          <li><Link to="/login" className="hover:text-primary hover:underline">Register</Link></li>
-          <li><a href="#" className="hover:text-primary hover:underline">e-Verify</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">Link Aadhaar</a></li>
-          <li><Link to="/status" className="hover:text-primary hover:underline">Refund Status</Link></li>
-          <li><Link to="/login" className="hover:text-primary hover:underline">e-Pay Tax</Link></li>
+          <li><Link to="/register" className="hover:text-primary hover:underline">Register</Link></li>
+          <li><Link to="/itr/verify" className="hover:text-primary hover:underline">e-Verify</Link></li>
+          <li><Link to="/aadhaar/link" className="hover:text-primary hover:underline">Link Aadhaar</Link></li>
+          <li><Link to="/refund-status" className="hover:text-primary hover:underline">Refund Status</Link></li>
+          <li><Link to="/tax-payment" className="hover:text-primary hover:underline">e-Pay Tax</Link></li>
         </ul>
       </div>
       <div>
@@ -90,17 +90,17 @@ const Footer = () => (
       <div>
         <h3 className="font-bold text-primary mb-4">Portal</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><a href="#" className="hover:text-primary hover:underline">Website Policies</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">Accessibility</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">Browser Support</a></li>
-          <li><a href="#" className="hover:text-primary hover:underline">Sitemap</a></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">Website Policies</Link></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">Accessibility</Link></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">Browser Support</Link></li>
+          <li><Link to="/about" className="hover:text-primary hover:underline">Sitemap</Link></li>
         </ul>
       </div>
       <div>
         <h3 className="font-bold text-primary mb-4">Support</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><a href="#" className="hover:text-primary hover:underline">Helpdesk</a></li>
-          <li><Link to="/login" className="hover:text-primary hover:underline">Submit Grievance</Link></li>
+          <li><Link to="/help" className="hover:text-primary hover:underline">Helpdesk</Link></li>
+          <li><Link to="/grievances/new" className="hover:text-primary hover:underline">Submit Grievance</Link></li>
         </ul>
       </div>
     </div>
@@ -136,15 +136,26 @@ export default function App() {
           <Route path="/status" element={<Status />} />
           
           {/* Private Dashboard Routes */}
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Overview />} />
-            <Route path="e-file" element={<FileITR />} />
-            <Route path="services/ais" element={<AIS />} />
-            <Route path="services/form26as" element={<Form26AS />} />
-            <Route path="services/epaytax" element={<EPayTax />} />
-            <Route path="pending-actions/demands" element={<Demands />} />
-            <Route path="grievances" element={<Grievance />} />
-            <Route path="services/documents" element={<DocumentCenter />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Overview />} />
+            <Route path="/itr" element={<FileITR />} />
+            <Route path="/itr/:stepId" element={<FileITR />} />
+            <Route path="/ais" element={<AIS />} />
+            <Route path="/form-26as" element={<Form26AS />} />
+            <Route path="/tax-payment" element={<EPayTax />} />
+            <Route path="/demand" element={<Demands />} />
+            <Route path="/grievances" element={<Grievance />} />
+            <Route path="/grievances/new" element={<Grievance />} />
+            <Route path="/documents" element={<DocumentCenter />} />
+            
+            {/* Stub Routes */}
+            <Route path="/profile" element={<div className="p-8 max-w-4xl mx-auto"><h1 className="text-2xl font-bold">Profile</h1><p>Demo placeholder</p></div>} />
+            <Route path="/pan/verify" element={<div className="p-8 max-w-4xl mx-auto"><h1 className="text-2xl font-bold">Verify PAN</h1><p>Demo placeholder</p></div>} />
+            <Route path="/aadhaar/link" element={<div className="p-8 max-w-4xl mx-auto"><h1 className="text-2xl font-bold">Link Aadhaar</h1><p>Demo placeholder</p></div>} />
+            <Route path="/refund-status" element={<Status />} />
+            <Route path="/contact" element={<div className="p-8 max-w-4xl mx-auto"><h1 className="text-2xl font-bold">Contact</h1><p>Demo placeholder</p></div>} />
+            <Route path="/know-tan" element={<div className="p-8 max-w-4xl mx-auto"><h1 className="text-2xl font-bold">Know TAN Details</h1><p>Demo placeholder</p></div>} />
+            <Route path="/about" element={<div className="p-8 max-w-4xl mx-auto"><h1 className="text-2xl font-bold">About Portal</h1><p>Demo placeholder</p></div>} />
           </Route>
         </Routes>
       </main>

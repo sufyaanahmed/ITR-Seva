@@ -55,7 +55,9 @@ export default function Grievance() {
         <div className="bg-white border border-border shadow-sm rounded-sm p-6">
           {submittedId ? (
             <div className="text-center py-8">
-              <div className="text-6xl mb-4 text-success">✅</div>
+              <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-success">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              </div>
               <h2 className="text-2xl font-bold text-success mb-2">Grievance Submitted Successfully</h2>
               <p className="mb-6 text-gray-600">Your grievance has been forwarded to the concerned department.</p>
               <div className="bg-gray-100 inline-block p-4 rounded mb-8">

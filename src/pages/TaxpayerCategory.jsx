@@ -7,22 +7,22 @@ const categoryData = {
     description: 'Tax information and filing guidance for Individuals and Hindu Undivided Families.',
     subcategories: [
       { name: 'Salaried Employees', links: [
-        { label: 'How to File', url: 'https://www.incometax.gov.in/iec/foportal/help/all-topics/tax-payer/individual/how-to-file-tax-returns' },
-        { label: 'Returns Applicable', url: 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-1#returnsandforms' },
-        { label: 'Tax Slabs', url: 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-1#taxslabs' },
-        { label: 'Deductions', url: 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-1#taxdeductions' }
+        { label: 'How to File', url: '/help' },
+        { label: 'Returns Applicable', url: '/help' },
+        { label: 'Tax Slabs', url: '/help' },
+        { label: 'Deductions', url: '/help' }
       ]},
       { name: 'Business / Profession', links: [
-        { label: 'How to File', url: 'https://www.incometax.gov.in/iec/foportal/help/all-topics/tax-payer/individual/business-professional/how-to-file-tax-returns' },
-        { label: 'Returns Applicable', url: 'https://www.incometax.gov.in/iec/foportal/help/individual-business-profession#returnsandforms' },
-        { label: 'Tax Slabs', url: 'https://www.incometax.gov.in/iec/foportal/help/individual-business-profession#taxslabs' },
-        { label: 'Deductions', url: 'https://www.incometax.gov.in/iec/foportal/help/individual-business-profession#taxdeductions' }
+        { label: 'How to File', url: '/help' },
+        { label: 'Returns Applicable', url: '/help' },
+        { label: 'Tax Slabs', url: '/help' },
+        { label: 'Deductions', url: '/help' }
       ]},
       { name: 'Senior Citizens', links: [
-        { label: 'How to File', url: 'https://www.incometax.gov.in/iec/foportal/help/all-topics/tax-payer/individual/senior-and-super-senior-citizens/how-to-file-tax-returns' },
-        { label: 'Returns Applicable', url: 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-2#returnsandforms' },
-        { label: 'Tax Slabs', url: 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-2#taxslabs' },
-        { label: 'Deductions', url: 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-2#taxdeductions' }
+        { label: 'How to File', url: '/help' },
+        { label: 'Returns Applicable', url: '/help' },
+        { label: 'Tax Slabs', url: '/help' },
+        { label: 'Deductions', url: '/help' }
       ]}
     ]
   },
@@ -31,14 +31,14 @@ const categoryData = {
     description: 'Tax information for Domestic and Foreign Companies.',
     subcategories: [
       { name: 'Domestic Company', links: [
-        { label: 'Returns Applicable', url: 'https://www.incometax.gov.in/iec/foportal/help/company/return-applicable#returnsandforms' },
-        { label: 'Tax Slabs', url: 'https://www.incometax.gov.in/iec/foportal/help/company/return-applicable#taxslabs' },
-        { label: 'Deductions', url: 'https://www.incometax.gov.in/iec/foportal/help/company/return-applicable#taxdeductions' }
+        { label: 'Returns Applicable', url: '/help' },
+        { label: 'Tax Slabs', url: '/help' },
+        { label: 'Deductions', url: '/help' }
       ]},
       { name: 'Foreign Company', links: [
-        { label: 'Returns Applicable', url: 'https://www.incometax.gov.in/iec/foportal/help/company/return-applicable-0#returnsandforms' },
-        { label: 'Tax Slabs', url: 'https://www.incometax.gov.in/iec/foportal/help/company/return-applicable-0#taxslabs' },
-        { label: 'Deductions', url: 'https://www.incometax.gov.in/iec/foportal/help/company/return-applicable-0#taxdeductions' }
+        { label: 'Returns Applicable', url: '/help' },
+        { label: 'Tax Slabs', url: '/help' },
+        { label: 'Deductions', url: '/help' }
       ]}
     ]
   },
@@ -47,15 +47,15 @@ const categoryData = {
     description: 'Tax information for Firms, LLPs, Trusts, and Local Authorities.',
     subcategories: [
       { name: 'Firm / LLP', links: [
-        { label: 'How to File', url: 'https://www.incometax.gov.in/iec/foportal/help/firm-llp/how-to-file-tax-returns' },
-        { label: 'Returns Applicable', url: 'https://www.incometax.gov.in/iec/foportal/help/partnership-firm-llp#returnsandforms' },
-        { label: 'Tax Slabs', url: 'https://www.incometax.gov.in/iec/foportal/help/partnership-firm-llp#taxslabs' },
-        { label: 'Deductions', url: 'https://www.incometax.gov.in/iec/foportal/help/partnership-firm-llp#taxdeductions' }
+        { label: 'How to File', url: '/help' },
+        { label: 'Returns Applicable', url: '/help' },
+        { label: 'Tax Slabs', url: '/help' },
+        { label: 'Deductions', url: '/help' }
       ]},
       { name: 'AOP / BOI / Trust', links: [
-        { label: 'Returns Applicable', url: 'https://www.incometax.gov.in/iec/foportal/help/non-company/return-applicable-0#returnsandforms' },
-        { label: 'Tax Slabs', url: 'https://www.incometax.gov.in/iec/foportal/help/non-company/return-applicable-0#taxslabs' },
-        { label: 'Deductions', url: 'https://www.incometax.gov.in/iec/foportal/help/non-company/return-applicable-0#taxdeductions' }
+        { label: 'Returns Applicable', url: '/help' },
+        { label: 'Tax Slabs', url: '/help' },
+        { label: 'Deductions', url: '/help' }
       ]}
     ]
   },
@@ -64,12 +64,12 @@ const categoryData = {
     description: 'Information for Chartered Accountants, ERIs, and External Agencies.',
     subcategories: [
       { name: 'Chartered Accountants', links: [
-        { label: 'Registration', url: 'https://www.incometax.gov.in/iec/foportal/help/ca/registration' },
-        { label: 'Services Available', url: 'https://www.incometax.gov.in/iec/foportal/help/ca/servicesavailable' }
+        { label: 'Registration', url: '/help' },
+        { label: 'Services Available', url: '/help' }
       ]},
       { name: 'e-Return Intermediaries (ERI)', links: [
-        { label: 'API Specifications', url: 'https://www.incometax.gov.in/iec/foportal/api-specifications' },
-        { label: 'ERI List', url: 'https://eportal.incometax.gov.in/iec/foservices/#/eriList' }
+        { label: 'API Specifications', url: '/help' },
+        { label: 'ERI List', url: '/help' }
       ]}
     ]
   }
@@ -104,9 +104,9 @@ export default function TaxpayerCategory() {
             <ul className="p-4 flex-1 space-y-3">
               {sub.links.map(link => (
                 <li key={link.label}>
-                  <a href={link.url} className="text-sm font-medium text-text-secondary hover:text-primary hover:underline flex items-center">
+                  <Link to={link.url} className="text-sm font-medium text-text-secondary hover:text-primary hover:underline flex items-center">
                     <span className="mr-2 text-primary">→</span> {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

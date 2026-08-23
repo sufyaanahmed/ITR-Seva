@@ -22,10 +22,10 @@ export default function DashboardLayout() {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard' },
-    { name: 'e-File', path: '/dashboard/e-file' },
-    { name: 'Services', path: '/dashboard/services' },
-    { name: 'Pending Actions', path: '/dashboard/pending-actions' },
-    { name: 'Grievances', path: '/dashboard/grievances' },
+    { name: 'e-File', path: '/itr' },
+    { name: 'Services', path: '/ais' },
+    { name: 'Pending Actions', path: '/demand' },
+    { name: 'Grievances', path: '/grievances' },
   ];
 
   return (

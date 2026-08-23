@@ -49,7 +49,7 @@ export default function Overview() {
             )}
           </div>
           <div className="mt-4 pt-4 border-t">
-            <Link to="/dashboard/e-file" className="text-primary font-bold text-sm hover:underline">File ITR &rarr;</Link>
+            <Link to="/itr/assessment-year" className="text-primary font-bold text-sm hover:underline">File ITR &rarr;</Link>
           </div>
         </div>
 
@@ -67,7 +67,7 @@ export default function Overview() {
           </div>
           <div className="mt-4 pt-4 border-t">
             {totalDemand > 0 ? (
-              <Link to="/dashboard/pending-actions/demands" className="text-primary font-bold text-sm hover:underline">View Demands &rarr;</Link>
+              <Link to="/demand" className="text-primary font-bold text-sm hover:underline">View Demands &rarr;</Link>
             ) : (
               <span className="text-text-secondary text-sm">No action required</span>
             )}
@@ -77,19 +77,19 @@ export default function Overview() {
         <div className="bg-white shadow-sm border border-border rounded-sm p-6 flex flex-col">
           <h2 className="text-sm font-bold uppercase text-text-secondary tracking-wider mb-4">Quick Actions</h2>
           <div className="flex-1 space-y-3">
-            <Link to="/dashboard/e-file" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
+            <Link to="/itr/assessment-year" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
               File Income Tax Return
             </Link>
-            <Link to="/dashboard/services/ais" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
+            <Link to="/ais" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
               View AIS (Annual Information Statement)
             </Link>
-            <Link to="/dashboard/services/form26as" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
+            <Link to="/form-26as" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
               View Form 26AS
             </Link>
-            <Link to="/dashboard/services/epaytax" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
+            <Link to="/tax-payment" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
               e-Pay Tax
             </Link>
-            <Link to="/dashboard/grievances" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
+            <Link to="/grievances/new" className="block text-sm font-medium text-text-secondary hover:text-primary hover:underline">
               Submit Grievance
             </Link>
           </div>

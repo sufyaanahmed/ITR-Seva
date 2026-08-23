@@ -1,33 +1,61 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '../../store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Navigate } from 'react-router-dom';
 
 const steps = [
-  { id: 'ay', title: 'Assessment Year', type: 'select', field: 'assessment_year', options: ['2026-27', '2025-26'] },
-  { id: 'status', title: 'Filing Status', type: 'select', field: 'filing_status', options: ['Original', 'Revised', 'Belated'] },
-  { id: 'form', title: 'ITR Form', type: 'select', field: 'itr_type', options: ['ITR-1', 'ITR-2', 'ITR-3', 'ITR-4'] },
-  { id: 'personal', title: 'Personal Information', type: 'form', fields: [['first_name', 'First Name', 'text'], ['last_name', 'Last Name', 'text'], ['pan', 'PAN', 'text'], ['dob', 'Date of Birth', 'date']] },
+  { id: 'assessment-year', title: 'Assessment Year', type: 'select', field: 'assessment_year', options: ['2026-27', '2025-26'] },
+  { id: 'filing-status', title: 'Filing Status', type: 'select', field: 'filing_status', options: ['Original', 'Revised', 'Belated'] },
+  { id: 'select-form', title: 'ITR Form', type: 'select', field: 'itr_type', options: ['ITR-1', 'ITR-2', 'ITR-3', 'ITR-4'] },
+  { id: 'personal-information', title: 'Personal Information', type: 'form', fields: [['first_name', 'First Name', 'text'], ['last_name', 'Last Name', 'text'], ['pan', 'PAN', 'text'], ['dob', 'Date of Birth', 'date']] },
   { id: 'salary', title: 'Income from Salary', type: 'form', fields: [['gross_salary', 'Gross Salary', 'number'], ['exempt_allowances', 'Exempt Allowances', 'number']] },
-  { id: 'house', title: 'House Property', type: 'form', fields: [['house_property_income', 'Income from House Property', 'number'], ['home_loan_interest', 'Interest on Home Loan', 'number']] },
+  { id: 'house-property', title: 'House Property', type: 'form', fields: [['house_property_income', 'Income from House Property', 'number'], ['home_loan_interest', 'Interest on Home Loan', 'number']] },
   { id: 'business', title: 'Business / Profession', type: 'form', fields: [['business_income', 'Gross Business Income', 'number']] },
-  { id: 'capital', title: 'Capital Gains', type: 'form', fields: [['stcg', 'Short Term Capital Gains', 'number'], ['ltcg', 'Long Term Capital Gains', 'number']] },
-  { id: 'other', title: 'Other Sources', type: 'form', fields: [['interest_income', 'Interest Income', 'number'], ['dividend_income', 'Dividend Income', 'number']] },
+  { id: 'capital-gains', title: 'Capital Gains', type: 'form', fields: [['stcg', 'Short Term Capital Gains', 'number'], ['ltcg', 'Long Term Capital Gains', 'number']] },
+  { id: 'other-sources', title: 'Other Sources', type: 'form', fields: [['interest_income', 'Interest Income', 'number'], ['dividend_income', 'Dividend Income', 'number']] },
   { id: 'deductions', title: 'Deductions (Chapter VI-A)', type: 'form', fields: [['sec_80c', '80C (LIC, PPF, etc.)', 'number'], ['sec_80d', '80D (Health Insurance)', 'number'], ['sec_80tta', '80TTA (Savings Interest)', 'number']] },
-  { id: 'taxes_paid', title: 'Taxes Paid', type: 'form', fields: [['tds_salary', 'TDS on Salary', 'number'], ['tds_other', 'TDS on Other Income', 'number'], ['advance_tax', 'Advance Tax', 'number'], ['self_assessment_tax', 'Self Assessment Tax', 'number']] },
+  { id: 'taxes-paid', title: 'Taxes Paid', type: 'form', fields: [['tds_salary', 'TDS on Salary', 'number'], ['tds_other', 'TDS on Other Income', 'number'], ['advance_tax', 'Advance Tax', 'number'], ['self_assessment_tax', 'Self Assessment Tax', 'number']] },
   { id: 'computation', title: 'Tax Computation', type: 'custom' },
   { id: 'preview', title: 'Preview Return', type: 'custom' },
   { id: 'validation', title: 'Validation', type: 'custom' },
   { id: 'submit', title: 'Submit ITR', type: 'custom' },
-  { id: 'everify', title: 'e-Verify', type: 'custom' },
-  { id: 'ack', title: 'Acknowledgement', type: 'custom' }
+  { id: 'verify', title: 'e-Verify', type: 'custom' },
+  { id: 'acknowledgement', title: 'Acknowledgement', type: 'custom' }
 ];
 
 export default function FileITR() {
   const { state, updateItrDraft, updateItrData, submitItr } = useStore();
   const navigate = useNavigate();
+  const { stepId } = useParams();
+  const formTopRef = useRef(null);
+  const [draftSavedMessage, setDraftSavedMessage] = useState('');
+  
+  if (!stepId) {
+    return <Navigate to="/itr/assessment-year" replace />;
+  }
+
   const draft = state.itrDraft;
-  const currentStepIndex = draft.step;
+  const currentStepIndex = Math.max(0, steps.findIndex(s => s.id === stepId));
   const currentStep = steps[currentStepIndex];
+
+  // Sync draft step to the URL index if needed
+  useEffect(() => {
+    if (draft.step !== currentStepIndex) {
+      updateItrDraft({ step: currentStepIndex });
+      
+      // Smooth scroll only the form container into view, not the whole page
+      if (formTopRef.current) {
+        formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [currentStepIndex, draft.step, updateItrDraft]);
+
+  // Hook into updateItrData to show save indicator
+  const handleDataChange = (name, value) => {
+    updateItrData(name, value);
+    setDraftSavedMessage(`Draft auto-saved at ${new Date().toLocaleTimeString()}`);
+    // Clear message after 3 seconds
+    setTimeout(() => setDraftSavedMessage(''), 3000);
+  };
 
   const calculateTaxes = () => {
     const d = draft.data;
@@ -44,7 +72,6 @@ export default function FileITR() {
     const totalDeductions = Math.min(150000, num(d.sec_80c)) + num(d.sec_80d) + Math.min(10000, num(d.sec_80tta));
     const totalTaxableIncome = Math.max(0, grossTotalIncome - totalDeductions);
     
-    // Simplified demo tax brackets (not fully accurate to current law)
     let tax = 0;
     if (totalTaxableIncome > 500000) {
       tax = (totalTaxableIncome - 500000) * 0.2; // demo flat 20% over 5L
@@ -53,7 +80,6 @@ export default function FileITR() {
     const totalTaxLiability = tax + cess;
     
     const totalTaxesPaid = num(d.tds_salary) + num(d.tds_other) + num(d.advance_tax) + num(d.self_assessment_tax);
-    
     const balance = totalTaxLiability - totalTaxesPaid;
 
     return { grossTotalIncome, totalDeductions, totalTaxableIncome, totalTaxLiability, totalTaxesPaid, balance };
@@ -62,32 +88,31 @@ export default function FileITR() {
   const handleNext = (e) => {
     e?.preventDefault();
     if (currentStep.id === 'submit') {
-      updateItrDraft({ step: currentStepIndex + 1 });
+      navigate('/itr/' + steps[currentStepIndex + 1].id);
       return;
     }
     
-    if (currentStep.id === 'everify') {
+    if (currentStep.id === 'verify') {
       const ackNum = 'ITR' + Math.floor(Math.random()*1000000000);
       submitItr({ ay: draft.assessment_year, ack: ackNum, form: draft.itr_type, status: 'e-Verified', dateFiled: new Date().toISOString().split('T')[0] });
-      updateItrDraft({ step: currentStepIndex + 1, ackNumber: ackNum });
+      updateItrDraft({ ackNumber: ackNum });
+      navigate('/itr/acknowledgement');
       return;
     }
 
     if (currentStepIndex < steps.length - 1) {
-      updateItrDraft({ step: currentStepIndex + 1 });
-      window.scrollTo(0, 0);
+      navigate('/itr/' + steps[currentStepIndex + 1].id);
     }
   };
 
   const handleBack = () => {
     if (currentStepIndex > 0) {
-      updateItrDraft({ step: currentStepIndex - 1 });
-      window.scrollTo(0, 0);
+      navigate('/itr/' + steps[currentStepIndex - 1].id);
     }
   };
 
   const Sidebar = () => (
-    <div className="w-full md:w-64 shrink-0 bg-white border border-border p-4 rounded-sm hidden lg:block">
+    <div className="w-full md:w-64 shrink-0 bg-white border border-border p-4 rounded-sm hidden lg:block h-fit">
       <h3 className="font-bold text-lg mb-4 text-primary border-b pb-2">ITR Progress</h3>
       <ul className="space-y-2">
         {steps.map((s, i) => (
@@ -101,27 +126,29 @@ export default function FileITR() {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto">
+    <div className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto" ref={formTopRef}>
       <Sidebar />
-      <div className="flex-1 bg-white p-6 md:p-8 border border-border rounded-sm shadow-sm">
+      <div className="flex-1 bg-white p-6 md:p-8 border border-border rounded-sm shadow-sm min-h-[600px] flex flex-col">
         
         <div className="mb-6 pb-4 border-b flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-serif font-bold text-primary">{currentStep.title}</h1>
             <p className="text-sm text-text-secondary">Step {currentStepIndex + 1} of {steps.length}</p>
           </div>
-          <div className="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-bold">Demo Mode</div>
+          <div className="text-right">
+            <div className="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-bold mb-1 inline-block">Demo Mode</div>
+            {draftSavedMessage && <div className="text-xs text-success animate-pulse">{draftSavedMessage}</div>}
+          </div>
         </div>
 
-        <form onSubmit={handleNext}>
-          
-          {/* Select Types */}
+        <form onSubmit={handleNext} className="flex-1 flex flex-col">
+          <div className="flex-1">
           {currentStep.type === 'select' && (
             <div className="space-y-4">
               <label className="block font-bold">Please select {currentStep.title.toLowerCase()}:</label>
               <select 
                 className="input-field max-w-md"
-                value={draft[currentStep.field]}
+                value={draft[currentStep.field] || ''}
                 onChange={(e) => updateItrDraft({ [currentStep.field]: e.target.value })}
                 required
               >
@@ -131,7 +158,6 @@ export default function FileITR() {
             </div>
           )}
 
-          {/* Form Types */}
           {currentStep.type === 'form' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {currentStep.fields.map(([name, label, type]) => (
@@ -141,14 +167,13 @@ export default function FileITR() {
                     type={type} 
                     className="input-field"
                     value={draft.data[name] || ''}
-                    onChange={(e) => updateItrData(name, e.target.value)}
+                    onChange={(e) => handleDataChange(name, e.target.value)}
                   />
                 </div>
               ))}
             </div>
           )}
 
-          {/* Custom Steps */}
           {currentStep.id === 'computation' && (() => {
             const c = calculateTaxes();
             return (
@@ -181,7 +206,9 @@ export default function FileITR() {
 
           {currentStep.id === 'validation' && (
             <div className="p-6 bg-green-50 border border-green-200 rounded text-center">
-              <div className="text-4xl mb-4">✅</div>
+              <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-success">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              </div>
               <h3 className="font-bold text-success text-xl mb-2">Validation Successful</h3>
               <p className="text-green-800">No errors found in your return. You can proceed to submit.</p>
             </div>
@@ -199,7 +226,7 @@ export default function FileITR() {
             </div>
           )}
 
-          {currentStep.id === 'everify' && (
+          {currentStep.id === 'verify' && (
             <div className="space-y-6">
               <h3 className="font-bold text-lg">Select Verification Method</h3>
               <div className="space-y-3">
@@ -221,9 +248,11 @@ export default function FileITR() {
             </div>
           )}
 
-          {currentStep.id === 'ack' && (
+          {currentStep.id === 'acknowledgement' && (
             <div className="text-center py-8">
-              <div className="text-6xl mb-4 text-success">🏆</div>
+              <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-success">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              </div>
               <h2 className="text-2xl font-bold text-success mb-2">Return e-Verified Successfully</h2>
               <p className="mb-6 text-gray-600">Your mock return has been filed and verified.</p>
               <div className="bg-gray-100 inline-block p-4 rounded mb-8">
@@ -236,17 +265,18 @@ export default function FileITR() {
             </div>
           )}
 
-          {currentStep.id !== 'ack' && (
+          </div> {/* End of form flex-1 body */}
+          {currentStep.id !== 'acknowledgement' && (
             <div className="mt-8 pt-4 border-t flex justify-between">
               <button 
                 type="button" 
                 onClick={handleBack}
-                className={`btn-secondary ${currentStepIndex === 0 ? 'invisible' : ''}`}
+                className={`btn-secondary min-w-[120px] ${currentStepIndex === 0 ? 'invisible' : ''}`}
               >
                 Back
               </button>
-              <button type="submit" className="bg-primary text-white px-6 py-2 rounded-sm font-bold hover:bg-primary-dark transition">
-                {currentStep.id === 'submit' ? 'Submit' : currentStep.id === 'everify' ? 'Verify Now' : 'Continue'}
+              <button type="submit" className="bg-primary text-white px-6 py-2 rounded-sm font-bold hover:bg-primary-dark transition min-w-[150px]">
+                {currentStep.id === 'submit' ? 'Submit' : currentStep.id === 'verify' ? 'Verify Now' : 'Save & Next'}
               </button>
             </div>
           )}

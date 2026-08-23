@@ -7,14 +7,14 @@ export default function Loader() {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
 
-    // Auto-dismiss the loader after 2.5 seconds
+    // Show loader for a reasonable amount of time to allow animation to play
     const timer1 = setTimeout(() => {
       setPhase('done');
       setTimeout(() => {
         setLoading(false);
         document.body.style.overflow = 'auto';
-      }, 600); // Wait for fade out
-    }, 2500);
+      }, 700); // Wait for fade out
+    }, 1500);
     
     return () => {
       clearTimeout(timer1);
