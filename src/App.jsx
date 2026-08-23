@@ -1,13 +1,23 @@
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
-import Wizard from './pages/Wizard';
-import Status from './pages/Status';
 import Help from './pages/Help';
 import Downloads from './pages/Downloads';
 import TaxpayerCategory from './pages/TaxpayerCategory';
+import Status from './pages/Status';
+import Login from './pages/Login';
+import DashboardLayout from './components/DashboardLayout';
+import Overview from './pages/dashboard/Overview';
+import FileITR from './pages/dashboard/FileITR';
+import AIS from './pages/dashboard/AIS';
+import Form26AS from './pages/dashboard/Form26AS';
+import EPayTax from './pages/dashboard/EPayTax';
+import Demands from './pages/dashboard/Demands';
+import Grievance from './pages/dashboard/Grievance';
+import DocumentCenter from './pages/dashboard/DocumentCenter';
 import Loader from './components/Loader';
 import ScrollToTop from './components/ScrollToTop';
+import { useStore } from './store';
 
 const Header = () => {
   return (
@@ -25,7 +35,6 @@ const Header = () => {
           <Link to="/category/individual" className="text-gray-900 font-bold text-[0.9rem] hover:text-primary hover:underline">Individual / HUF</Link>
           <Link to="/category/company" className="text-gray-900 font-bold text-[0.9rem] hover:text-primary hover:underline">Company</Link>
           <Link to="/category/non-company" className="text-gray-900 font-bold text-[0.9rem] hover:text-primary hover:underline">Non-Company</Link>
-          <Link to="/category/tax-professionals" className="text-gray-900 font-bold text-[0.9rem] hover:text-primary hover:underline">Tax Professionals</Link>
           <Link to="/downloads" className="text-gray-900 font-bold text-[0.9rem] hover:text-primary hover:underline">Downloads</Link>
           <Link to="/help" className="text-gray-900 font-bold text-[0.9rem] hover:text-primary hover:underline">Help</Link>
         </nav>
@@ -36,9 +45,9 @@ const Header = () => {
           </select>
         </div>
         <div className="flex items-center row-start-1 col-start-3 md:col-start-4 justify-self-end">
-          <button className="bg-white border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-bold hover:bg-gray-50 transition rounded-none">
+          <Link to="/login" className="bg-white border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-bold flex items-center justify-center hover:bg-gray-50 transition rounded-none">
             Login
-          </button>
+          </Link>
         </div>
       </div>
     </header>
@@ -51,22 +60,22 @@ const Footer = () => (
       <div>
         <h3 className="font-bold text-primary mb-4">About</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><a href="https://www.incometax.gov.in/iec/foportal/about-portal" className="hover:text-primary hover:underline">About Portal</a></li>
-          <li><a href="https://www.incometaxindia.gov.in/history-of-direct-taxation" className="hover:text-primary hover:underline">History</a></li>
-          <li><a href="https://www.incometaxindia.gov.in/who-we-are" className="hover:text-primary hover:underline">Who We Are</a></li>
-          <li><a href="https://www.incometaxindia.gov.in/right-to-information" className="hover:text-primary hover:underline">RTI</a></li>
-          <li><a href="https://www.incometaxindia.gov.in/cbdt" className="hover:text-primary hover:underline">Organization & Functions</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">About Portal</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">History</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Who We Are</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">RTI</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Organization & Functions</a></li>
         </ul>
       </div>
       <div>
         <h3 className="font-bold text-primary mb-4">Services</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/login" className="hover:text-primary hover:underline">Login</a></li>
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/register" className="hover:text-primary hover:underline">Register</a></li>
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/eVerifyReturn-bl" className="hover:text-primary hover:underline">e-Verify</a></li>
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/pre-login/bl-link-aadhaar" className="hover:text-primary hover:underline">Link Aadhaar</a></li>
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/know-refund-status/user-information" className="hover:text-primary hover:underline">Refund Status</a></li>
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/e-pay-tax-prelogin/user-details" className="hover:text-primary hover:underline">e-Pay Tax</a></li>
+          <li><Link to="/login" className="hover:text-primary hover:underline">Login</Link></li>
+          <li><Link to="/login" className="hover:text-primary hover:underline">Register</Link></li>
+          <li><a href="#" className="hover:text-primary hover:underline">e-Verify</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Link Aadhaar</a></li>
+          <li><Link to="/status" className="hover:text-primary hover:underline">Refund Status</Link></li>
+          <li><Link to="/login" className="hover:text-primary hover:underline">e-Pay Tax</Link></li>
         </ul>
       </div>
       <div>
@@ -81,18 +90,17 @@ const Footer = () => (
       <div>
         <h3 className="font-bold text-primary mb-4">Portal</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><a href="https://www.incometax.gov.in/iec/foportal/using-the-portal/webSitePolicies" className="hover:text-primary hover:underline">Website Policies</a></li>
-          <li><a href="https://www.incometax.gov.in/iec/foportal/using-the-portal/accessibility-statement" className="hover:text-primary hover:underline">Accessibility</a></li>
-          <li><a href="https://www.incometax.gov.in/iec/foportal/using-the-portal/browser-support" className="hover:text-primary hover:underline">Browser Support</a></li>
-          <li><a href="https://www.incometax.gov.in/iec/foportal/using-the-portal/sitemap" className="hover:text-primary hover:underline">Sitemap</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Website Policies</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Accessibility</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Browser Support</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Sitemap</a></li>
         </ul>
       </div>
       <div>
         <h3 className="font-bold text-primary mb-4">Support</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><a href="https://www.incometax.gov.in/iec/foportal/contact-us" className="hover:text-primary hover:underline">Helpdesk</a></li>
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/fo-greivance/submit" className="hover:text-primary hover:underline">Submit Grievance</a></li>
-          <li><a href="https://eportal.incometax.gov.in/iec/foservices/#/fo-greivance/view" className="hover:text-primary hover:underline">View Grievance</a></li>
+          <li><a href="#" className="hover:text-primary hover:underline">Helpdesk</a></li>
+          <li><Link to="/login" className="hover:text-primary hover:underline">Submit Grievance</Link></li>
         </ul>
       </div>
     </div>
@@ -100,25 +108,48 @@ const Footer = () => (
 );
 
 export default function App() {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
+  const isLogin = location.pathname === '/login';
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <ScrollToTop />
-      <Loader />
-      <Header />
-      <div className="bg-yellow-100 border-b border-yellow-200 text-center py-2 px-4 text-sm font-medium text-yellow-800">
-        Demo Application — Not the Official Income Tax Department Portal. Do not enter real taxpayer information.
-      </div>
-      <main id="main-content" className="flex-1 w-full">
+      {!isDashboard && <Loader />}
+      
+      {!isDashboard && !isLogin && <Header />}
+      
+      {!isDashboard && !isLogin && (
+        <div className="bg-yellow-100 border-b border-yellow-200 text-center py-2 px-4 text-sm font-medium text-yellow-800">
+          Demo Application — Not the Official Income Tax Department Portal. Do not enter real taxpayer information.
+        </div>
+      )}
+
+      <main id="main-content" className={`flex-1 w-full ${isDashboard ? 'flex flex-col' : ''}`}>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/category/:type" element={<TaxpayerCategory />} />
           <Route path="/downloads" element={<Downloads />} />
           <Route path="/help" element={<Help />} />
           <Route path="/status" element={<Status />} />
-          <Route path="/apply" element={<Wizard />} />
+          
+          {/* Private Dashboard Routes */}
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<Overview />} />
+            <Route path="e-file" element={<FileITR />} />
+            <Route path="services/ais" element={<AIS />} />
+            <Route path="services/form26as" element={<Form26AS />} />
+            <Route path="services/epaytax" element={<EPayTax />} />
+            <Route path="pending-actions/demands" element={<Demands />} />
+            <Route path="grievances" element={<Grievance />} />
+            <Route path="services/documents" element={<DocumentCenter />} />
+          </Route>
         </Routes>
       </main>
-      <Footer />
+
+      {!isDashboard && !isLogin && <Footer />}
     </div>
   );
 }
