@@ -32,21 +32,21 @@ export default function Loader() {
     { left: '80%', top: '15%' }, { left: '9%', top: '88%' }, { left: '26%', top: '89%' }
   ];
   
-  const words = ['Welcome', 'स्वागत', 'സ്വാഗതം', 'স্বাগতম', 'வரவேற்கிறோம்', 'ಸ್ವಾಗತ', 'స్వాగతం', 'સ્વાગત છે', 'ਸੁਆਗਤ ਹੈ', 'स्वागत आहे', 'ସ୍ୱାଗତ', 'خوش آمدید', 'स्वागत छ', 'स्वागतम्', 'Welcome'];
+  const words = ['e-Filing', 'Tax Return', 'Income Tax', 'ITR', 'Assessment', 'Refund', 'Secure', 'e-Verify', 'TDS', 'Tax Payment', 'PAN', 'Aadhaar', 'Digital', 'Portal', 'e-Filing'];
 
   return (
     <section 
       id="welcome-loader" 
       className={`fixed inset-0 z-50 flex items-center justify-center font-serif transition-opacity duration-700 ${phase === 'done' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-      style={{ backgroundColor: '#f4ead9', color: '#4c1f1a' }}
+      style={{ backgroundColor: '#003366', color: '#ffffff' }}
     >
-      <div className="absolute inset-0 overflow-hidden opacity-70">
+      <div className="absolute inset-0 overflow-hidden opacity-30">
         {words.map((word, i) => (
           <span 
             key={i} 
             className="absolute font-bold text-lg md:text-xl"
             style={{ 
-              color: '#742c24',
+              color: '#93C5FD', // Light blue accent
               left: positions[i]?.left, 
               top: positions[i]?.top,
               animation: `fadeIn 1s ease-out ${i * 0.05}s both`
@@ -58,8 +58,9 @@ export default function Loader() {
       </div>
       
       <div className="relative z-10 text-center scale-100 animate-[scaleIn_0.8s_ease-out_forwards]">
-        <p className="text-[clamp(3.5rem,10vw,9rem)] font-bold mb-4 leading-none tracking-tight" style={{ color: '#5e1d17' }} lang="hi">स्वागत है</p>
-        <p className="text-[0.72rem] font-sans font-extrabold uppercase tracking-[0.15em] mt-5" style={{ color: '#173a5d' }}>Bharat Visa Portal</p>
+        <img src="/Emblem_of_India.svg" alt="Emblem of India" className="h-[80px] mx-auto mb-6 opacity-90" style={{ filter: 'brightness(0) invert(1)' }} />
+        <p className="text-[clamp(3.5rem,8vw,7rem)] font-bold mb-2 leading-none tracking-tight text-white">ITR-Seva</p>
+        <p className="text-[0.8rem] font-sans font-bold uppercase tracking-[0.2em] mt-3 text-secondary">Income Tax Department</p>
       </div>
       
       <style>{`

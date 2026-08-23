@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const appKey = 'bharat-visa-drafts';
+const appKey = 'itr-efiling-drafts';
 
 const defaultState = {
-  type: 'evisa',
+  type: 'itr1',
   step: 0,
   data: {
-    application_type: 'evisa',
-    visa_category: 'tourist'
+    assessment_year: '2026-27',
+    taxpayer_category: 'individual'
   },
   docs: [],
   submitted: false
@@ -32,7 +32,7 @@ export const StoreProvider = ({ children }) => {
     // IndexedDB backup
     const saveToIDB = async () => {
       try {
-        const request = indexedDB.open('bharat-visa-drafts', 1);
+        const request = indexedDB.open('itr-efiling-drafts', 1);
         request.onupgradeneeded = () => request.result.createObjectStore('drafts');
         request.onsuccess = () => {
           const db = request.result;

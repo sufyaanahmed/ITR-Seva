@@ -8,28 +8,29 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1E3A8A', // Blue 900
-          dark: '#172554',
-          light: '#DBEAFE', // Blue 100
+          DEFAULT: '#003366', // Navy Blue
+          dark: '#002244',
+          light: '#E6F0FA',
         },
         secondary: {
-          DEFAULT: '#FACC15', // Yellow 400
-          dark: '#EAB308',
+          DEFAULT: '#F97316', // Orange / Saffron accent
+          dark: '#EA580C',
         },
         background: '#F9FAFB',
         text: {
-          DEFAULT: '#1F2937',
+          DEFAULT: '#111827',
           secondary: '#4B5563',
         },
         border: {
           DEFAULT: '#E5E7EB',
           dark: '#D1D5DB'
         },
-        success: '#10B981',
-        error: '#EF4444'
+        success: '#15803D', // Green for success / e-verify
+        error: '#EF4444',
+        accent: '#22C55E', // Green accent
       },
       fontFamily: {
-        sans: ['Arial', 'Helvetica', 'sans-serif'],
+        sans: ['"Inter"', 'Arial', 'Helvetica', 'sans-serif'],
         serif: ['Georgia', '"Times New Roman"', 'serif']
       }
     },
