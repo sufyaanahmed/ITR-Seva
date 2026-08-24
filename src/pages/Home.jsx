@@ -1,130 +1,76 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useStore } from '../store';
+import { Link } from 'react-router-dom';
+import { useApp } from '../context/AppContext.jsx';
+import { COPY } from '../data/copy.js';
 
 export default function Home() {
-  const { state } = useStore();
-  const navigate = useNavigate();
-  
-  const startITR = () => {
-    navigate('/itr/file');
-  };
+  const { demo, startDemo } = useApp();
+  const copy = COPY[demo.language];
+  const hindi = demo.language === 'hi';
 
   return (
-    <div className="w-full">
-      <section className="relative flex flex-col justify-center mx-auto min-h-[500px] bg-primary text-left px-4 py-16">
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-0">
-          <p className="font-sans font-bold text-[0.85rem] uppercase tracking-widest mb-[0.35rem] text-secondary">
-            Government of India
+    <>
+      <section className="hero">
+        <div className="container">
+          <p className="eyebrow">{hindi ? 'पहली बार रिटर्न भरने वालों के लिए' : 'For first-time salaried taxpayers'}</p>
+          <h1>{hindi ? 'आयकर रिटर्न भरने से पहले साफ़ तस्वीर पाएँ।' : 'Get ready to file—without the tax confusion.'}</h1>
+          <p className="lead">
+            {hindi
+              ? 'काल्पनिक दस्तावेज़ों से देखें कि क्या मेल खाता है, किस पर ध्यान देना है और अगला कदम क्या है। लगभग 3 मिनट।'
+              : 'See which records agree, what needs attention, and what to do next. Try the complete journey with fictional data in about 3 minutes.'}
           </p>
-          <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-serif font-bold text-white mb-6 leading-[1.1] max-w-[15ch]">
-            ITR-Seva
-          </h1>
-          <p className="font-sans text-[1.2rem] leading-[1.5] mb-10 max-w-[40rem] text-primary-light">
-            File your Income Tax Return, make tax payments, verify returns and access income-tax services online.
+          <div className="hero-actions">
+            <Link className="button button-primary" to="/demo/documents" onClick={startDemo}>{copy.start}</Link>
+            <Link className="button button-secondary" to="/methodology">{copy.how}</Link>
+          </div>
+          <p className="fine-print" style={{ color: '#d8e8e3', marginTop: '1.2rem' }}>
+            {hindi
+              ? 'केवल काल्पनिक जानकारी। कभी भी PAN, आधार, OTP, बैंक विवरण या असली कर दस्तावेज़ दर्ज न करें।'
+              : 'Fictional information only. Never enter a PAN, Aadhaar, OTP, bank detail, or real tax document.'}
           </p>
-          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
-            {state.auth.isLoggedIn ? (
-              <Link to="/dashboard" className="bg-white text-primary px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap rounded-sm">
-                Go to Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link to="/login" className="bg-white text-primary px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap rounded-sm">
-                  Login
-                </Link>
-                <Link to="/register" className="border-2 border-white text-white bg-transparent px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-white hover:text-primary transition whitespace-nowrap rounded-sm">
-                  Register
-                </Link>
-              </>
-            )}
+        </div>
+      </section>
+
+      <section className="trust-strip" aria-label="Prototype promises">
+        <div className="container trust-grid">
+          <div className="trust-item"><strong>Check the documents</strong><span className="muted">See Form 16, AIS, 26AS and bank records together.</span></div>
+          <div className="trust-item"><strong>Find likely mismatches</strong><span className="muted">Resolve two realistic issues in plain language.</span></div>
+          <div className="trust-item"><strong>Leave with a plan</strong><span className="muted">Get a clear readiness report, not a fake filing.</span></div>
+        </div>
+      </section>
+
+      <section className="section" id="how-it-works">
+        <div className="container">
+          <p className="eyebrow">One simple tax journey</p>
+          <h2>From scattered records to clear next steps.</h2>
+          <div className="grid-3">
+            <article className="feature"><span className="feature-number">01</span><h3>Meet Rahul</h3><p className="muted">Use one fictional salaried example. No login and no real documents.</p></article>
+            <article className="feature"><span className="feature-number">02</span><h3>Compare what was reported</h3><p className="muted">See what matches and resolve only the differences that matter.</p></article>
+            <article className="feature"><span className="feature-number">03</span><h3>Know what to do next</h3><p className="muted">Receive likely form guidance, an illustrative estimate, and a printable checklist.</p></article>
           </div>
         </div>
       </section>
 
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16 space-y-16">
-
-      <section>
-        <p className="text-sm font-bold uppercase text-text-secondary tracking-wider mb-2">Access Services</p>
-        <h2 className="text-3xl font-serif font-bold mb-8 text-primary">Quick Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link to="/itr/verify" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">e-Verify Return</h3>
-            <p className="text-text-secondary mb-4 flex-1 text-sm">Verify your Income Tax Return online quickly and securely.</p>
-          </Link>
-          <Link to="/aadhaar/link" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Link Aadhaar</h3>
-            <p className="text-text-secondary mb-4 flex-1 text-sm">Link your Aadhaar with PAN to avoid invalidation of PAN.</p>
-          </Link>
-          <Link to="/refund-status" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Check Refund Status</h3>
-            <p className="text-text-secondary mb-4 flex-1 text-sm">Track the status of your income tax refund online.</p>
-          </Link>
-          <Link to="/tax-payment" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">e-Pay Tax</h3>
-            <p className="text-text-secondary mb-4 flex-1 text-sm">Make tax payments quickly and securely online.</p>
-          </Link>
-          <Link to="/pan/verify" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Verify PAN</h3>
-            <p className="text-text-secondary mb-4 flex-1 text-sm">Verify your PAN details.</p>
-          </Link>
-          <Link to="/know-tan" className="border border-border p-6 rounded-sm bg-white shadow-sm hover:border-primary transition group flex flex-col">
-            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-secondary transition-colors">Know TAN Details</h3>
-            <p className="text-text-secondary mb-4 flex-1 text-sm">Search and verify TAN details.</p>
-          </Link>
-          <button onClick={startITR} className="border-2 border-primary p-6 rounded-sm bg-primary-light shadow-sm hover:bg-primary hover:text-white transition group flex flex-col text-left">
-            <h3 className="font-bold text-lg mb-2 text-primary group-hover:text-white">File ITR (Demo)</h3>
-            <p className="text-primary group-hover:text-white mb-4 flex-1 text-sm">Simulate filing an Income Tax Return.</p>
-          </button>
+      <section className="section-tight">
+        <div className="container health-preview">
+          <div className="health-score" aria-hidden="true">4/5</div>
+          <div>
+            <p className="eyebrow">Tax Health, without a dashboard</p>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '.4rem' }}>A familiar readiness check.</h2>
+            <p className="muted">Ready, resolved, and still-to-check items appear in one short report. No accounts, charts, or service maze.</p>
+          </div>
         </div>
       </section>
 
-      <section>
-        <p className="text-sm font-bold uppercase text-text-secondary tracking-wider mb-2">Guidance By Type</p>
-        <h2 className="text-3xl font-serif font-bold mb-8 text-primary">Taxpayer Categories</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Link to="/category/individual" className="bg-white border-t-4 border-primary p-6 shadow-sm hover:shadow-md transition">
-            <h3 className="font-bold text-xl mb-4 text-primary">Individual / HUF</h3>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li>Salaried Employees</li>
-              <li>Business / Profession</li>
-              <li>Senior Citizens</li>
-              <li>Non Resident</li>
-            </ul>
-          </Link>
-          <Link to="/category/company" className="bg-white border-t-4 border-primary p-6 shadow-sm hover:shadow-md transition">
-            <h3 className="font-bold text-xl mb-4 text-primary">Company</h3>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li>Domestic Company</li>
-              <li>Foreign Company</li>
-            </ul>
-          </Link>
-          <Link to="/category/non-company" className="bg-white border-t-4 border-primary p-6 shadow-sm hover:shadow-md transition">
-            <h3 className="font-bold text-xl mb-4 text-primary">Non-Company</h3>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li>AOP / BOI / Trust / AJP</li>
-              <li>Firm / LLP</li>
-              <li>Local Authority</li>
-            </ul>
-          </Link>
-          <Link to="/category/tax-professionals" className="bg-white border-t-4 border-primary p-6 shadow-sm hover:shadow-md transition">
-            <h3 className="font-bold text-xl mb-4 text-primary">Tax Professionals</h3>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li>Chartered Accountants</li>
-              <li>e-Return Intermediaries</li>
-              <li>Tax Deductor & Collector</li>
-            </ul>
-          </Link>
+      <section className="section">
+        <div className="container">
+          <p className="eyebrow">Visual tax concepts</p>
+          <h2>Understand the few terms this journey needs.</h2>
+          <div className="grid-2">
+            <article className="feature"><h3>FY 2025–26 → AY 2026–27</h3><p className="muted">Financial Year is when Rahul earned income. Assessment Year is when that income is assessed and the return is prepared.</p></article>
+            <article className="feature"><h3>Documents → one income picture</h3><p className="muted">Form 16, AIS, Form 26AS and bank records each show a different part of the same story.</p></article>
+          </div>
         </div>
       </section>
-
-      <section>
-        <div className="bg-red-50 border-l-4 border-red-500 p-6">
-          <h2 className="text-xl font-bold mb-2 text-red-900">Security Warning</h2>
-          <p className="text-red-800">Never share your password, PIN, OTP, or CVV with anyone. The Income Tax Department never asks for your PIN or passwords via email or phone calls.</p>
-        </div>
-      </section>
-    </div>
-  </div>
+    </>
   );
 }

@@ -1,0 +1,26 @@
+export const COPY = {
+  en: {
+    independent: 'Independent hackathon prototype — not affiliated with the Income Tax Department',
+    tagline: 'Know before you file',
+    home: 'Home',
+    how: 'How it works',
+    privacy: 'Privacy',
+    start: 'Start guided demo',
+    reset: 'Reset demo',
+    back: 'Back',
+    continue: 'Save and continue',
+    external: 'Opens the official government website in a new tab.',
+  },
+  hi: {
+    independent: 'स्वतंत्र हैकाथॉन प्रोटोटाइप — आयकर विभाग से संबद्ध नहीं',
+    tagline: 'फाइल करने से पहले समझें',
+    home: 'होम',
+    how: 'यह कैसे काम करता है',
+    privacy: 'गोपनीयता',
+    start: 'निर्देशित डेमो शुरू करें',
+    reset: 'डेमो रीसेट करें',
+    back: 'पीछे',
+    continue: 'सहेजें और आगे बढ़ें',
+    external: 'आधिकारिक सरकारी वेबसाइट नए टैब में खुलेगी।',
+  },
+};
