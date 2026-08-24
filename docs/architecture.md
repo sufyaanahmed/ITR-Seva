@@ -51,7 +51,7 @@ Bundled source documents and Rahul’s profile are fictional. Stable IDs make th
 
 ### State and storage
 
-Only demo answers, the seeded reconciliation decision, and journey progress may be stored in the browser. Persisted data should have a schema version and safe defaults. A reset action removes it. No analytics or remote persistence is necessary for the hackathon build.
+Only the language choice, fictional answers, two fictional reconciliation decisions, and journey-started state are stored in the browser. Persisted data has a schema version and safe defaults. Reset removes answers and resolutions while preserving the language choice. No analytics or remote persistence is used.
 
 ## Trust model
 
@@ -72,7 +72,7 @@ The optional explanation endpoint can rewrite a deterministic result in plainer 
 - keep `OPENAI_API_KEY` server-side;
 - use a structured response schema;
 - send no real user data;
-- enforce length limits, timeout, and basic rate limiting;
+- enforce allowlists, length limits, timeout, output validation, and best-effort per-instance rate limiting;
 - cite only supplied sources;
 - label generated text;
 - fall back to local deterministic copy on error or missing configuration.
@@ -92,10 +92,16 @@ The model must not calculate tax, choose an ITR form, invent a notice response, 
 
 ## Testing strategy
 
-- Unit tests cover domain boundaries, mismatch resolution, unsupported cases, rounding, and storage migration.
-- Journey tests cover Rahul’s path from fresh start to resolved Tax Health report.
-- Route smoke tests ensure every visible navigation target renders.
-- Manual QA covers keyboard use, 390 px, 768 px, 1440 px, 200% zoom, reduced motion, print, refresh/resume/reset, and browser-console errors.
+- Unit tests cover domain boundaries, mismatch resolution, malformed inputs, unsupported cases, rounding, and the optional guidance request/output boundary.
+- An integration test covers Rahul’s supported path from fresh start to resolved Tax Health report.
+- The suite includes guarded-route, malformed-storage, and uncertain-answer cases. Storage migration, exhaustive route smoke, accessibility automation, and exhaustive browser-history/print/export cases are not yet implemented.
+- Final manual QA must cover keyboard use, 390 px, 768 px, 1440 px, 200% zoom, reduced motion, print/JSON export, deep-link guards, refresh/resume/reset, and browser-console errors on the deployed build.
+
+## Delivery controls
+
+The repository exposes reproducible clean-install, lint, deterministic test, and production-build commands. Vercel supplies SPA rewrites and the optional serverless endpoint. Deployment headers apply content-type protection, referrer and permissions policies, clickjacking protection, and a restrictive CSP compatible with the current self-hosted bundle.
+
+These controls do not prove deployment readiness by themselves. The public link, signed-out access, deep-route behaviour, response headers, and optional endpoint still require post-deployment checks. Repository CI should run the same command set once an authorised maintainer can publish workflow files.
 
 ## Safe path to production
 

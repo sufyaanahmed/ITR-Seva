@@ -20,9 +20,9 @@ export default function Methodology() {
         </ul>
         <h2>Sources</h2>
         <ul>
-          <li><a href="https://www.incometax.gov.in/iec/foportal/ais-faq" target="_blank" rel="noreferrer">Income Tax Department AIS FAQ ↗</a></li>
-          <li><a href="https://www.incometax.gov.in/iec/foportal/help/all-topics/e-filing-services/file-itr-2-online/itr-2-UM" target="_blank" rel="noreferrer">ITR online filing manual ↗</a></li>
-          <li><a href="https://www.incometax.gov.in/iec/foportal/help/all-topics/e-filing-services/income-and-tax-estimator-um" target="_blank" rel="noreferrer">Income and Tax Estimator manual ↗</a></li>
+          <li><a href="https://www.incometax.gov.in/iec/foportal/ais-faq" target="_blank" rel="noreferrer" aria-label="Income Tax Department AIS FAQ (opens in a new tab)">Income Tax Department AIS FAQ ↗</a></li>
+          <li><a href="https://www.incometax.gov.in/iec/foportal/help/all-topics/e-filing-services/file-itr-2-online/itr-2-UM" target="_blank" rel="noreferrer" aria-label="ITR online filing manual (opens in a new tab)">ITR online filing manual ↗</a></li>
+          <li><a href="https://www.incometax.gov.in/iec/foportal/help/all-topics/e-filing-services/income-and-tax-estimator-um" target="_blank" rel="noreferrer" aria-label="Income and Tax Estimator manual (opens in a new tab)">Income and Tax Estimator manual ↗</a></li>
         </ul>
         <Link className="button button-primary" to="/demo/documents">Start the fictional demo</Link>
       </div>

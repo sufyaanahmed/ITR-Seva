@@ -6,9 +6,11 @@ const NEW_SLABS = [[400000, 0], [800000, 0.05], [1200000, 0.1], [1600000, 0.15],
 const OLD_SLABS = [[250000, 0], [500000, 0.05], [1000000, 0.2], [Infinity, 0.3]];
 
 function money(value, label) {
-  const number = Number(value ?? 0);
-  if (!Number.isFinite(number) || number < 0) throw new Error(`${label} must be a non-negative number.`);
-  return Math.round(number);
+  if (value === undefined || value === null) return 0;
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+    throw new Error(`${label} must be a non-negative number.`);
+  }
+  return Math.round(value);
 }
 
 function slabTax(income, slabs) {
@@ -26,9 +28,9 @@ function slabTax(income, slabs) {
   return { tax, breakdown };
 }
 
-function calculateRegime(grossIncome, deductions, regime) {
+function calculateRegime(grossIncome, salary, deductions, regime) {
   const isNew = regime === 'new';
-  const standardDeduction = isNew ? 75000 : 50000;
+  const standardDeduction = Math.min(salary, isNew ? 75000 : 50000);
   const allowedChapterVIA = isNew ? 0 : Math.min(deductions.section80C, 150000) + Math.min(deductions.section80D, 25000);
   const taxableIncome = Math.max(0, grossIncome - standardDeduction - allowedChapterVIA);
   const slab = slabTax(taxableIncome, isNew ? NEW_SLABS : OLD_SLABS);
@@ -59,12 +61,23 @@ function calculateRegime(grossIncome, deductions, regime) {
 }
 
 export function calculateTaxComparison(input = {}) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) throw new TypeError('Tax input must be an object.');
+  const salary = money(input.salary, 'Salary');
+  const grossIncome = salary
+    + money(input.savingsInterest, 'Savings interest')
+    + money(input.fixedDepositInterest, 'Fixed-deposit interest')
+    + money(input.otherIncome, 'Other income');
+  const deductions = {
+    section80C: money(input.chapterVIA?.section80C, 'Section 80C deduction'),
+    section80D: money(input.chapterVIA?.section80D, 'Section 80D deduction'),
+  };
   const blockers = [];
   if (input.capitalGains) blockers.push('capital gains');
   if (input.businessOrProfessionalIncome) blockers.push('business or professional income');
   if (input.foreignAssetsOrIncome) blockers.push('foreign assets or income');
   if (input.specialRateIncome) blockers.push('special-rate income');
   if (input.totalIncomeAbove50Lakh) blockers.push('income above ₹50 lakh, where surcharge may apply');
+  if (grossIncome > 5000000 && !input.totalIncomeAbove50Lakh) blockers.push('income above ₹50 lakh, where surcharge may apply');
   if (blockers.length) {
     return {
       status: 'blocked',
@@ -75,16 +88,8 @@ export function calculateTaxComparison(input = {}) {
     };
   }
 
-  const grossIncome = money(input.salary, 'Salary')
-    + money(input.savingsInterest, 'Savings interest')
-    + money(input.fixedDepositInterest, 'Fixed-deposit interest')
-    + money(input.otherIncome, 'Other income');
-  const deductions = {
-    section80C: money(input.chapterVIA?.section80C, 'Section 80C deduction'),
-    section80D: money(input.chapterVIA?.section80D, 'Section 80D deduction'),
-  };
-  const oldRegime = calculateRegime(grossIncome, deductions, 'old');
-  const newRegime = calculateRegime(grossIncome, deductions, 'new');
+  const oldRegime = calculateRegime(grossIncome, salary, deductions, 'old');
+  const newRegime = calculateRegime(grossIncome, salary, deductions, 'new');
   const lower = oldRegime.totalTax === newRegime.totalTax ? 'same' : oldRegime.totalTax < newRegime.totalTax ? 'old' : 'new';
 
   return {

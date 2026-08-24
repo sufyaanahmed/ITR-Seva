@@ -173,23 +173,30 @@ function CompareStep({ items, setResolution, next }) {
         })}
       </div>
 
-      {unresolved.length > 0 && <div className="notice notice-warning"><strong>Resolve both sample differences to see the clean readiness path.</strong> You can still continue to see how unresolved items become blockers.</div>}
+      {unresolved.length > 0 && (
+        <div className="notice notice-warning">
+          <strong>Not sure what to choose?</strong> That is okay. Continue and Rahul’s report will keep {unresolved.length === 1 ? 'this item' : `these ${unresolved.length} items`} on the checklist.
+        </div>
+      )}
       <div className="step-actions">
         <Link className="button button-secondary" to="/demo/documents">Back</Link>
-        <button className="button button-primary" type="button" onClick={next}>Continue with these answers</button>
+        <button className="button button-primary" type="button" onClick={next}>
+          {unresolved.length ? 'I’m not sure — continue with items to check' : 'Continue with these answers'}
+        </button>
       </div>
       <AssistantPanel context="compare" />
     </section>
   );
 }
 
-function QuestionControl({ question, value, setAnswer }) {
+function QuestionControl({ question, value, hasResponse, setAnswer }) {
   if (question.type === 'number') {
     return (
-      <div className="segmented">
+      <div className="segmented segmented-4" aria-label="Choose the number of properties">
         {[0, 1, 2].map((count) => (
           <label key={count}><input type="radio" name={question.id} checked={value === count} onChange={() => setAnswer(question.id, count)} />{count === 2 ? '2+' : count}</label>
         ))}
+        <label><input type="radio" name={question.id} checked={hasResponse && value === null} onChange={() => setAnswer(question.id, null)} />Not sure</label>
       </div>
     );
   }
@@ -197,34 +204,44 @@ function QuestionControl({ question, value, setAnswer }) {
     <div className="segmented">
       <label><input type="radio" name={question.id} checked={value === true} onChange={() => setAnswer(question.id, true)} />Yes</label>
       <label><input type="radio" name={question.id} checked={value === false} onChange={() => setAnswer(question.id, false)} />No</label>
+      <label><input type="radio" name={question.id} checked={hasResponse && value === null} onChange={() => setAnswer(question.id, null)} />Not sure</label>
     </div>
   );
 }
 
 function QuestionsStep({ demo, setAnswer, next }) {
-  const answered = QUESTIONS.filter((question) => demo.answers[question.id] !== undefined).length;
+  const answered = QUESTIONS.filter((question) => Object.prototype.hasOwnProperty.call(demo.answers, question.id)).length;
   return (
     <section className="panel" aria-labelledby="questions-title">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Personalised tax guidance</p>
           <h2 id="questions-title">Seven quick questions find the likely next step.</h2>
-          <p className="muted">These answers affect a deterministic form check. AI does not decide the result.</p>
+          <p className="muted">Choose “Not sure” whenever needed. Rahul will still get a useful checklist.</p>
         </div>
         <StatusBadge status={answered === QUESTIONS.length ? 'resolved' : 'info'}>{answered} of {QUESTIONS.length}</StatusBadge>
       </div>
       <div className="question-list">
-        {QUESTIONS.map((question, index) => (
-          <fieldset className="question" key={question.id}>
-            <legend>{index + 1}. {question.label}</legend>
-            <p>Why we ask: {question.why}</p>
-            <QuestionControl question={question} value={demo.answers[question.id]} setAnswer={setAnswer} />
-          </fieldset>
-        ))}
+        {QUESTIONS.map((question, index) => {
+          const hasResponse = Object.prototype.hasOwnProperty.call(demo.answers, question.id);
+          return (
+            <fieldset className="question" key={question.id}>
+              <legend>{index + 1}. {question.label}</legend>
+              <p><strong>Why we ask:</strong> {question.why}</p>
+              <QuestionControl
+                question={question}
+                value={demo.answers[question.id]}
+                hasResponse={hasResponse}
+                setAnswer={setAnswer}
+              />
+              {hasResponse && demo.answers[question.id] === null && <p className="uncertainty-note">That is okay. Rahul’s report will keep this answer on the final checklist.</p>}
+            </fieldset>
+          );
+        })}
       </div>
-      {answered < QUESTIONS.length && <div className="notice notice-warning">Answer all seven questions to receive a useful result.</div>}
+      {answered < QUESTIONS.length && <div className="notice notice-warning">Answer each question—even if the answer is “Not sure”—to see Rahul’s result.</div>}
       <div className="step-actions">
-        <Link className="button button-secondary" to="/demo/compare">Back</Link>
+        <Link className="button button-secondary" to="/demo/compare">Back to records</Link>
         <button className="button button-primary" type="button" disabled={answered < QUESTIONS.length} onClick={next}>Show Rahul’s result</button>
       </div>
     </section>
@@ -257,8 +274,12 @@ function ResultStep({ recommendation, taxComparison, next }) {
         <p className="eyebrow">Likely filing route</p>
         <h2 className="result-title" id="result-title">{recommendation.title}</h2>
         <p className="muted">Based only on Rahul’s fictional records and answers. This is guidance, not a final tax determination.</p>
-        <ul className="reason-list">{recommendation.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
-        <p className="fine-print">Source checked 25 August 2026: <a href={recommendation.source.url} target="_blank" rel="noreferrer">{recommendation.source.title} ↗</a></p>
+        {incomplete ? (
+          <div className="notice notice-warning"><strong>One or more answers need a final check.</strong> That is a valid result—the readiness report will keep them visible instead of guessing.</div>
+        ) : (
+          <ul className="reason-list">{recommendation.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+        )}
+        <p className="fine-print">Source checked 25 August 2026: <a href={recommendation.source.url} target="_blank" rel="noreferrer" aria-label={`${recommendation.source.title} (opens in a new tab)`}>{recommendation.source.title} ↗</a></p>
       </section>
 
       <section className="panel" aria-labelledby="estimate-title">
@@ -266,7 +287,9 @@ function ResultStep({ recommendation, taxComparison, next }) {
           <div><p className="eyebrow">Visual tax calculator</p><h2 id="estimate-title">A small, explainable comparison.</h2><p className="muted">No sliders or hidden formulas. Only the supported salaried example.</p></div>
           <StatusBadge status={taxComparison.status === 'ready' ? 'info' : 'blocked'}>{taxComparison.status === 'ready' ? 'Illustrative' : 'Unavailable'}</StatusBadge>
         </div>
-        {taxComparison.status === 'blocked' ? (
+        {incomplete ? (
+          <div className="notice notice-warning"><strong>No estimate shown yet.</strong><p>KarSaathi needs clear answers to all supported filing questions before comparing regimes.</p></div>
+        ) : taxComparison.status === 'blocked' ? (
           <div className="notice notice-danger"><strong>This example needs expert review.</strong><p>{taxComparison.reason}</p></div>
         ) : (
           <>
@@ -285,7 +308,7 @@ function ResultStep({ recommendation, taxComparison, next }) {
         {!candidate && !incomplete && <div className="notice notice-warning">The comparison stops for complex income instead of offering false precision.</div>}
         <div className="step-actions">
           <Link className="button button-secondary" to="/demo/questions">Back</Link>
-          <button className="button button-primary" type="button" disabled={incomplete} onClick={next}>Create readiness report</button>
+          <button className="button button-primary" type="button" onClick={next}>{incomplete ? 'Create needs-attention report' : 'Create readiness report'}</button>
         </div>
         <AssistantPanel context="result" />
       </section>
@@ -334,7 +357,7 @@ function ReportStep({ report, resetDemo }) {
       <div className="hero-actions no-print">
         <button className="button button-primary" type="button" onClick={() => window.print()}>Print readiness report</button>
         <button className="button button-secondary" type="button" onClick={downloadJson}>Export fictional JSON</button>
-        <a className="button button-secondary" href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer">Open official e-Filing portal ↗</a>
+        <a className="button button-secondary" href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer" aria-label="Open the official e-Filing portal in a new tab">Open official e-Filing portal ↗</a>
       </div>
       <p className="fine-print no-print">The official portal opens in a new tab. KarSaathi does not transfer any data.</p>
       <button className="topic-button no-print" type="button" onClick={() => { resetDemo(); navigate('/'); }}>Start demo again</button>
@@ -356,14 +379,17 @@ export default function Journey() {
   const taxComparison = useMemo(() => estimateTax(DEMO_PERSONA, answers, demo.resolutions), [answers, demo.resolutions]);
   const report = useMemo(() => buildReadinessReport({ persona: DEMO_PERSONA, reconciliationItems: reconciliation, recommendation, taxComparison }), [reconciliation, recommendation, taxComparison]);
   const issuesResolved = getUnresolvedItems(reconciliation).length === 0;
-  const questionsAnswered = QUESTIONS.every((question) => demo.answers[question.id] !== undefined);
-  const completedThrough = questionsAnswered ? 4 : issuesResolved ? 2 : demo.started ? 1 : 0;
+  const questionsAnswered = QUESTIONS.every((question) => Object.prototype.hasOwnProperty.call(demo.answers, question.id));
+  const progressBase = questionsAnswered ? 3 : issuesResolved ? 2 : demo.started ? 1 : 0;
+  const completedThrough = Math.max(progressBase, stepIndex);
 
   useEffect(() => {
     headingRef.current?.focus();
   }, [stepId, stepIndex]);
 
   if (stepIndex < 0) return <Navigate to="/demo/documents" replace />;
+  if (stepId !== 'documents' && !demo.started) return <Navigate to="/demo/documents" replace />;
+  if (['result', 'report'].includes(stepId) && !questionsAnswered) return <Navigate to="/demo/questions" replace />;
   const next = () => navigate(`/demo/${JOURNEY_STEPS[Math.min(stepIndex + 1, JOURNEY_STEPS.length - 1)].id}`);
 
   return (

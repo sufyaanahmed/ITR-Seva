@@ -38,16 +38,17 @@ The builder set the simplicity rule, required a familiar low-friction experience
 
 ## Verification record
 
-Fill this from the final clean working tree rather than from an intermediate run.
+This records current local evidence. Repeat every applicable check from the final committed SHA and update any changed result before submission.
 
 | Check | Result | Date/time (IST) |
 | --- | --- | --- |
 | `npm ci` | Pass | 25 Aug 2026 |
-| `npm run lint` | Pass | 25 Aug 2026 |
-| `npm run test -- --run` | Pass — 5 files, 23 tests | 25 Aug 2026 |
-| `npm run build` | Pass | 25 Aug 2026 |
-| 390 px journey QA | Pass — no horizontal overflow; mobile evidence cards active | 25 Aug 2026 |
-| Keyboard and 200% zoom QA | Pending final run | — |
+| `npm run lint` | Pass on post-audit hardening tree | 25 Aug 2026 |
+| `npm run test:run` | Pass — 6 files, 39 tests on post-audit hardening tree | 25 Aug 2026 |
+| `npm run build` | Pass on post-audit hardening tree | 25 Aug 2026 |
+| `npm audit` | Pass — 0 known vulnerabilities reported | 25 Aug 2026 |
+| Local rendered journey QA | Pass — happy/uncertain outcomes, 404, mobile progress, 390/768/1440 px overflow, no captured console warnings/errors | 25 Aug 2026 |
+| Independent keyboard and 200% zoom re-check | Pending final deployed run | — |
 | Public signed-out link | Pending deployment | — |
 | Exact two-minute path | Pending recording | — |
 

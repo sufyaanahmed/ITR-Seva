@@ -25,4 +25,15 @@ describe('filing recommendation', () => {
     expect(result.kind).toBe(RECOMMENDATION.INSUFFICIENT_INFORMATION);
     expect(result.missing).toContain('capitalGains');
   });
+
+  it.each([
+    ['negative houses', { houseProperties: -1 }],
+    ['string boolean', { capitalGains: 'false' }],
+    ['unknown residence', { residentialStatus: 'somewhere' }],
+    ['invalid agricultural income', { agriculturalIncome: Number.NaN }],
+  ])('does not guess for %s', (_label, override) => {
+    const result = recommendFilingRoute({ ...DEMO_PERSONA.filingAnswers, ...override });
+    expect(result.kind).toBe(RECOMMENDATION.INSUFFICIENT_INFORMATION);
+    expect(result.invalid.length).toBeGreaterThan(0);
+  });
 });

@@ -24,12 +24,12 @@ export default function AppShell({ children }) {
           </nav>
           <select
             className="mobile-nav"
-            aria-label="Navigation"
+            aria-label="Go to a page"
             value={location.pathname.startsWith('/demo') ? '/demo/documents' : location.pathname}
             onChange={(event) => navigate(event.target.value)}
           >
             <option value="/">{copy.home}</option>
-            <option value="/demo/documents">Demo</option>
+            <option value="/demo/documents">Guided demo</option>
             <option value="/methodology">{copy.how}</option>
             <option value="/privacy">{copy.privacy}</option>
           </select>
@@ -45,7 +45,7 @@ export default function AppShell({ children }) {
           <nav className="footer-links" aria-label="Footer navigation">
             <Link to="/methodology">{copy.how}</Link>
             <Link to="/privacy">{copy.privacy}</Link>
-            <a href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer">Official e-Filing portal ↗</a>
+            <a href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer" aria-label="Official e-Filing portal (opens in a new tab)">Official e-Filing portal ↗</a>
           </nav>
         </div>
       </footer>

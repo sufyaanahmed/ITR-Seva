@@ -69,7 +69,7 @@ export default function AssistantPanel({ context = 'general' }) {
           <p>{answer.answer}</p>
           {answer.nextAction && <p><strong>Next:</strong> {answer.nextAction}</p>}
           {(answer.citations || []).map((citation) => (
-            <a className="assistant-source" key={citation.url} href={citation.url} target="_blank" rel="noreferrer">
+            <a className="assistant-source" key={citation.url} href={citation.url} target="_blank" rel="noreferrer" aria-label={`${citation.title} (opens in a new tab)`}>
               Source: {citation.title} ↗
             </a>
           ))}

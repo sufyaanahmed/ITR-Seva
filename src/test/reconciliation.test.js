@@ -36,4 +36,25 @@ describe('demo reconciliation', () => {
   it('rejects a resolution that does not match the evidence issue', () => {
     expect(() => resolveReconciliation({}, 'salary', RESOLUTION_ACTION.INCLUDE_FROM_BANK_RECORD)).toThrow();
   });
+
+  it('does not trust malformed or stale persisted resolutions', () => {
+    const session = createDemoSession();
+    const items = reconcileEvidence(session.evidence, {
+      'savings-interest': { action: RESOLUTION_ACTION.INCLUDE_FROM_BANK_RECORD },
+      salary: { action: RESOLUTION_ACTION.MARK_AIS_ENTRY_DUPLICATE },
+    });
+    expect(items.find((item) => item.id === 'savings-interest').status).toBe('duplicate');
+    expect(items.find((item) => item.id === 'salary').status).toBe('matched');
+  });
+
+  it('rejects malformed evidence instead of reporting a false match', () => {
+    expect(() => reconcileEvidence(null)).toThrow('Evidence must be an array');
+    expect(() => reconcileEvidence([{ id: 'bad', category: 'salary', source: 'ais', amount: -1 }])).toThrow('Every evidence line');
+  });
+
+  it('bounds and cleans resolution notes', () => {
+    const result = resolveReconciliation({}, 'fd-interest', RESOLUTION_ACTION.INCLUDE_FROM_BANK_RECORD, `\u0000${'x'.repeat(200)}`);
+    expect(result['fd-interest'].note).toHaveLength(160);
+    expect(result['fd-interest'].note).not.toContain('\u0000');
+  });
 });

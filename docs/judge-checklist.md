@@ -8,8 +8,9 @@
 4. Review the fictional Rahul records and embedded tax-journey explanation.
 5. Find and resolve the seeded missing-interest and possible-duplicate issues.
 6. Complete the seven supported filing questions.
-7. Open Tax Health and confirm the resolution, indicative recommendation, scoped visual regime comparison, and next actions are consistent.
-8. Follow only the clearly marked official external link if desired; KarSaathi itself must never imply a filing or government update.
+7. Review the indicative filing route and scoped visual regime comparison, then create the Tax Health report.
+8. Confirm the report reflects the resolutions and gives consistent next actions.
+9. Follow only the clearly marked official external link if desired; KarSaathi itself must never imply a filing or government update.
 
 Expected outcome: the journey ends with Rahul’s synthetic evidence reconciled, an explainable readiness result, and a clear handoff. A complex answer must produce an honest unsupported/professional-review path rather than the simple result.
 
@@ -70,3 +71,15 @@ Expected outcome: the journey ends with Rahul’s synthetic evidence reconciled,
 - Desktop browser checked:
 - Submitter email used consistently:
 - Teammate registered email, or “solo”:
+
+## Current audit status — 25 August 2026
+
+- Local clean install: passed.
+- Automated tests at `c3ba343`: 5 files, 23 tests passed. Post-audit hardening tree: 6 files, 39 tests passed.
+- Lint and production build on the post-audit hardening tree: passed.
+- Dependency audit: 0 known vulnerabilities reported by npm on the audit date.
+- PR: [#1 — Build KarSaathi: a simple tax readiness journey](https://github.com/sufyaanahmed/ITR-Seva/pull/1) is open.
+- Deployment gate: not passed. The Vercel status check is failing at GitHub/Vercel authorization, so a public signed-out application URL is not yet evidenced.
+- Local rendered QA: happy and “Not sure” outcomes, 404 recovery, mobile progress/touch sizing, 390/768/1440 px overflow, and captured console warnings/errors passed. Keyboard-only, true 200% zoom, print/export, slow-network, and every check on the final public deployment remain open.
+
+See [IMPLEMENTATION_DECISIONS.md](IMPLEMENTATION_DECISIONS.md) for the complete final execution checklist.

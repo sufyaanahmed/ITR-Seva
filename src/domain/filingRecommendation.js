@@ -22,14 +22,33 @@ const REQUIRED = [
   'totalIncomeAbove50Lakh', 'specialRateIncome',
 ];
 
+const BOOLEAN_FIELDS = [
+  'multipleEmployers', 'capitalGains', 'businessOrProfessionalIncome',
+  'foreignAssetsOrIncome', 'totalIncomeAbove50Lakh', 'specialRateIncome',
+];
+
+function invalidAnswers(answers) {
+  const invalid = [];
+  if (!['resident', 'non_resident', 'not_ordinarily_resident'].includes(answers.residentialStatus)) invalid.push('residentialStatus');
+  BOOLEAN_FIELDS.forEach((key) => {
+    if (answers[key] !== true && answers[key] !== false) invalid.push(key);
+  });
+  if (!Number.isInteger(answers.houseProperties) || answers.houseProperties < 0) invalid.push('houseProperties');
+  if (typeof answers.agriculturalIncome !== 'number' || !Number.isFinite(answers.agriculturalIncome) || answers.agriculturalIncome < 0) invalid.push('agriculturalIncome');
+  return invalid;
+}
+
 export function recommendFilingRoute(answers = {}) {
+  if (!answers || typeof answers !== 'object' || Array.isArray(answers)) answers = {};
   const missing = REQUIRED.filter((key) => answers[key] === undefined || answers[key] === null || answers[key] === '');
-  if (missing.length) {
+  const invalid = missing.length ? [] : invalidAnswers(answers);
+  if (missing.length || invalid.length) {
     return {
       kind: RECOMMENDATION.INSUFFICIENT_INFORMATION,
-      title: 'Answer a few more questions',
-      reasons: [`Missing: ${missing.join(', ')}`],
+      title: invalid.length ? 'Check these answers' : 'Answer a few more questions',
+      reasons: [missing.length ? `Missing: ${missing.join(', ')}` : `Invalid: ${invalid.join(', ')}`],
       missing,
+      invalid,
       source: OFFICIAL_SOURCES.itrForms,
     };
   }
@@ -50,6 +69,7 @@ export function recommendFilingRoute(answers = {}) {
       title: 'A different ITR or professional review may be needed',
       reasons,
       missing: [],
+      invalid: [],
       source: OFFICIAL_SOURCES.itrForms,
     };
   }
@@ -65,6 +85,7 @@ export function recommendFilingRoute(answers = {}) {
         : 'One employer makes the salary evidence straightforward to reconcile.',
     ],
     missing: [],
+    invalid: [],
     source: OFFICIAL_SOURCES.itrForms,
   };
 }

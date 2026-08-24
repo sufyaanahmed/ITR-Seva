@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { createHash } from 'node:crypto';
 
 const TOPICS = Object.freeze({
   ay: {
@@ -24,27 +25,65 @@ const TOPICS = Object.freeze({
 const buckets = new Map();
 const LIMIT = 15;
 const WINDOW_MS = 60_000;
+const MAX_BUCKETS = 1_000;
+const SAFE_CONTEXTS = new Set(['general', 'documents', 'compare', 'questions', 'result', 'report']);
+
+function rateKey(value) {
+  return createHash('sha256').update(String(value).slice(0, 128)).digest('hex');
+}
 
 function allowed(ip) {
   const now = Date.now();
-  const bucket = buckets.get(ip) || { started: now, count: 0 };
+  for (const [key, value] of buckets) {
+    if (now - value.started > WINDOW_MS) buckets.delete(key);
+  }
+  const key = rateKey(ip);
+  const bucket = buckets.get(key) || { started: now, count: 0 };
   if (now - bucket.started > WINDOW_MS) {
-    buckets.set(ip, { started: now, count: 1 });
+    buckets.set(key, { started: now, count: 1 });
     return true;
   }
   bucket.count += 1;
-  buckets.set(ip, bucket);
+  buckets.set(key, bucket);
+  while (buckets.size > MAX_BUCKETS) buckets.delete(buckets.keys().next().value);
   return bucket.count <= LIMIT;
 }
+
+export function validateGuidanceRequest(body) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return null;
+  const { topic, language, context } = body;
+  if (!Object.hasOwn(TOPICS, topic) || !['en', 'hi'].includes(language) || !SAFE_CONTEXTS.has(context)) return null;
+  return { topic, language, context };
+}
+
+export function validateGuidanceOutput(value, source) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Malformed guidance output.');
+  if (typeof value.answer !== 'string' || !value.answer.trim() || value.answer.length > 600) throw new Error('Malformed guidance answer.');
+  if (typeof value.nextAction !== 'string' || !value.nextAction.trim() || value.nextAction.length > 180) throw new Error('Malformed guidance next action.');
+  if (!['high', 'medium', 'low'].includes(value.confidence) || typeof value.escalationRequired !== 'boolean') {
+    throw new Error('Malformed guidance metadata.');
+  }
+  return {
+    answer: value.answer.trim(),
+    nextAction: value.nextAction.trim(),
+    confidence: value.confidence,
+    citations: [{ title: source.sourceTitle, url: source.sourceUrl }],
+    escalationRequired: value.escalationRequired,
+  };
+}
+
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'demo').split(',')[0];
   if (!allowed(ip)) return res.status(429).json({ error: 'Too many explanation requests. Use the offline guidance for a moment.' });
 
-  const { topic, language, context } = req.body || {};
-  if (!TOPICS[topic] || !['en', 'hi'].includes(language) || typeof context !== 'string' || context.length > 40) {
+  const request = validateGuidanceRequest(req.body);
+  if (!request) {
     return res.status(400).json({ error: 'Choose one of the safe explanation topics.' });
   }
+  const { topic, language, context } = request;
   if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: 'Offline guidance is active.' });
 
   const source = TOPICS[topic];
@@ -87,8 +126,7 @@ export default async function handler(req, res) {
         verbosity: 'low',
       },
     });
-    const parsed = JSON.parse(response.output_text);
-    parsed.citations = [{ title: source.sourceTitle, url: source.sourceUrl }];
+    const parsed = validateGuidanceOutput(JSON.parse(response.output_text), source);
     return res.status(200).json(parsed);
   } catch (error) {
     console.error('Guidance request failed', error?.message);

@@ -35,6 +35,19 @@ describe('AY 2026–27 illustrative tax comparison', () => {
   it('rejects negative or non-numeric money inputs', () => {
     expect(() => calculateTaxComparison({ salary: -1 })).toThrow('Salary');
     expect(() => calculateTaxComparison({ salary: 'not money' })).toThrow('Salary');
+    expect(() => calculateTaxComparison(null)).toThrow('Tax input must be an object');
+  });
+
+  it('applies the salary deduction only against salary income', () => {
+    const result = calculateTaxComparison({ savingsInterest: 100000 });
+    expect(result.newRegime.standardDeduction).toBe(0);
+    expect(result.newRegime.taxableIncome).toBe(100000);
+  });
+
+  it('automatically blocks income above ₹50 lakh because surcharge is not modelled', () => {
+    const result = calculateTaxComparison({ salary: 5000001 });
+    expect(result.status).toBe('blocked');
+    expect(result.blockers[0]).toContain('₹50 lakh');
   });
 
   it.each(['capitalGains', 'businessOrProfessionalIncome', 'foreignAssetsOrIncome', 'specialRateIncome', 'totalIncomeAbove50Lakh'])(

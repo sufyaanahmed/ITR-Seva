@@ -11,11 +11,21 @@ const initialState = {
 
 const AppContext = createContext(null);
 
+function isRecord(value) {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value));
+}
+
 function loadState() {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (parsed?.version !== 1) return initialState;
-    return { ...initialState, ...parsed };
+    if (!isRecord(parsed) || parsed.version !== 1) return initialState;
+    return {
+      ...initialState,
+      language: ['en', 'hi'].includes(parsed.language) ? parsed.language : initialState.language,
+      resolutions: isRecord(parsed.resolutions) ? parsed.resolutions : {},
+      answers: isRecord(parsed.answers) ? parsed.answers : {},
+      started: parsed.started === true,
+    };
   } catch {
     return initialState;
   }
@@ -24,7 +34,11 @@ export function AppProvider({ children }) {
   const [demo, setDemo] = useState(loadState);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+    } catch {
+      // The fictional demo remains usable when storage is blocked or full.
+    }
   }, [demo]);
 
   const actions = useMemo(() => ({

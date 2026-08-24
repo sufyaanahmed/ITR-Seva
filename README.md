@@ -33,10 +33,11 @@ No sign-up, credentials, upload, or real personal information is required.
 | --- | --- | --- |
 | Guided tax journey | Interactive, browser-based flow | Covers a fictional salaried resident scenario only |
 | Document guide | Explains Form 16, AIS, Form 26AS, and bank-interest evidence | Documents are bundled synthetic fixtures, not uploaded files |
-| Personalised guidance | Deterministic questions hide irrelevant guidance | It is not a binding filing-form determination |
+| Personalised guidance | Seven deterministic, high-signal questions support clear, uncertain, and complex answers | It is not a binding filing-form determination |
 | Reconciliation | User decisions change mismatch and readiness state | No connection to AIS, TRACES, a bank, or the e-Filing portal |
 | Tax Health | Plain-language snapshot of matched and unresolved items | “Health” is a readiness summary, not government status |
 | Regime comparison | Illustrative, scoped visual comparison with stated assumptions | Not a return computation or professional advice |
+| Plain-language explainer | Three preset, cited topics use server-side AI when configured and local fallback otherwise | It cannot change calculations, recommendations, or readiness |
 | Progress | Synthetic demo state may persist locally in the browser | Reset clears the local demo; there is no taxpayer account |
 
 Anything not explicitly shown as working is outside this prototype. A notice simplifier and “Where does my tax go?” visualisation are future ideas, not MVP features. Official filing must happen on the [Income Tax e-Filing portal](https://www.incometax.gov.in/).
@@ -74,9 +75,9 @@ If an optional server-side OpenAI explainer is enabled, copy `.env.example` to a
 
 ## Architecture
 
-KarSaathi is a small React and Vite application. UI state is separated from pure domain rules so that reconciliation, recommendation, and illustrative calculations can be tested without the interface. Bundled fixtures are synthetic and deterministic. Browser storage, when used, holds only versioned demo progress.
+KarSaathi is a small React and Vite application. UI state is separated from pure domain rules so that reconciliation, recommendation, and illustrative calculations can be tested without the interface. Bundled fixtures are synthetic and deterministic. Browser storage holds only versioned fictional demo progress.
 
-See [docs/architecture.md](docs/architecture.md) for boundaries, data flow, failure modes, and a safe path to scale.
+See [docs/architecture.md](docs/architecture.md) for boundaries and data flow, and [docs/IMPLEMENTATION_DECISIONS.md](docs/IMPLEMENTATION_DECISIONS.md) for the choices, rejected alternatives, evidence, risks, PR rationale, and release gates.
 
 ## Privacy and safety
 

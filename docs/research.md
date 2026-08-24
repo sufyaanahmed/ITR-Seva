@@ -52,7 +52,7 @@ The prototype still needs direct moderated research with first-time filers, incl
 - Amounts and mismatches are teaching fixtures, not representative population data.
 - “Likely ITR-1” is an indicative outcome based only on captured answers; it is never a binding determination.
 - “Tax Health” means readiness of the synthetic evidence set, not compliance, filing, refund, or government status.
-- The visual regime comparison is illustrative and must display its rule period and supported inputs.
+- The visual regime comparison is illustrative and must display its rule period and supported inputs. It does not model every exemption/deduction (including possible Section 80TTA treatment), family/age nuance, surcharge case, statutory rounding rule, or tax-credit/payable computation.
 - Before submission, a qualified reviewer should compare all implemented slabs, deductions, rebate, cess, rounding, eligibility branches, and labels against official material applicable to FY 2025–26 / AY 2026–27.
 
 ## Scope decisions
@@ -60,3 +60,5 @@ The prototype still needs direct moderated research with first-time filers, incl
 Included now: trustworthy homepage, guided tax journey, personalised questions, small embedded visual explanations, evidence reconciliation, Tax Health report, and a tightly scoped visual regime comparison.
 
 Deferred: real document upload, notice simplification, “Where does my tax go?”, real accounts, payments, e-verification, government integration, and comprehensive filing-form coverage. Deferral keeps every visible MVP feature working and the core journey easy to understand.
+
+Implementation tradeoffs, evidence, risks, and release gates are recorded in [IMPLEMENTATION_DECISIONS.md](IMPLEMENTATION_DECISIONS.md).
