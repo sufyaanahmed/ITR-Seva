@@ -19,7 +19,7 @@ import Loader from './components/Loader';
 import ScrollToTop from './components/ScrollToTop';
 import { useStore } from './store';
 
-const Header = () => {
+const Header = ({ isLoggedIn, userName }) => {
   return (
     <header className="bg-white border-b-[5px] border-primary">
       <div className="max-w-[1200px] mx-auto w-full min-h-[104px] py-[1.2rem] px-[1.5rem] grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] items-center gap-[1.15rem]">
@@ -45,16 +45,22 @@ const Header = () => {
           </select>
         </div>
         <div className="flex items-center row-start-1 col-start-3 md:col-start-4 justify-self-end">
-          <Link to="/login" className="bg-white border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-bold flex items-center justify-center hover:bg-gray-50 transition rounded-none">
-            Login
-          </Link>
+          {isLoggedIn ? (
+            <Link to="/dashboard" className="bg-primary text-white border border-primary h-[44px] px-4 font-sans text-sm font-bold flex items-center justify-center hover:bg-primary-dark transition rounded-none">
+              Dashboard ({userName})
+            </Link>
+          ) : (
+            <Link to="/login" className="bg-white border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-bold flex items-center justify-center hover:bg-gray-50 transition rounded-none">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </header>
   );
 };
 
-const Footer = () => (
+const Footer = ({ isLoggedIn }) => (
   <footer className="bg-white border-t border-border-dark mt-12 py-12">
     <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
       <div>
@@ -70,8 +76,14 @@ const Footer = () => (
       <div>
         <h3 className="font-bold text-primary mb-4">Services</h3>
         <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-          <li><Link to="/login" className="hover:text-primary hover:underline">Login</Link></li>
-          <li><Link to="/register" className="hover:text-primary hover:underline">Register</Link></li>
+          {isLoggedIn ? (
+            <li><Link to="/dashboard" className="hover:text-primary hover:underline">Dashboard</Link></li>
+          ) : (
+            <>
+              <li><Link to="/login" className="hover:text-primary hover:underline">Login</Link></li>
+              <li><Link to="/register" className="hover:text-primary hover:underline">Register</Link></li>
+            </>
+          )}
           <li><Link to="/itr/verify" className="hover:text-primary hover:underline">e-Verify</Link></li>
           <li><Link to="/aadhaar/link" className="hover:text-primary hover:underline">Link Aadhaar</Link></li>
           <li><Link to="/refund-status" className="hover:text-primary hover:underline">Refund Status</Link></li>
@@ -108,6 +120,7 @@ const Footer = () => (
 );
 
 export default function App() {
+  const { state } = useStore();
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
   const isLogin = location.pathname === '/login';
@@ -117,9 +130,9 @@ export default function App() {
       <ScrollToTop />
       {!isDashboard && <Loader />}
       
-      {!isDashboard && !isLogin && <Header />}
+      {!isDashboard && !isLogin && <Header isLoggedIn={state.auth.isLoggedIn} userName={state.auth.user?.name} />}
       
-      {!isDashboard && !isLogin && (
+      {location.pathname === '/' && (
         <div className="bg-yellow-100 border-b border-yellow-200 text-center py-2 px-4 text-sm font-medium text-yellow-800">
           Demo Application — Not the Official Income Tax Department Portal. Do not enter real taxpayer information.
         </div>
@@ -160,7 +173,7 @@ export default function App() {
         </Routes>
       </main>
 
-      {!isDashboard && !isLogin && <Footer />}
+      {!isDashboard && !isLogin && <Footer isLoggedIn={state.auth.isLoggedIn} />}
     </div>
   );
 }

@@ -1,27 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useStore, DEMO_USER } from '../store';
+import { useStore } from '../store';
 
 export default function Login() {
   const [pan, setPan] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { updateAuth } = useStore();
+  const { state, loginUser } = useStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (state.auth.isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, [state.auth.isLoggedIn, navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Demo logic: accept any non-empty PAN for the demo, but actually log them in as Rahul
-    if (pan && password) {
-      updateAuth({ isLoggedIn: true, user: DEMO_USER });
+    if (!pan || !password) {
+      setError('Please enter PAN and password.');
+      return;
+    }
+    
+    // PAN Logic: 4th character determines entity
+    const panStr = pan.toUpperCase();
+    if (panStr.length >= 4) {
+      const char4 = panStr.charAt(3);
+      if (char4 === 'C') {
+        loginUser('Company');
+      } else if (char4 === 'F') {
+        loginUser('Firm');
+      } else {
+        loginUser('Individual');
+      }
       navigate('/dashboard');
     } else {
-      setError('Please enter PAN and password.');
+      setError('Invalid PAN format.');
     }
   };
 
-  const handleDemoLogin = () => {
-    updateAuth({ isLoggedIn: true, user: DEMO_USER });
+  const handleDemoLogin = (type) => {
+    loginUser(type);
     navigate('/dashboard');
   };
 
@@ -113,16 +132,28 @@ export default function Login() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Demo Access</span>
+                <span className="px-2 bg-white text-gray-500 font-bold text-primary">Testing Quick Logins</span>
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 space-y-3">
               <button
-                onClick={handleDemoLogin}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-sm shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                onClick={() => { setPan('ABCPS1234K'); setPassword('demo'); handleDemoLogin('Individual'); }}
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-sm shadow-sm bg-white text-sm font-medium hover:bg-gray-50 text-gray-600"
               >
-                <span className="text-primary font-bold">1-Click Demo Login (Rahul Sharma)</span>
+                Login as <span className="font-bold text-primary ml-1">Individual</span> (ABCPS1234K)
+              </button>
+              <button
+                onClick={() => { setPan('AABCT1234F'); setPassword('demo'); handleDemoLogin('Company'); }}
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-sm shadow-sm bg-white text-sm font-medium hover:bg-gray-50 text-gray-600"
+              >
+                Login as <span className="font-bold text-primary ml-1">Company</span> (AABCT1234F)
+              </button>
+              <button
+                onClick={() => { setPan('AAIFS5678L'); setPassword('demo'); handleDemoLogin('Firm'); }}
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-sm shadow-sm bg-white text-sm font-medium hover:bg-gray-50 text-gray-600"
+              >
+                Login as <span className="font-bold text-primary ml-1">Firm</span> (AAIFS5678L)
               </button>
             </div>
           </div>

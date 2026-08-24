@@ -12,51 +12,111 @@ export const DEMO_USER = {
   aadhaar: 'XXXX XXXX 1234',
   aadhaar_linked: true,
   residential_status: 'Resident',
-  employment: 'Salaried'
+  employment: 'Salaried',
+  entity_type: 'Individual'
 };
 
-const defaultState = {
-  auth: {
-    isLoggedIn: false,
-    user: null,
-  },
-  itrDraft: {
+export const DEMO_COMPANY = {
+  name: 'TechInnovate India Pvt Ltd',
+  pan: 'AABCT1234F',
+  dob: '2015-05-12',
+  email: 'tax@techinnovate.in',
+  residential_status: 'Resident',
+  entity_type: 'Company'
+};
+
+export const DEMO_FIRM = {
+  name: 'Sharma & Associates LLP',
+  pan: 'AAIFS5678L',
+  dob: '2018-08-10',
+  email: 'info@sharmaassociates.in',
+  residential_status: 'Resident',
+  entity_type: 'Firm'
+};
+
+const getDraftForType = (type) => {
+  if (type === 'Company') {
+    return {
+      step: 0,
+      assessment_year: '2026-27',
+      filing_status: 'original',
+      itr_type: 'ITR-6',
+      data: {
+        company_name: 'TechInnovate India Pvt Ltd',
+        pan: 'AABCT1234F',
+        business_receipts: '50000000',
+        net_profit: '7500000',
+        stcg: '500000',
+        sec_80g: '100000',
+        advance_tax: '1500000',
+        tds: '0'
+      }
+    };
+  } else if (type === 'Firm') {
+    return {
+      step: 0,
+      assessment_year: '2026-27',
+      filing_status: 'original',
+      itr_type: 'ITR-5',
+      data: {
+        firm_name: 'Sharma & Associates LLP',
+        pan: 'AAIFS5678L',
+        professional_receipts: '15000000',
+        net_profit: '3000000',
+        partner_remuneration: '4000000',
+        advance_tax: '800000',
+        tds: '0'
+      }
+    };
+  }
+  // Default Individual
+  return {
     step: 0,
     assessment_year: '2026-27',
     filing_status: 'original',
     itr_type: 'ITR-1',
     data: {
-      // Step 4: Personal
       first_name: 'Rahul',
       last_name: 'Sharma',
       pan: 'ABCPS1234K',
       dob: '1992-07-15',
-      // Step 5: Salary
       gross_salary: '1250000',
       exempt_allowances: '50000',
-      // Step 6: House Property
       house_property_income: '0',
       home_loan_interest: '150000',
-      // Step 7: Business
       business_income: '0',
-      // Step 8: Capital Gains
       stcg: '0',
       ltcg: '0',
-      // Step 9: Other Sources
       interest_income: '25000',
       dividend_income: '5000',
-      // Step 10: Deductions
       sec_80c: '150000',
       sec_80d: '25000',
       sec_80tta: '10000',
-      // Step 11: Taxes Paid
       tds_salary: '110000',
       tds_other: '2500',
       advance_tax: '0',
       self_assessment_tax: '0'
     }
-  },
-  mockDb: {
+  };
+};
+
+const getDbForType = (type) => {
+  if (type === 'Company') {
+    return {
+      demands: [{ id: 'DMD_COMP_01', ay: '2024-25', amount: 150000, type: 'Regular Assessment', status: 'Pending', dueDate: '2025-12-31' }],
+      grievances: [],
+      payments: [],
+      filedReturns: [{ ay: '2025-26', ack: 'ITR6663726', form: 'ITR-6', status: 'Processed', dateFiled: '2025-08-10' }]
+    };
+  } else if (type === 'Firm') {
+    return {
+      demands: [],
+      grievances: [{ id: 'GRV_FIRM_01', category: 'Processing of ITR', status: 'Pending', date: '2025-10-01' }],
+      payments: [],
+      filedReturns: [{ ay: '2025-26', ack: 'ITR5553726', form: 'ITR-5', status: 'Processed', dateFiled: '2025-07-25' }]
+    };
+  }
+  return {
     demands: [
       { id: 'DMD2024001', ay: '2024-25', amount: 4500, type: 'Regular Assessment', status: 'Pending', dueDate: '2025-12-31' }
     ],
@@ -68,8 +128,18 @@ const defaultState = {
       { ay: '2025-26', ack: 'ITR8837261', form: 'ITR-1', status: 'Processed', dateFiled: '2025-07-20' },
       { ay: '2024-25', ack: 'ITR7748291', form: 'ITR-1', status: 'Refund Issued', dateFiled: '2024-07-15' }
     ]
-  }
+  };
 };
+
+const defaultState = {
+  auth: {
+    isLoggedIn: false,
+    user: null,
+  },
+  itrDraft: getDraftForType('Individual'),
+  mockDb: getDbForType('Individual')
+};
+
 
 const StoreContext = createContext();
 export const useStore = () => useContext(StoreContext);
@@ -128,7 +198,21 @@ export const StoreProvider = ({ children }) => {
     setState(prev => ({
       ...prev,
       mockDb: { ...prev.mockDb, filedReturns: [filedReturn, ...prev.mockDb.filedReturns] },
-      itrDraft: { ...defaultState.itrDraft } // Reset draft
+      itrDraft: getDraftForType(prev.auth.user.entity_type) // Reset draft for current persona
+    }));
+  };
+
+  const loginUser = (type) => {
+    let newUser;
+    if (type === 'Company') newUser = DEMO_COMPANY;
+    else if (type === 'Firm') newUser = DEMO_FIRM;
+    else newUser = DEMO_USER;
+
+    setState(prev => ({
+      ...prev,
+      auth: { ...prev.auth, isLoggedIn: true, user: newUser },
+      itrDraft: getDraftForType(type),
+      mockDb: getDbForType(type)
     }));
   };
 
@@ -144,6 +228,7 @@ export const StoreProvider = ({ children }) => {
       addPayment,
       addGrievance,
       submitItr,
+      loginUser,
       resetState 
     }}>
       {children}

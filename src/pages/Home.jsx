@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../store';
 
 export default function Home() {
-  const { updateState } = useStore();
+  const { state } = useStore();
   const navigate = useNavigate();
   
   const startITR = () => {
@@ -24,12 +24,20 @@ export default function Home() {
             File your Income Tax Return, make tax payments, verify returns and access income-tax services online.
           </p>
           <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
-            <Link to="/login" className="bg-white text-primary px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap rounded-sm">
-              Login
-            </Link>
-            <Link to="/register" className="border-2 border-white text-white bg-transparent px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-white hover:text-primary transition whitespace-nowrap rounded-sm">
-              Register
-            </Link>
+            {state.auth.isLoggedIn ? (
+              <Link to="/dashboard" className="bg-white text-primary px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap rounded-sm">
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="bg-white text-primary px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap rounded-sm">
+                  Login
+                </Link>
+                <Link to="/register" className="border-2 border-white text-white bg-transparent px-8 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-white hover:text-primary transition whitespace-nowrap rounded-sm">
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>

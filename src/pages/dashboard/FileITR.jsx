@@ -2,25 +2,58 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '../../store';
 import { useNavigate, useParams, Navigate } from 'react-router-dom';
 
-const steps = [
-  { id: 'assessment-year', title: 'Assessment Year', type: 'select', field: 'assessment_year', options: ['2026-27', '2025-26'] },
-  { id: 'filing-status', title: 'Filing Status', type: 'select', field: 'filing_status', options: ['Original', 'Revised', 'Belated'] },
-  { id: 'select-form', title: 'ITR Form', type: 'select', field: 'itr_type', options: ['ITR-1', 'ITR-2', 'ITR-3', 'ITR-4'] },
-  { id: 'personal-information', title: 'Personal Information', type: 'form', fields: [['first_name', 'First Name', 'text'], ['last_name', 'Last Name', 'text'], ['pan', 'PAN', 'text'], ['dob', 'Date of Birth', 'date']] },
-  { id: 'salary', title: 'Income from Salary', type: 'form', fields: [['gross_salary', 'Gross Salary', 'number'], ['exempt_allowances', 'Exempt Allowances', 'number']] },
-  { id: 'house-property', title: 'House Property', type: 'form', fields: [['house_property_income', 'Income from House Property', 'number'], ['home_loan_interest', 'Interest on Home Loan', 'number']] },
-  { id: 'business', title: 'Business / Profession', type: 'form', fields: [['business_income', 'Gross Business Income', 'number']] },
-  { id: 'capital-gains', title: 'Capital Gains', type: 'form', fields: [['stcg', 'Short Term Capital Gains', 'number'], ['ltcg', 'Long Term Capital Gains', 'number']] },
-  { id: 'other-sources', title: 'Other Sources', type: 'form', fields: [['interest_income', 'Interest Income', 'number'], ['dividend_income', 'Dividend Income', 'number']] },
-  { id: 'deductions', title: 'Deductions (Chapter VI-A)', type: 'form', fields: [['sec_80c', '80C (LIC, PPF, etc.)', 'number'], ['sec_80d', '80D (Health Insurance)', 'number'], ['sec_80tta', '80TTA (Savings Interest)', 'number']] },
-  { id: 'taxes-paid', title: 'Taxes Paid', type: 'form', fields: [['tds_salary', 'TDS on Salary', 'number'], ['tds_other', 'TDS on Other Income', 'number'], ['advance_tax', 'Advance Tax', 'number'], ['self_assessment_tax', 'Self Assessment Tax', 'number']] },
-  { id: 'computation', title: 'Tax Computation', type: 'custom' },
-  { id: 'preview', title: 'Preview Return', type: 'custom' },
-  { id: 'validation', title: 'Validation', type: 'custom' },
-  { id: 'submit', title: 'Submit ITR', type: 'custom' },
-  { id: 'verify', title: 'e-Verify', type: 'custom' },
-  { id: 'acknowledgement', title: 'Acknowledgement', type: 'custom' }
-];
+const getStepsForPersona = (entityType) => {
+  const commonStart = [
+    { id: 'assessment-year', title: 'Assessment Year', type: 'select', field: 'assessment_year', options: ['2026-27', '2025-26'] },
+    { id: 'filing-status', title: 'Filing Status', type: 'select', field: 'filing_status', options: ['Original', 'Revised', 'Belated'] }
+  ];
+  const commonEnd = [
+    { id: 'computation', title: 'Tax Computation', type: 'custom' },
+    { id: 'preview', title: 'Preview Return', type: 'custom' },
+    { id: 'validation', title: 'Validation', type: 'custom' },
+    { id: 'submit', title: 'Submit ITR', type: 'custom' },
+    { id: 'verify', title: 'e-Verify', type: 'custom' },
+    { id: 'acknowledgement', title: 'Acknowledgement', type: 'custom' }
+  ];
+
+  if (entityType === 'Company') {
+    return [
+      ...commonStart,
+      { id: 'select-form', title: 'ITR Form', type: 'select', field: 'itr_type', options: ['ITR-6', 'ITR-7'] },
+      { id: 'company-info', title: 'Company Information', type: 'form', fields: [['company_name', 'Company Name', 'text'], ['pan', 'PAN', 'text']] },
+      { id: 'business', title: 'Business Receipts', type: 'form', fields: [['business_receipts', 'Gross Business Receipts', 'number'], ['net_profit', 'Net Profit (before tax)', 'number']] },
+      { id: 'capital-gains', title: 'Capital Gains', type: 'form', fields: [['stcg', 'Short Term Capital Gains', 'number']] },
+      { id: 'deductions', title: 'Deductions', type: 'form', fields: [['sec_80g', '80G (Donations)', 'number']] },
+      { id: 'taxes-paid', title: 'Taxes Paid', type: 'form', fields: [['advance_tax', 'Advance Tax', 'number'], ['tds', 'TDS', 'number']] },
+      ...commonEnd
+    ];
+  } else if (entityType === 'Firm') {
+    return [
+      ...commonStart,
+      { id: 'select-form', title: 'ITR Form', type: 'select', field: 'itr_type', options: ['ITR-5'] },
+      { id: 'firm-info', title: 'Firm Information', type: 'form', fields: [['firm_name', 'Firm Name', 'text'], ['pan', 'PAN', 'text']] },
+      { id: 'business', title: 'Professional Receipts', type: 'form', fields: [['professional_receipts', 'Gross Professional Receipts', 'number'], ['net_profit', 'Net Profit (before tax)', 'number']] },
+      { id: 'partners', title: 'Partner Details', type: 'form', fields: [['partner_remuneration', 'Remuneration to Partners', 'number']] },
+      { id: 'taxes-paid', title: 'Taxes Paid', type: 'form', fields: [['advance_tax', 'Advance Tax', 'number'], ['tds', 'TDS', 'number']] },
+      ...commonEnd
+    ];
+  }
+
+  // Default Individual
+  return [
+    ...commonStart,
+    { id: 'select-form', title: 'ITR Form', type: 'select', field: 'itr_type', options: ['ITR-1', 'ITR-2', 'ITR-3', 'ITR-4'] },
+    { id: 'personal-information', title: 'Personal Information', type: 'form', fields: [['first_name', 'First Name', 'text'], ['last_name', 'Last Name', 'text'], ['pan', 'PAN', 'text'], ['dob', 'Date of Birth', 'date']] },
+    { id: 'salary', title: 'Income from Salary', type: 'form', fields: [['gross_salary', 'Gross Salary', 'number'], ['exempt_allowances', 'Exempt Allowances', 'number']] },
+    { id: 'house-property', title: 'House Property', type: 'form', fields: [['house_property_income', 'Income from House Property', 'number'], ['home_loan_interest', 'Interest on Home Loan', 'number']] },
+    { id: 'business', title: 'Business / Profession', type: 'form', fields: [['business_income', 'Gross Business Income', 'number']] },
+    { id: 'capital-gains', title: 'Capital Gains', type: 'form', fields: [['stcg', 'Short Term Capital Gains', 'number'], ['ltcg', 'Long Term Capital Gains', 'number']] },
+    { id: 'other-sources', title: 'Other Sources', type: 'form', fields: [['interest_income', 'Interest Income', 'number'], ['dividend_income', 'Dividend Income', 'number']] },
+    { id: 'deductions', title: 'Deductions (Chapter VI-A)', type: 'form', fields: [['sec_80c', '80C (LIC, PPF, etc.)', 'number'], ['sec_80d', '80D (Health Insurance)', 'number'], ['sec_80tta', '80TTA (Savings Interest)', 'number']] },
+    { id: 'taxes-paid', title: 'Taxes Paid', type: 'form', fields: [['tds_salary', 'TDS on Salary', 'number'], ['tds_other', 'TDS on Other Income', 'number'], ['advance_tax', 'Advance Tax', 'number'], ['self_assessment_tax', 'Self Assessment Tax', 'number']] },
+    ...commonEnd
+  ];
+};
 
 export default function FileITR() {
   const { state, updateItrDraft, updateItrData, submitItr } = useStore();
@@ -34,6 +67,8 @@ export default function FileITR() {
   }
 
   const draft = state.itrDraft;
+  const entityType = state.auth.user.entity_type;
+  const steps = getStepsForPersona(entityType);
   const currentStepIndex = Math.max(0, steps.findIndex(s => s.id === stepId));
   const currentStep = steps[currentStepIndex];
 
@@ -60,7 +95,33 @@ export default function FileITR() {
   const calculateTaxes = () => {
     const d = draft.data;
     const num = (val) => Number(val) || 0;
+    const entityType = state.auth.user.entity_type;
     
+    if (entityType === 'Company') {
+      const grossTotalIncome = num(d.net_profit) + num(d.stcg);
+      const totalDeductions = num(d.sec_80g);
+      const totalTaxableIncome = Math.max(0, grossTotalIncome - totalDeductions);
+      const tax = totalTaxableIncome * 0.25; // 25% corporate tax demo
+      const cess = tax * 0.04;
+      const totalTaxLiability = tax + cess;
+      const totalTaxesPaid = num(d.tds) + num(d.advance_tax);
+      const balance = totalTaxLiability - totalTaxesPaid;
+      return { grossTotalIncome, totalDeductions, totalTaxableIncome, totalTaxLiability, totalTaxesPaid, balance };
+    }
+    
+    if (entityType === 'Firm') {
+      const grossTotalIncome = num(d.net_profit); // Remuneration handled in net profit for demo
+      const totalDeductions = 0;
+      const totalTaxableIncome = Math.max(0, grossTotalIncome - totalDeductions);
+      const tax = totalTaxableIncome * 0.30; // 30% firm tax demo
+      const cess = tax * 0.04;
+      const totalTaxLiability = tax + cess;
+      const totalTaxesPaid = num(d.tds) + num(d.advance_tax);
+      const balance = totalTaxLiability - totalTaxesPaid;
+      return { grossTotalIncome, totalDeductions, totalTaxableIncome, totalTaxLiability, totalTaxesPaid, balance };
+    }
+
+    // Individual
     const salaryIncome = Math.max(0, num(d.gross_salary) - num(d.exempt_allowances) - 50000); // Std deduction 50k
     const houseIncome = num(d.house_property_income) - Math.min(200000, num(d.home_loan_interest));
     const businessIncome = num(d.business_income);
@@ -195,7 +256,7 @@ export default function FileITR() {
             <div className="space-y-4 text-sm">
               <p className="font-bold">Review your filled details:</p>
               <div className="grid grid-cols-2 gap-4 border p-4 rounded">
-                <div><span className="text-gray-500 block">Name</span><span className="font-bold">{draft.data.first_name} {draft.data.last_name}</span></div>
+                <div><span className="text-gray-500 block">Name</span><span className="font-bold">{draft.data.company_name || draft.data.firm_name || `${draft.data.first_name} ${draft.data.last_name}`}</span></div>
                 <div><span className="text-gray-500 block">PAN</span><span className="font-bold uppercase">{draft.data.pan}</span></div>
                 <div><span className="text-gray-500 block">Assessment Year</span><span className="font-bold">{draft.assessment_year}</span></div>
                 <div><span className="text-gray-500 block">Form</span><span className="font-bold">{draft.itr_type}</span></div>
