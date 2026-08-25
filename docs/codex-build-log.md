@@ -14,19 +14,19 @@ Codex inspected the route tree, state management, dashboard pages, filing logic,
 
 ### Product framing
 
-Codex mapped the official Build What Moves India judging criteria to a narrower product: one complete pre-filing readiness journey for a fictional first-time salaried citizen. With the builder, it evaluated proposed features and kept the trustworthy homepage, guided tax journey, personalised questions, embedded visual concepts, evidence reconciliation, Tax Health, and a scoped visual regime comparison. Notice simplification and “Where does my tax go?” were deliberately deferred to keep the MVP simple and fully working.
+Codex mapped the official Build What Moves India judging criteria to a narrow readiness product. The first iteration delivered one complete path for a fictional salaried citizen. Stakeholder feedback then identified that the route tree, fixtures, state and copy assumed one taxpayer type. Codex helped design a feedback-driven expansion to three bounded synthetic examples—individual, domestic private company, and firm/LLP—while preserving the same five-step interaction and one obvious action per screen. Notice simplification, “Where does my tax go?”, broad non-company coverage and entity tax calculators remain deliberately deferred.
 
 ### Research and safety
 
-Codex checked the official Builder Brief and FAQ, the Income Tax Department’s AIS FAQ, salaried-individual form guidance, tax estimator material, and FY/AY versus Tax Year guidance. It translated those sources into explicit boundaries: independent branding, synthetic data only, no live government integration, no filing/payment claims, dated assumptions, reasoned recommendations, and escalation for unsupported cases.
+Codex checked the official Builder Brief and FAQ, the Income Tax Department’s AIS FAQ, salaried-individual, domestic-company, partnership firm/LLP and other non-company form guidance, tax estimator material, and FY/AY versus Tax Year guidance. It translated those sources into explicit boundaries: independent branding, synthetic data only, no live government integration, no filing/payment claims, dated assumptions, reasoned recommendations, bounded entity examples, no guessed entity tax, and escalation for unsupported cases.
 
 ### Engineering
 
-Codex helped restructure the application around a small route surface and accessible application shell; separate deterministic fixtures and domain rules from React; implement reconciliation, recommendation, calculation, and readiness behaviour; add error/404 states and versioned demo persistence; and remove irrelevant portal breadth and loading effects.
+Codex helped restructure the application around a small route surface and accessible application shell; separate deterministic fixtures and domain rules from React; implement reconciliation, recommendation, calculation, and readiness behaviour; add error/404 states and versioned demo persistence; and remove irrelevant portal breadth and loading effects. For the feedback iteration, it designed a profile registry, profile-aware canonical routes with legacy individual compatibility, version-2 isolated local state, profile-specific evidence/questions/reports, and an intentional no-estimate state for organisation journeys.
 
 ### Testing and QA
 
-Codex added lint/test tooling and designed checks for reconciliation, unsupported cases, tax boundaries and rounding, storage, routes, and the end-to-end Rahul path. It also reviewed keyboard flow, focus, status semantics, narrow screens, 200% zoom, print, reset/resume, offline behaviour, and console errors.
+Codex added lint/test tooling and checks for reconciliation, unsupported cases, tax boundaries and rounding, storage, routes, all three end-to-end paths, profile isolation, v1 migration, legacy routes, no cross-profile copy leakage, entity no-estimate behaviour, and per-profile reset.
 
 ### Submission work
 
@@ -38,7 +38,7 @@ The builder set the simplicity rule, required a familiar low-friction experience
 
 ## Verification record
 
-This records current local evidence. Repeat every applicable check from the final committed SHA and update any changed result before submission.
+This records both the historical baseline and the integrated three-journey local evidence. Public-deployment evidence must still be added before submission.
 
 | Check | Result | Date/time (IST) |
 | --- | --- | --- |
@@ -51,6 +51,12 @@ This records current local evidence. Repeat every applicable check from the fina
 | Independent keyboard and 200% zoom re-check | Pending final deployed run | — |
 | Public signed-out link | Pending deployment | — |
 | Exact two-minute path | Pending recording | — |
+| Integrated lint | Pass | 25 Aug 2026 |
+| Integrated `npm run test:run` | Pass — 9 files, 56 tests | 25 Aug 2026 |
+| Integrated production build and `git diff --check` | Pass | 25 Aug 2026 |
+| Integrated `npm audit --audit-level=high` | Pass — 0 known vulnerabilities | 25 Aug 2026 |
+| Integrated selector/company/firm-LLP browser matrix | Pass — 390/768/1440 px, no overflow, 46 px selector actions, no captured warnings/errors | 25 Aug 2026 |
+| Profile isolation, v1 migration and legacy routes | Pass — automated suite | 25 Aug 2026 |
 
 ## Traceability
 

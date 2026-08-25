@@ -13,7 +13,7 @@ describe('filing recommendation', () => {
     ['capital gains', { capitalGains: true }],
     ['business income', { businessOrProfessionalIncome: true }],
     ['foreign assets', { foreignAssetsOrIncome: true }],
-    ['multiple houses', { houseProperties: 2 }],
+    ['more than two houses', { houseProperties: 3 }],
     ['income above ₹50 lakh', { totalIncomeAbove50Lakh: true }],
   ])('sends %s for professional review', (_label, override) => {
     const result = recommendFilingRoute({ ...DEMO_PERSONA.filingAnswers, ...override });
@@ -24,6 +24,11 @@ describe('filing recommendation', () => {
     const result = recommendFilingRoute({ residentialStatus: 'resident' });
     expect(result.kind).toBe(RECOMMENDATION.INSUFFICIENT_INFORMATION);
     expect(result.missing).toContain('capitalGains');
+  });
+
+  it('keeps two house properties within the AY 2026–27 ITR-1 screen', () => {
+    const result = recommendFilingRoute({ ...DEMO_PERSONA.filingAnswers, houseProperties: 2 });
+    expect(result.kind).toBe(RECOMMENDATION.ITR1_CANDIDATE);
   });
 
   it.each([

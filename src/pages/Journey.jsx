@@ -179,7 +179,7 @@ function CompareStep({ items, setResolution, next }) {
         </div>
       )}
       <div className="step-actions">
-        <Link className="button button-secondary" to="/demo/documents">Back</Link>
+        <Link className="button button-secondary" to="/demo/individual/documents">Back</Link>
         <button className="button button-primary" type="button" onClick={next}>
           {unresolved.length ? 'I’m not sure — continue with items to check' : 'Continue with these answers'}
         </button>
@@ -192,9 +192,9 @@ function CompareStep({ items, setResolution, next }) {
 function QuestionControl({ question, value, hasResponse, setAnswer }) {
   if (question.type === 'number') {
     return (
-      <div className="segmented segmented-4" aria-label="Choose the number of properties">
-        {[0, 1, 2].map((count) => (
-          <label key={count}><input type="radio" name={question.id} checked={value === count} onChange={() => setAnswer(question.id, count)} />{count === 2 ? '2+' : count}</label>
+      <div className="segmented segmented-5" aria-label="Choose the number of properties">
+        {[0, 1, 2, 3].map((count) => (
+          <label key={count}><input type="radio" name={question.id} checked={value === count} onChange={() => setAnswer(question.id, count)} />{count === 3 ? '3+' : count}</label>
         ))}
         <label><input type="radio" name={question.id} checked={hasResponse && value === null} onChange={() => setAnswer(question.id, null)} />Not sure</label>
       </div>
@@ -241,7 +241,7 @@ function QuestionsStep({ demo, setAnswer, next }) {
       </div>
       {answered < QUESTIONS.length && <div className="notice notice-warning">Answer each question—even if the answer is “Not sure”—to see Rahul’s result.</div>}
       <div className="step-actions">
-        <Link className="button button-secondary" to="/demo/compare">Back to records</Link>
+        <Link className="button button-secondary" to="/demo/individual/compare">Back to records</Link>
         <button className="button button-primary" type="button" disabled={answered < QUESTIONS.length} onClick={next}>Show Rahul’s result</button>
       </div>
     </section>
@@ -307,7 +307,7 @@ function ResultStep({ recommendation, taxComparison, next }) {
         )}
         {!candidate && !incomplete && <div className="notice notice-warning">The comparison stops for complex income instead of offering false precision.</div>}
         <div className="step-actions">
-          <Link className="button button-secondary" to="/demo/questions">Back</Link>
+          <Link className="button button-secondary" to="/demo/individual/questions">Back</Link>
           <button className="button button-primary" type="button" onClick={next}>{incomplete ? 'Create needs-attention report' : 'Create readiness report'}</button>
         </div>
         <AssistantPanel context="result" />
@@ -369,9 +369,10 @@ export default function Journey() {
   const { stepId } = useParams();
   const navigate = useNavigate();
   const headingRef = useRef(null);
-  const { demo, startDemo, setResolution, setAnswer, resetDemo } = useApp();
+  const { demo: appState, startDemo, setResolution, setAnswer, resetDemo } = useApp();
+  const demo = appState.journeys?.individual;
   const stepIndex = JOURNEY_STEPS.findIndex((step) => step.id === stepId);
-  const copy = COPY[demo.language];
+  const copy = COPY[appState.language];
 
   const reconciliation = useMemo(() => buildReconciliation(demo.resolutions), [demo.resolutions]);
   const answers = useMemo(() => normalizedAnswers(demo.answers), [demo.answers]);
@@ -381,16 +382,16 @@ export default function Journey() {
   const issuesResolved = getUnresolvedItems(reconciliation).length === 0;
   const questionsAnswered = QUESTIONS.every((question) => Object.prototype.hasOwnProperty.call(demo.answers, question.id));
   const progressBase = questionsAnswered ? 3 : issuesResolved ? 2 : demo.started ? 1 : 0;
-  const completedThrough = Math.max(progressBase, stepIndex);
+  const completedThrough = stepId === 'report' ? 4 : progressBase;
 
   useEffect(() => {
     headingRef.current?.focus();
   }, [stepId, stepIndex]);
 
-  if (stepIndex < 0) return <Navigate to="/demo/documents" replace />;
-  if (stepId !== 'documents' && !demo.started) return <Navigate to="/demo/documents" replace />;
-  if (['result', 'report'].includes(stepId) && !questionsAnswered) return <Navigate to="/demo/questions" replace />;
-  const next = () => navigate(`/demo/${JOURNEY_STEPS[Math.min(stepIndex + 1, JOURNEY_STEPS.length - 1)].id}`);
+  if (stepIndex < 0) return <Navigate to="/demo/individual/documents" replace />;
+  if (stepId !== 'documents' && !demo.started) return <Navigate to="/demo/individual/documents" replace />;
+  if (['result', 'report'].includes(stepId) && !questionsAnswered) return <Navigate to="/demo/individual/questions" replace />;
+  const next = () => navigate(`/demo/individual/${JOURNEY_STEPS[Math.min(stepIndex + 1, JOURNEY_STEPS.length - 1)].id}`);
 
   return (
     <>
@@ -398,17 +399,17 @@ export default function Journey() {
         <p className="eyebrow">Rahul’s fictional tax journey</p>
         <h1 tabIndex="-1" ref={headingRef}>Am I ready to file?</h1>
         <p className="muted">Step {stepIndex + 1} of {JOURNEY_STEPS.length} · one familiar path, no service maze</p>
-        <button className="topic-button no-print" type="button" onClick={() => { resetDemo(); navigate('/'); }}>{copy.reset}</button>
+        <div className="journey-utilities no-print"><Link className="topic-button" to="/demo">Change sample</Link><button className="topic-button" type="button" onClick={() => { resetDemo('individual'); navigate('/demo/individual/documents'); }}>{copy.reset}</button></div>
         <span className="sr-only" aria-live="polite">Step {stepIndex + 1} of {JOURNEY_STEPS.length}: {JOURNEY_STEPS[stepIndex]?.label || ''}</span>
       </div>
       <div className="container journey-layout">
-        <StepNav currentStep={stepId} completedThrough={completedThrough} />
+        <StepNav currentStep={stepId} completedThrough={completedThrough} basePath="/demo/individual" />
         <div>
-          {stepId === 'documents' && <DocumentsStep next={next} startDemo={startDemo} />}
-          {stepId === 'compare' && <CompareStep items={reconciliation} setResolution={setResolution} next={next} />}
-          {stepId === 'questions' && <QuestionsStep demo={demo} setAnswer={setAnswer} next={next} />}
+          {stepId === 'documents' && <DocumentsStep next={next} startDemo={() => startDemo('individual')} />}
+          {stepId === 'compare' && <CompareStep items={reconciliation} setResolution={(id, value) => setResolution('individual', id, value)} next={next} />}
+          {stepId === 'questions' && <QuestionsStep demo={demo} setAnswer={(id, value) => setAnswer('individual', id, value)} next={next} />}
           {stepId === 'result' && <ResultStep recommendation={recommendation} taxComparison={taxComparison} next={next} />}
-          {stepId === 'report' && <ReportStep report={report} resetDemo={resetDemo} />}
+          {stepId === 'report' && <ReportStep report={report} resetDemo={() => resetDemo('individual')} />}
         </div>
       </div>
     </>

@@ -25,11 +25,11 @@ export default function AppShell({ children }) {
           <select
             className="mobile-nav"
             aria-label="Go to a page"
-            value={location.pathname.startsWith('/demo') ? '/demo/documents' : location.pathname}
+            value={location.pathname.startsWith('/demo') ? '/demo' : location.pathname}
             onChange={(event) => navigate(event.target.value)}
           >
             <option value="/">{copy.home}</option>
-            <option value="/demo/documents">Guided demo</option>
+            <option value="/demo">Sample journeys</option>
             <option value="/methodology">{copy.how}</option>
             <option value="/privacy">{copy.privacy}</option>
           </select>

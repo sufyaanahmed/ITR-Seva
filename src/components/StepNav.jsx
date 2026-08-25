@@ -8,21 +8,21 @@ export const JOURNEY_STEPS = [
   { id: 'report', label: 'Readiness report' },
 ];
 
-export default function StepNav({ currentStep, completedThrough }) {
-  const currentIndex = JOURNEY_STEPS.findIndex((step) => step.id === currentStep);
+export default function StepNav({ currentStep, completedThrough, basePath = '/demo/individual', steps = JOURNEY_STEPS }) {
+  const currentIndex = steps.findIndex((step) => step.id === currentStep);
   return (
     <nav className="step-nav" aria-label="Demo progress">
       <div className="step-progress-mobile" aria-hidden="true">
         <div className="step-progress-copy">
-          <span>Step {currentIndex + 1} of {JOURNEY_STEPS.length}</span>
-          <strong>{JOURNEY_STEPS[currentIndex]?.label}</strong>
+          <span>Step {currentIndex + 1} of {steps.length}</span>
+          <strong>{steps[currentIndex]?.label}</strong>
         </div>
         <div className="step-progress-track">
-          <span style={{ width: `${((currentIndex + 1) / JOURNEY_STEPS.length) * 100}%` }} />
+          <span style={{ width: `${((currentIndex + 1) / steps.length) * 100}%` }} />
         </div>
       </div>
       <ol>
-        {JOURNEY_STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const contents = (
             <>
               <span className="step-index">{index < completedThrough ? '✓' : index + 1}</span>
@@ -33,7 +33,7 @@ export default function StepNav({ currentStep, completedThrough }) {
             <li key={step.id}>
               {index <= completedThrough || index === currentIndex ? (
                 <Link
-                  to={`/demo/${step.id}`}
+                  to={`${basePath}/${step.id}`}
                   aria-current={index === currentIndex ? 'step' : undefined}
                   data-complete={index < completedThrough}
                 >

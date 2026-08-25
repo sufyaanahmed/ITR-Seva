@@ -20,7 +20,8 @@ describe('KarSaathi citizen journey', () => {
   it('takes Rahul from fictional records to a readiness report', async () => {
     renderApp('/');
 
-    fireEvent.click(screen.getByRole('link', { name: /start guided demo/i }));
+    fireEvent.click(screen.getByRole('link', { name: /choose a sample journey/i }));
+    fireEvent.click(screen.getByRole('link', { name: /explore individual/i }));
     expect(await screen.findByRole('heading', { name: /rahul has four fictional records/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /compare these records/i }));
@@ -49,7 +50,8 @@ describe('KarSaathi citizen journey', () => {
 
   it('turns uncertain answers into a needs-attention report without guessing', async () => {
     renderApp('/');
-    fireEvent.click(screen.getByRole('link', { name: /start guided demo/i }));
+    fireEvent.click(screen.getByRole('link', { name: /choose a sample journey/i }));
+    fireEvent.click(screen.getByRole('link', { name: /explore individual/i }));
     fireEvent.click(await screen.findByRole('button', { name: /compare these records/i }));
     fireEvent.click(screen.getByRole('button', { name: /not sure.*continue/i }));
 
@@ -74,6 +76,6 @@ describe('KarSaathi citizen journey', () => {
       started: 'yes',
     }));
     renderApp('/');
-    expect(screen.getByRole('heading', { name: /get ready to file/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /find the right tax path/i })).toBeInTheDocument();
   });
 });
