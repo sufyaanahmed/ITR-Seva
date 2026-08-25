@@ -1,147 +1,146 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useStore } from '../store';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
-  const { updateState } = useStore();
-  const navigate = useNavigate();
-  
-  const startApp = (type) => {
-    updateState({ type, step: 0, data: { application_type: type, visa_category: 'tourist' }, docs: [], submitted: false });
-    navigate('/apply');
-  };
-
   return (
-    <div className="w-full">
-      <section className="relative overflow-hidden flex flex-col justify-center max-w-[990px] mx-auto mt-8 mb-8 rounded-lg min-h-[700px] bg-[#0b2540] text-left">
-        {/* Full-bleed background image */}
-        <img src="/side1.png" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full min-h-[700px] object-cover object-center" />
-        
-        {/* Gradient overlays matching exact specifications */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0b2540]/95 via-[#0b2540]/60 to-[#0b2540]/60 md:from-[#0b2540]/97 md:via-[#0b2540]/86 md:to-transparent"></div>
-        
-        {/* Content Container */}
-        <div className="relative z-10 w-full max-w-[640px] px-6 py-8 md:px-[4.5rem] md:py-[4.5rem] mx-0">
-          <p className="font-sans font-bold text-[0.74rem] uppercase tracking-[0.13em] mb-[0.35rem]" style={{ color: '#f0cc91' }}>
-            Atithi Devo Bhava <span lang="hi" className="block normal-case tracking-normal text-[1.05rem] mt-1">अतिथि देवो भवः</span>
+    <div className="w-full bg-surface relative overflow-hidden">
+      
+      {/* Background Kalamkari texture overlay */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] pattern-kalamkari z-0"></div>
+
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex flex-col justify-center items-center text-center px-6 border-b border-border-dark pattern-jali">
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none"></div>
+        <div className="max-w-4xl z-20 relative pt-12">
+          <p className="uppercase tracking-[0.3em] text-secondary-accent font-sans font-bold text-[0.85rem] mb-6">
+            Government of India
           </p>
-          <h1 className="text-[clamp(2.8rem,5vw,5rem)] font-serif font-bold text-white mb-6 leading-[1.1] max-w-[11ch]">
-            India Welcomes You.
+          <h1 className="text-6xl md:text-8xl font-serif font-bold text-primary mb-6 leading-tight">
+            India is a Journey.
           </h1>
-          <p className="font-serif text-[1.22rem] leading-[1.45] mb-10 max-w-[30rem]" style={{ color: '#f1ede5' }}>
-            Bharat Visa Portal helps visitors understand and complete the visa application process.
+          <p className="text-xl md:text-3xl font-serif text-text-secondary italic mb-12 max-w-3xl mx-auto leading-relaxed">
+            Your visa is the beginning.
           </p>
-          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-[0.75rem]">
-            <a href="#visa-services" className="bg-white text-[#0b2540] px-6 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-gray-100 transition whitespace-nowrap">
-              Apply for a Visa
-            </a>
-            <Link to="/status" className="border border-white text-white bg-transparent px-6 py-3 min-h-[50px] font-bold text-center flex items-center justify-center hover:bg-white hover:text-[#0b2540] transition whitespace-nowrap">
-              Check Application Status
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-8">
+            <Link to="/guide/visa-finder" className="btn-mughal group">
+              <span className="inner-border"></span>
+              <span className="relative z-10 flex items-center gap-2">Start Application <span className="text-secondary-accent transform group-hover:translate-x-1 transition-transform">&rarr;</span></span>
             </Link>
-            <Link to="/resume" className="text-white text-[0.93rem] font-extrabold hover:underline text-center md:text-left mt-3 md:mt-0 whitespace-nowrap flex items-center justify-center md:justify-start min-h-[50px]">
-              Continue My Application &rarr;
+            <Link to="/status" className="bg-transparent border border-primary text-primary px-10 py-5 font-sans font-medium uppercase tracking-widest text-sm hover:bg-primary hover:text-white transition-all duration-300 relative">
+              Check Status
             </Link>
           </div>
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-16">
+      {/* The Journey Section */}
+      <section className="relative max-w-6xl mx-auto py-24 px-6 z-10">
+        
+        {/* Central Journey Line */}
+        <div className="absolute left-[20px] sm:left-1/2 top-0 bottom-0 w-[2px] bg-border-dark sm:-translate-x-1/2 z-0"></div>
 
-      <section>
-        <p className="text-sm font-bold uppercase text-text-secondary tracking-wider mb-2">Start here</p>
-        <h2 className="text-3xl font-serif font-bold mb-8">How can we help?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="border border-border p-6 rounded bg-white shadow-sm flex flex-col">
-            <h3 className="font-bold text-lg mb-2">Apply for a Visa</h3>
-            <p className="text-text-secondary mb-4 flex-1">Choose the visa type you need.</p>
-            <a href="#visa-services" className="text-primary font-bold hover:underline">View visa options &rarr;</a>
-          </div>
-          <div className="border border-border p-6 rounded bg-white shadow-sm flex flex-col">
-            <h3 className="font-bold text-lg mb-2">Continue My Application</h3>
-            <p className="text-text-secondary mb-4 flex-1">Continue an application you previously saved.</p>
-            <Link to="/resume" className="text-primary font-bold hover:underline">Continue application &rarr;</Link>
-          </div>
-          <div className="border border-border p-6 rounded bg-white shadow-sm flex flex-col">
-            <h3 className="font-bold text-lg mb-2">Check Application Status</h3>
-            <p className="text-text-secondary mb-4 flex-1">Check the progress of an existing application.</p>
-            <Link to="/status" className="text-primary font-bold hover:underline">Check status &rarr;</Link>
-          </div>
-          <div className="border border-border p-6 rounded bg-white shadow-sm flex flex-col">
-            <h3 className="font-bold text-lg mb-2">Get Help</h3>
-            <p className="text-text-secondary mb-4 flex-1">Find guidance about visas, documents, applications, and common questions.</p>
-            <Link to="/help" className="text-primary font-bold hover:underline">Get help &rarr;</Link>
-          </div>
-        </div>
-      </section>
-
-      <section id="visa-services" className="pt-8 scroll-mt-24">
-        <p className="text-sm font-bold uppercase text-text-secondary tracking-wider mb-2">Visa information</p>
-        <h2 className="text-3xl font-serif font-bold mb-8">Visa Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link to="/flow/regular" className="border border-border p-6 rounded bg-white shadow-sm hover:border-primary transition group flex flex-col min-h-[200px]">
-            <h3 className="font-bold text-xl mb-2 flex justify-between items-center group-hover:text-primary transition-colors">
-              Regular / Paper Visa <span className="opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
-            </h3>
-            <p className="text-text-secondary">For applicants who need a regular or paper visa through an Indian Mission or Post.</p>
-          </Link>
-          <Link to="/flow/normal" className="border border-border p-6 rounded bg-white shadow-sm hover:border-primary transition group flex flex-col min-h-[200px]">
-            <h3 className="font-bold text-xl mb-2 flex justify-between items-center group-hover:text-primary transition-colors">
-              e-Visa <span className="opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
-            </h3>
-            <p className="text-text-secondary">For eligible travelers applying for an electronic visa by the Bureau of Immigration.</p>
-          </Link>
-          <Link to="/flow/voa" className="border border-border p-6 rounded bg-white shadow-sm hover:border-primary transition group flex flex-col min-h-[200px]">
-            <div className="flex gap-2 mb-4">
-              <img src="https://flagcdn.com/jp.svg" alt="Japan Flag" className="h-6 rounded-sm border border-gray-200" />
-              <img src="https://flagcdn.com/kr.svg" alt="South Korea Flag" className="h-6 rounded-sm border border-gray-200" />
-              <img src="https://flagcdn.com/ae.svg" alt="UAE Flag" className="h-6 rounded-sm border border-gray-200" />
+        {/* Stop 1: The Himalayas (North) */}
+        <div className="relative flex flex-col md:flex-row items-center justify-between mb-32 gap-12 group">
+          <div className="md:w-1/2 md:text-right md:pr-16 relative">
+            <h2 className="text-4xl font-serif font-bold text-primary mb-4">The Himalayas</h2>
+            <p className="text-text-secondary font-sans leading-relaxed mb-6">Discover the roof of the world, where ancient monasteries cling to snow-draped peaks and the air holds the chill of eternal history.</p>
+            <div className="inline-block border-mughal p-4 bg-white shadow-sm">
+              <h3 className="font-sans font-bold text-sm uppercase tracking-wider text-secondary-accent mb-2">Popular Visa</h3>
+              <p className="font-serif text-lg text-primary">e-Tourist Visa (30 Days)</p>
             </div>
-            <h3 className="font-bold text-xl mb-2 flex justify-between items-center group-hover:text-primary transition-colors">
-              Visa on Arrival <span className="opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
-            </h3>
-            <p className="text-text-secondary">For nationals of Japan, South Korea, and UAE (only UAE nationals with prior e-Visa/regular visa). Available at selected airports.</p>
-          </Link>
-          <Link to="/flow/afghan" className="border border-border p-6 rounded bg-white shadow-sm hover:border-primary transition group flex flex-col min-h-[200px]">
-            <div className="flex gap-2 mb-4">
-              <img src="https://flagcdn.com/af.svg" alt="Afghanistan Flag" className="h-6 rounded-sm border border-gray-200" />
+          </div>
+          
+          {/* Journey Node */}
+          <div className="absolute left-[20px] md:left-1/2 transform md:-translate-x-1/2 w-6 h-6 rounded-full bg-secondary-accent border-4 border-surface z-10 shadow-md"></div>
+          
+          <div className="md:w-1/2 md:pl-16 relative">
+            <div className="relative w-full max-w-sm aspect-[4/5] mx-auto md:mx-0 overflow-hidden border-mughal p-2 bg-white">
+              <img src="/Places/Kashmir.jpg" alt="Kashmir" className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700" />
             </div>
-            <h3 className="font-bold text-xl mb-2 flex justify-between items-center group-hover:text-primary transition-colors">
-              Visa for Afghan National <span className="opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
-            </h3>
-            <p className="text-text-secondary">Visa applications specifically for Afghanistan Nationals.</p>
-          </Link>
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-3xl font-serif font-bold mb-8">Before you apply</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="border border-border p-6 rounded bg-white">
-            <h3 className="font-bold mb-2">Passport</h3>
-            <p className="text-sm text-text-secondary">You need a valid passport or other accepted international travel document for travel to India.</p>
-          </div>
-          <div className="border border-border p-6 rounded bg-white">
-            <h3 className="font-bold mb-2">Visa</h3>
-            <p className="text-sm text-text-secondary">Most foreign visitors need a valid Indian visa before travel.</p>
-          </div>
-          <div className="border border-border p-6 rounded bg-white">
-            <h3 className="font-bold mb-2">e-Visa</h3>
-            <p className="text-sm text-text-secondary">e-Visa is available only for eligible travelers and visa categories.</p>
-          </div>
-          <div className="border border-border p-6 rounded bg-white">
-            <h3 className="font-bold mb-2">Arrival information</h3>
-            <p className="text-sm text-text-secondary">An arrival form is different from a visa application. It does not replace a visa.</p>
           </div>
         </div>
+
+        {/* Stop 2: The Heartlands (Central) */}
+        <div className="relative flex flex-col md:flex-row-reverse items-center justify-between mb-32 gap-12 group">
+          <div className="md:w-1/2 md:text-left md:pl-16 relative">
+            <h2 className="text-4xl font-serif font-bold text-primary mb-4">The Heartlands</h2>
+            <p className="text-text-secondary font-sans leading-relaxed mb-6">Journey through the architectural marvels of empires past, where marble monuments stand as testaments to undying love and power.</p>
+            <div className="inline-block border-mughal p-4 bg-white shadow-sm">
+              <h3 className="font-sans font-bold text-sm uppercase tracking-wider text-accent-peacock mb-2">Business Gateway</h3>
+              <p className="font-serif text-lg text-primary">e-Business Visa</p>
+            </div>
+          </div>
+          
+          <div className="absolute left-[20px] md:left-1/2 transform md:-translate-x-1/2 w-6 h-6 rounded-full bg-accent-peacock border-4 border-surface z-10 shadow-md"></div>
+          
+          <div className="md:w-1/2 md:pr-16 relative flex justify-end">
+            <div className="relative w-full max-w-sm aspect-[4/5] mx-auto md:mx-0 overflow-hidden border-mughal p-2 bg-white">
+              <img src="/Places/Taj_Mahal.jpg" alt="Taj Mahal" className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700" />
+            </div>
+          </div>
+        </div>
+
+        {/* Stop 3: The Coast (South) */}
+        <div className="relative flex flex-col md:flex-row items-center justify-between gap-12 group">
+          <div className="md:w-1/2 md:text-right md:pr-16 relative">
+            <h2 className="text-4xl font-serif font-bold text-primary mb-4">The Coast</h2>
+            <p className="text-text-secondary font-sans leading-relaxed mb-6">Drift through emerald backwaters under ancient palms, where time slows down to the rhythmic sway of the ocean tide.</p>
+            <div className="inline-block border-mughal p-4 bg-white shadow-sm">
+              <h3 className="font-sans font-bold text-sm uppercase tracking-wider text-accent-green mb-2">Wellness Retreat</h3>
+              <p className="font-serif text-lg text-primary">e-Medical Visa</p>
+            </div>
+          </div>
+          
+          <div className="absolute left-[20px] md:left-1/2 transform md:-translate-x-1/2 w-6 h-6 rounded-full bg-accent-green border-4 border-surface z-10 shadow-md"></div>
+          
+          <div className="md:w-1/2 md:pl-16 relative">
+            <div className="relative w-full max-w-sm aspect-[4/5] mx-auto md:mx-0 overflow-hidden border-mughal p-2 bg-white">
+              <img src="/Places/Kerala.jpg" alt="Kerala Backwaters" className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700" />
+            </div>
+          </div>
+        </div>
+
       </section>
 
-      <section>
-        <div className="bg-yellow-50 border-l-4 border-secondary p-6">
-          <h2 className="text-xl font-bold mb-2 text-yellow-900">Use care when applying online</h2>
-          <p className="text-yellow-800">Be careful with unauthorized visa agents and unofficial websites. Bharat Visa Portal is the only official channel to process your Indian Visa application. Only provide your details on the official domains.</p>
+      {/* Services Section */}
+      <section className="bg-white border-t border-border-dark py-24 relative z-10">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-serif font-bold text-primary mb-4">Essential Services</h2>
+            <div className="w-16 h-1 bg-secondary-accent mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="card-heritage text-center flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center mb-6 bg-surface">
+                <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="square" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              </div>
+              <h3 className="text-xl font-serif font-bold text-primary mb-3">Visa Finder</h3>
+              <p className="text-text-secondary font-sans text-sm mb-6 flex-1">Answer a few questions to determine the exact visa category required for your journey.</p>
+              <Link to="/guide/visa-finder" className="text-secondary-accent font-sans font-bold uppercase tracking-wider text-sm hover:text-primary transition-colors">Start Guide &rarr;</Link>
+            </div>
+            
+            <div className="card-heritage text-center flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center mb-6 bg-surface">
+                <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="square" strokeWidth="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+              </div>
+              <h3 className="text-xl font-serif font-bold text-primary mb-3">e-Visa Application</h3>
+              <p className="text-text-secondary font-sans text-sm mb-6 flex-1">Apply online, upload your documents, and receive your Electronic Travel Authorization.</p>
+              <Link to="/apply" className="text-secondary-accent font-sans font-bold uppercase tracking-wider text-sm hover:text-primary transition-colors">Apply Now &rarr;</Link>
+            </div>
+            
+            <div className="card-heritage text-center flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center mb-6 bg-surface">
+                <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="square" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <h3 className="text-xl font-serif font-bold text-primary mb-3">Check Status</h3>
+              <p className="text-text-secondary font-sans text-sm mb-6 flex-1">Track your application, download your visa, or complete your arrival information.</p>
+              <Link to="/status" className="text-secondary-accent font-sans font-bold uppercase tracking-wider text-sm hover:text-primary transition-colors">Track Status &rarr;</Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>
-  </div>
   );
 }

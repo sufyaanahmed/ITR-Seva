@@ -8,30 +8,42 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1E3A8A', // Blue 900
-          dark: '#172554',
-          light: '#DBEAFE', // Blue 100
+          DEFAULT: '#1E2A4F', // Deep indigo
+          dark: '#131A31',
+          light: '#2B4C7E', // Kalamkari blue
         },
         secondary: {
-          DEFAULT: '#FACC15', // Yellow 400
-          dark: '#EAB308',
+          DEFAULT: '#C84B31', // Terracotta
+          dark: '#A63B24',
+          accent: '#E37B40', // Saffron
         },
-        background: '#F9FAFB',
+        accent: {
+          gold: '#D4AF37', // Antique gold
+          peacock: '#126E82', // Peacock blue
+          green: '#2C5D3F', // Deep green
+          vermilion: '#D96C4A', // Muted vermilion
+        },
+        background: '#FDFBF7', // Ivory
+        surface: {
+          DEFAULT: '#F5F0E6', // Warm cream
+          dark: '#EAE1D1'
+        },
         text: {
-          DEFAULT: '#1F2937',
-          secondary: '#4B5563',
+          DEFAULT: '#222222',
+          secondary: '#555555',
+          muted: '#888888'
         },
         border: {
-          DEFAULT: '#E5E7EB',
-          dark: '#D1D5DB'
+          DEFAULT: '#E6DFD3',
+          dark: '#D4C9B8'
         },
-        success: '#10B981',
-        error: '#EF4444'
+        success: '#2C5D3F',
+        error: '#C84B31'
       },
       fontFamily: {
-        sans: ['Arial', 'Helvetica', 'sans-serif'],
-        serif: ['Georgia', '"Times New Roman"', 'serif']
-      }
+        sans: ['Outfit', 'sans-serif'],
+        serif: ['"Playfair Display"', 'serif']
+      },
     },
   },
   plugins: [],

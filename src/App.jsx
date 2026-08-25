@@ -11,30 +11,30 @@ import Demo from './pages/Demo';
 
 const Header = () => {
   return (
-    <header className="bg-white border-b-[5px] border-[#163a5f]">
-      <div className="max-w-[1200px] mx-auto w-full min-h-[104px] py-[1.2rem] px-[1.5rem] grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] items-center gap-[1.15rem]">
-        <Link to="/" className="flex items-center gap-3 text-primary no-underline font-serif font-bold text-[1.2rem] md:text-2xl mr-auto">
-          <img src="/Emblem_of_India.svg" alt="Emblem of India" className="h-[52px]" />
-          <div className="flex flex-col leading-none">
-            <span className="text-secondary text-[0.7rem] font-sans uppercase tracking-[0.15em] mb-1">Bharat</span>
-            Visa Seva
+    <header className="bg-background border-b border-border">
+      <div className="max-w-[1200px] mx-auto w-full min-h-[104px] py-4 px-6 grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] items-center gap-6">
+        <Link to="/" className="flex items-center gap-4 text-primary no-underline font-serif text-[1.4rem] md:text-2xl mr-auto group">
+          <img src="/Emblem_of_India.svg" alt="Emblem of India" className="h-[60px] opacity-90 group-hover:opacity-100 transition-opacity" />
+          <div className="flex flex-col leading-tight border-l border-border pl-4">
+            <span className="text-secondary-accent text-[0.65rem] font-sans uppercase tracking-[0.2em] font-medium mb-1">Bharat</span>
+            <span className="font-bold text-primary-dark">Visa Seva</span>
           </div>
         </Link>
-        <nav className="flex flex-wrap items-center gap-[1.15rem] md:justify-end row-start-2 md:row-start-1 md:col-start-2 col-span-full md:col-span-1 w-full md:w-auto">
-          <Link to="/" className="text-gray-900 font-bold text-[0.9rem] hover:text-[#163a5f] hover:underline">Home</Link>
-          <Link to="/evisa" className="text-gray-900 font-bold text-[0.9rem] hover:text-[#163a5f] hover:underline">Visa Services</Link>
-          <Link to="/status" className="text-gray-900 font-bold text-[0.9rem] hover:text-[#163a5f] hover:underline">Check Status</Link>
-          <Link to="/tourism" className="text-gray-900 font-bold text-[0.9rem] hover:text-[#163a5f] hover:underline">Tourism</Link>
-          <Link to="/help" className="text-gray-900 font-bold text-[0.9rem] hover:text-[#163a5f] hover:underline">Help</Link>
+        <nav className="flex flex-wrap items-center gap-6 md:justify-end row-start-2 md:row-start-1 md:col-start-2 col-span-full md:col-span-1 w-full md:w-auto">
+          <Link to="/guide/visa-finder" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Apply</Link>
+          <Link to="/dashboard" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">My Application</Link>
+          <Link to="/status" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Before You Travel</Link>
+          <Link to="/tourism" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Discover India</Link>
+          <Link to="/help" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Help</Link>
         </nav>
         <div className="flex items-center gap-3 row-start-1 col-start-2 md:col-start-3 justify-self-end">
-          <select className="bg-white border border-border-dark text-text h-[44px] px-3 font-sans text-sm rounded-none focus:outline-none focus:border-primary">
+          <select className="bg-surface border border-border-dark text-text h-[44px] px-3 font-sans text-sm focus:outline-none focus:border-primary transition-colors cursor-pointer">
             <option>English</option>
             <option>हिन्दी</option>
           </select>
         </div>
         <div className="flex items-center row-start-1 col-start-3 md:col-start-4 justify-self-end">
-          <button className="bg-white border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-bold hover:bg-gray-50 transition rounded-none">
+          <button className="bg-transparent border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-medium hover:bg-surface-dark transition-colors">
             Accessibility
           </button>
         </div>
@@ -44,18 +44,20 @@ const Header = () => {
 };
 
 const Footer = () => (
-  <footer className="bg-white border-t border-border-dark mt-12 py-12">
-    <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+  <footer className="bg-primary-dark text-white mt-12 py-16 border-t-[8px] border-secondary-accent pattern-jali">
+    <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
       <div>
-        <h3 className="font-bold mb-4">Visa Seva</h3>
-        <p className="text-text-secondary text-sm">Official portal for Indian Visa services.</p>
+        <h3 className="font-serif font-bold text-2xl mb-4 text-surface">Visa Seva</h3>
+        <p className="text-primary-light text-sm font-sans">Not Official portal for Indian Visa services.</p>
       </div>
       <div>
-        <h3 className="font-bold mb-4">Quick Links</h3>
-        <ul className="flex flex-col gap-2 text-sm text-primary">
-          <li><Link to="/evisa">Start Application</Link></li>
-          <li><Link to="/resume">Resume Draft</Link></li>
-          <li><Link to="/status">Check Status</Link></li>
+        <h3 className="font-sans font-medium text-sm uppercase tracking-widest mb-6 text-surface">Quick Links</h3>
+        <ul className="flex flex-col gap-3 text-sm text-primary-light font-sans">
+          <li><Link to="/guide/visa-finder" className="hover:text-secondary-accent transition-colors">Find My Visa</Link></li>
+          <li><Link to="/dashboard" className="hover:text-secondary-accent transition-colors">Application Dashboard</Link></li>
+          <li><Link to="/status" className="hover:text-secondary-accent transition-colors">Check Status</Link></li>
+          <li><Link to="/tourism" className="hover:text-secondary-accent transition-colors">Discover India</Link></li>
+          <li><Link to="/help" className="hover:text-secondary-accent transition-colors">FAQ</Link></li>
         </ul>
       </div>
     </div>
@@ -68,16 +70,18 @@ import AfghanFlow from './pages/flows/AfghanFlow';
 import VoaFlow from './pages/flows/VoaFlow';
 import NormalFlow from './pages/flows/NormalFlow';
 import RegularFlow from './pages/flows/RegularFlow';
+import VisaFinder from './pages/guide/VisaFinder';
+import Dashboard from './pages/dashboard/Dashboard';
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background font-sans text-text">
       <ScrollToTop />
       <Loader />
       <Header />
-      <marquee className="py-3 text-[0.95rem] font-medium px-4 text-text" style={{ backgroundColor: '#f0f4f8' }}>
-        Foreigners and OCI Card holders can complete and submit the <a href="https://indianvisaonline.gov.in/earrival/" className="text-primary hover:underline font-bold">e-Arrival card</a> online within 72 hours before their arrival in India at <a href="https://boi.gov.in/" className="text-primary hover:underline font-bold">boi.gov.in</a> or <a href="https://indianvisaonline.gov.in/" className="text-primary hover:underline font-bold">indianvisaonline.gov.in</a> or via official 'Indian Visa Su-Swagatam' Mobile App. This is for arrival information, not a visa.
-      </marquee>
+      <div className="bg-secondary-accent text-white py-3 px-4 text-center text-sm font-medium tracking-wide">
+        Foreigners and OCI Card holders must complete the <Link to="/status" className="underline font-bold hover:text-primary-dark transition-colors">e-Arrival card</Link> online within 72 hours before their arrival in India.
+      </div>
       <main id="main-content" className="flex-1 w-full">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -85,6 +89,8 @@ export default function App() {
           <Route path="/flow/voa" element={<VoaFlow />} />
           <Route path="/flow/normal" element={<NormalFlow />} />
           <Route path="/flow/regular" element={<RegularFlow />} />
+          <Route path="/guide/visa-finder" element={<VisaFinder />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/status" element={<Status />} />
           <Route path="/resume" element={<Resume />} />
           <Route path="/help" element={<Help />} />

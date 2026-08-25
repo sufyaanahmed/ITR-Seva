@@ -10,12 +10,64 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary text-white px-4 py-2 rounded font-bold hover:bg-primary-dark transition-colors inline-block text-center;
+    @apply bg-primary text-white px-6 py-3 font-sans font-medium uppercase tracking-wider text-sm transition-all duration-300 hover:bg-primary-dark hover:shadow-md inline-block text-center border border-primary;
   }
   .btn-secondary {
-    @apply bg-transparent border-2 border-primary text-primary px-4 py-2 rounded font-bold hover:bg-primary-light transition-colors inline-block text-center;
+    @apply bg-transparent border border-primary text-primary px-6 py-3 font-sans font-medium uppercase tracking-wider text-sm transition-all duration-300 hover:bg-[#EAE1D1] inline-block text-center;
   }
   .input-field {
-    @apply w-full border border-border-dark rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    @apply w-full bg-surface border border-border-dark px-4 py-3 font-sans focus:outline-none focus:border-primary focus:bg-white transition-colors duration-200 placeholder-text-muted;
+  }
+  
+  /* Indian Heritage Patterns */
+  .btn-mughal {
+    @apply relative bg-surface text-primary border border-primary px-10 py-5 font-sans font-bold uppercase tracking-widest text-sm transition-all duration-500 shadow-md inline-flex items-center gap-3 overflow-hidden;
+  }
+  .btn-mughal::before, .btn-mughal::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--tw-color-secondary-accent, #E37B40);
+  }
+  .btn-mughal::before { top: 4px; left: 4px; }
+  .btn-mughal::after { bottom: 4px; right: 4px; }
+  
+  .btn-mughal .inner-border {
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(30, 42, 79, 0.2);
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  .btn-mughal:hover .inner-border {
+    inset: 2px;
+    border-color: rgba(30, 42, 79, 0.8);
+  }
+  .btn-mughal:hover {
+    @apply bg-white;
+  }
+
+  .pattern-jali {
+    background-color: transparent;
+    background-image: 
+      radial-gradient(circle at 100% 50%, transparent 20%, rgba(30, 42, 79, 0.03) 21%, rgba(30, 42, 79, 0.03) 34%, transparent 35%, transparent),
+      radial-gradient(circle at 0% 50%, transparent 20%, rgba(30, 42, 79, 0.03) 21%, rgba(30, 42, 79, 0.03) 34%, transparent 35%, transparent);
+    background-size: 20px 40px;
+  }
+  
+  .border-mughal {
+    @apply border border-border-dark relative;
+  }
+  .border-mughal::before, .border-mughal::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--tw-border-opacity);
+  }
+  
+  .card-heritage {
+    @apply bg-white border border-border-dark p-6 transition-all duration-300 hover:border-primary-light hover:shadow-sm relative overflow-hidden;
   }
 }
