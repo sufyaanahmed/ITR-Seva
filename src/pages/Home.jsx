@@ -141,23 +141,27 @@ export default function Home() {
 
         {/* Mandala background — very faint, slow spin */}
         <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
-          <svg viewBox="0 0 400 400" className="w-[140vw] max-w-[900px] h-auto opacity-[0.035] animate-[spin_180s_linear_infinite] text-[#1E2A4F]">
-            {[...Array(12)].map((_, i) => {
-              const a = (i / 12) * 360;
-              const r = a * Math.PI / 180;
-              const x2 = 200 + Math.sin(r) * 180;
-              const y2 = 200 - Math.cos(r) * 180;
-              return <line key={i} x1="200" y1="200" x2={x2} y2={y2} stroke="currentColor" strokeWidth="0.8" />;
+          <svg viewBox="0 0 400 400" className="w-[140vw] max-w-[900px] h-auto opacity-[0.08] animate-[spin_120s_linear_infinite] text-[#8B1C1C]">
+            {/* Outer rings */}
+            <circle cx="200" cy="200" r="185" fill="none" stroke="currentColor" strokeWidth="12" />
+            <circle cx="200" cy="200" r="172" fill="none" stroke="currentColor" strokeWidth="3" />
+            
+            {/* 24 Spokes and Rim Dots */}
+            {[...Array(24)].map((_, i) => {
+              const rotation = (i * 360) / 24;
+              return (
+                <g key={`spoke-${i}`} style={{ transform: `rotate(${rotation}deg)`, transformOrigin: "200px 200px" }}>
+                  {/* Spoke tapering outwards */}
+                  <polygon points="192,180 208,180 202,30 198,30" fill="currentColor" />
+                  {/* Dot on the rim between spokes (rotated 7.5 deg) */}
+                  <circle cx="200" cy="34" r="5.5" fill="currentColor" style={{ transform: `rotate(7.5deg)`, transformOrigin: "200px 200px" }} />
+                </g>
+              );
             })}
-            {[20, 50, 80, 120, 160, 185].map(r => (
-              <circle key={r} cx="200" cy="200" r={r} fill="none" stroke="currentColor" strokeWidth={r > 100 ? 0.5 : 1} />
-            ))}
-            {[...Array(8)].map((_, i) => {
-              const a = (i / 8) * Math.PI * 2;
-              const px = 200 + Math.sin(a) * 120;
-              const py = 200 - Math.cos(a) * 120;
-              return <circle key={i} cx={px} cy={py} r="18" fill="none" stroke="currentColor" strokeWidth="0.8" />;
-            })}
+            
+            {/* Inner Hub */}
+            <circle cx="200" cy="200" r="32" fill="none" stroke="currentColor" strokeWidth="12" />
+            <circle cx="200" cy="200" r="14" fill="currentColor" />
           </svg>
         </div>
 
