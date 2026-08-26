@@ -51,23 +51,57 @@
   .pattern-jali {
     background-color: transparent;
     background-image: 
-      radial-gradient(circle at 100% 50%, transparent 20%, rgba(30, 42, 79, 0.03) 21%, rgba(30, 42, 79, 0.03) 34%, transparent 35%, transparent),
-      radial-gradient(circle at 0% 50%, transparent 20%, rgba(30, 42, 79, 0.03) 21%, rgba(30, 42, 79, 0.03) 34%, transparent 35%, transparent);
-    background-size: 20px 40px;
+      radial-gradient(var(--tw-color-border-dark) 1px, transparent 1px),
+      radial-gradient(var(--tw-color-border-dark) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
   }
-  
-  .border-mughal {
-    @apply border border-border-dark relative;
+  .pattern-kalamkari {
+    background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0c11 0 20 9 20 20s-9 20-20 20S0 31 0 20 9 0 20 0zm0 2c-9.9 0-18 8.1-18 18s8.1 18 18 18 18-8.1 18-18S29.9 2 20 2zm0 4c7.7 0 14 6.3 14 14s-6.3 14-14 14S6 27.7 6 20 12.3 6 20 6z" fill="%231E2A4F" fill-opacity="0.05" fill-rule="evenodd"/></svg>');
   }
-  .border-mughal::before, .border-mughal::after {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border: 1px solid var(--tw-border-opacity);
-  }
-  
   .card-heritage {
     @apply bg-white border border-border-dark p-6 transition-all duration-300 hover:border-primary-light hover:shadow-sm relative overflow-hidden;
+  }
+  
+  /* Royal Curtains Animation */
+  .curtain-left {
+    animation: openCurtainLeft 2.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+    animation-delay: 0.5s;
+    transform-origin: left;
+  }
+  .curtain-right {
+    animation: openCurtainRight 2.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+    animation-delay: 0.5s;
+    transform-origin: right;
+  }
+  .hero-content-reveal {
+    opacity: 0;
+    transform: scale(0.95);
+    animation: revealContent 2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+    animation-delay: 1s;
+  }
+  
+  @keyframes openCurtainLeft {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes openCurtainRight {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes revealContent {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  
+  /* Themed Cards */
+  .theme-card {
+    @apply relative overflow-hidden rounded-t-full border-4 border-surface shadow-lg transition-transform duration-700 hover:-translate-y-4;
+  }
+  .theme-card-inner {
+    @apply absolute inset-0 border-2 m-2 rounded-t-full pointer-events-none z-20 transition-all duration-500;
+  }
+  .theme-card:hover .theme-card-inner {
+    @apply m-4;
   }
 }
