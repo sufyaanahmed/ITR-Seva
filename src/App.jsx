@@ -1,104 +1,120 @@
-import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
-import Service from './pages/Service';
-import Wizard from './pages/Wizard';
-import Status from './pages/Status';
-import Resume from './pages/Resume';
-import Help from './pages/Help';
-import Tourism from './pages/Tourism';
-import Demo from './pages/Demo';
+import React, { Suspense, lazy, useEffect, useMemo } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { ROUTES, REDIRECTS, routeForPath } from './lib/routes.js';
+import { useStore } from './state/store.jsx';
+import {
+  Header, Footer, PrototypeStrip, SkipLink, RouteAnnouncer, ApplicationBar,
+} from './components/Shell.jsx';
+import { Announcer, Banner } from './ui/feedback.jsx';
+import Button from './ui/Button.jsx';
 
-const Header = () => {
+/**
+ * The shell.
+ *
+ * Routes are generated from the registry, so the nav, the sitemap, the agent
+ * documentation and the smoke tests can never disagree with what actually
+ * renders. Each entry's `component` thunk is also the code-splitting boundary.
+ */
+
+const LAZY = Object.fromEntries(ROUTES.map((r) => [r.id, lazy(r.component)]));
+
+/** Routes that need the active application id resolve it at runtime. */
+function ActiveApplicationRedirect({ suffix = '' }) {
+  const { app } = useStore();
+  if (!app) return <Navigate to="/start" replace />;
+  return <Navigate to={`/application/${app.id}${suffix}`} replace />;
+}
+
+function RouteFallback() {
   return (
-    <header className="bg-background border-b border-border">
-      <div className="max-w-[1200px] mx-auto w-full min-h-[104px] py-4 px-6 grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] items-center gap-6">
-        <Link to="/" className="flex items-center gap-4 text-primary no-underline font-serif text-[1.4rem] md:text-2xl mr-auto group">
-          <img src="/Emblem_of_India.svg" alt="Emblem of India" className="h-[60px] opacity-90 group-hover:opacity-100 transition-opacity" />
-          <div className="flex flex-col leading-tight border-l border-border pl-4">
-            <span className="text-secondary-accent text-[0.65rem] font-sans uppercase tracking-[0.2em] font-medium mb-1">Bharat</span>
-            <span className="font-bold text-primary-dark">Visa Seva</span>
-          </div>
-        </Link>
-        <nav className="flex flex-wrap items-center gap-6 md:justify-end row-start-2 md:row-start-1 md:col-start-2 col-span-full md:col-span-1 w-full md:w-auto">
-          <Link to="/guide/visa-finder" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Apply</Link>
-          <Link to="/dashboard" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">My Application</Link>
-          <Link to="/status" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Before You Travel</Link>
-          <Link to="/tourism" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Discover India</Link>
-          <Link to="/help" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Help</Link>
-        </nav>
-        <div className="flex items-center gap-3 row-start-1 col-start-2 md:col-start-3 justify-self-end">
-          <select className="bg-surface border border-border-dark text-text h-[44px] px-3 font-sans text-sm focus:outline-none focus:border-primary transition-colors cursor-pointer">
-            <option>English</option>
-            <option>हिन्दी</option>
-          </select>
-        </div>
-        <div className="flex items-center row-start-1 col-start-3 md:col-start-4 justify-self-end">
-          <button className="bg-transparent border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-medium hover:bg-surface-dark transition-colors">
-            Accessibility
-          </button>
-        </div>
-      </div>
-    </header>
-  );
-};
-
-const Footer = () => (
-  <footer className="bg-primary-dark text-white mt-12 py-16 border-t-[8px] border-secondary-accent pattern-jali">
-    <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
-      <div>
-        <h3 className="font-serif font-bold text-2xl mb-4 text-surface">Visa Seva</h3>
-        <p className="text-primary-light text-sm font-sans">Not Official portal for Indian Visa services.</p>
-      </div>
-      <div>
-        <h3 className="font-sans font-medium text-sm uppercase tracking-widest mb-6 text-surface">Quick Links</h3>
-        <ul className="flex flex-col gap-3 text-sm text-primary-light font-sans">
-          <li><Link to="/guide/visa-finder" className="hover:text-secondary-accent transition-colors">Find My Visa</Link></li>
-          <li><Link to="/dashboard" className="hover:text-secondary-accent transition-colors">Application Dashboard</Link></li>
-          <li><Link to="/status" className="hover:text-secondary-accent transition-colors">Check Status</Link></li>
-          <li><Link to="/tourism" className="hover:text-secondary-accent transition-colors">Discover India</Link></li>
-          <li><Link to="/help" className="hover:text-secondary-accent transition-colors">FAQ</Link></li>
-        </ul>
-      </div>
+    <div className="shell py-12">
+      <p className="text-body text-ink-muted" role="status">Loading…</p>
     </div>
-  </footer>
-);
+  );
+}
 
-import Loader from './components/Loader';
-import ScrollToTop from './components/ScrollToTop';
-import AfghanFlow from './pages/flows/AfghanFlow';
-import VoaFlow from './pages/flows/VoaFlow';
-import NormalFlow from './pages/flows/NormalFlow';
-import RegularFlow from './pages/flows/RegularFlow';
-import VisaFinder from './pages/guide/VisaFinder';
-import Dashboard from './pages/dashboard/Dashboard';
+/**
+ * A recoverable failure. A blank page is the one outcome a nervous traveller
+ * must never get, so an unexpected error still leaves them somewhere to go.
+ */
+class Boundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div className="shell py-12 max-w-prose">
+        <h1 className="font-display text-display-m mb-4">Something went wrong on this page</h1>
+        <Banner tone="warning" title="Your saved answers are untouched">
+          This is a prototype and this page failed to load. Answers already
+          confirmed as saved remain in this browser.
+        </Banner>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Button to="/">Go to the start</Button>
+          <Button variant="secondary" onClick={() => window.location.reload()}>Try again</Button>
+        </div>
+      </div>
+    );
+  }
+}
 
 export default function App() {
+  const location = useLocation();
+  const route = useMemo(() => routeForPath(location.pathname), [location.pathname]);
+  const { announcement, app, online, activateApplication } = useStore();
+  const inApplication = route.group === 'application';
+  const scopedAppId = location.pathname.match(/^\/application\/([^/]+)/)?.[1] || null;
+
+  useEffect(() => {
+    if (scopedAppId && app?.id !== scopedAppId) activateApplication(scopedAppId);
+  }, [activateApplication, app?.id, scopedAppId]);
+
   return (
-    <div className="min-h-screen flex flex-col bg-background font-sans text-text">
-      <ScrollToTop />
-      <Loader />
+    <div className="min-h-screen flex flex-col bg-paper-0 text-ink">
+      <SkipLink />
+      <PrototypeStrip />
       <Header />
-      <div className="bg-secondary-accent text-white py-3 px-4 text-center text-sm font-medium tracking-wide">
-        Foreigners and OCI Card holders must complete the <Link to="/status" className="underline font-bold hover:text-primary-dark transition-colors">e-Arrival card</Link> online within 72 hours before their arrival in India.
-      </div>
-      <main id="main-content" className="flex-1 w-full">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/flow/afghan" element={<AfghanFlow />} />
-          <Route path="/flow/voa" element={<VoaFlow />} />
-          <Route path="/flow/normal" element={<NormalFlow />} />
-          <Route path="/flow/regular" element={<RegularFlow />} />
-          <Route path="/guide/visa-finder" element={<VisaFinder />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/status" element={<Status />} />
-          <Route path="/resume" element={<Resume />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="/tourism" element={<Tourism />} />
-          <Route path="/apply" element={<Wizard />} />
-        </Routes>
+      {inApplication && <ApplicationBar />}
+      {!online && (
+        <div className="shell pt-4 no-print">
+          <Banner tone="warning" title="You are offline" live>
+            Answers confirmed as saved remain on this device. The current page
+            may keep working, but pages not opened before and official links can
+            need a connection. Check the save indicator before closing the tab.
+          </Banner>
+        </div>
+      )}
+
+      <main id="main" tabIndex={-1} className="flex-1 w-full">
+        <Boundary key={location.pathname}>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              {REDIRECTS.map((r) => (
+                <Route key={r.from} path={r.from} element={<Navigate to={r.to} replace />} />
+              ))}
+              <Route path="/apply" element={<ActiveApplicationRedirect />} />
+              <Route path="/dashboard" element={<ActiveApplicationRedirect />} />
+              <Route path="/status" element={<Navigate to="/track" replace />} />
+
+              {ROUTES.map((r) => {
+                const Page = LAZY[r.id];
+                return <Route key={r.id} path={r.path} element={<Page />} />;
+              })}
+            </Routes>
+          </Suspense>
+        </Boundary>
       </main>
+
       <Footer />
+      <RouteAnnouncer />
+      <Announcer message={announcement} />
     </div>
   );
 }

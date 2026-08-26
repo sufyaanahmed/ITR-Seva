@@ -1,0 +1,19 @@
+# Visa-Seva
+
+> Fictional hackathon prototype; not an official Government of India service. Never use real personal, passport, payment, or document data.
+
+## Primary tasks
+- [Find my visa](/find/q/1): Six questions that produce a conservative, sourced suggestion of the likely visa path.
+- [Start or resume](/start): The only place a demo application is created, and where a saved draft is picked up again.
+- [Track an application](/track): Look up a demo application using its application ID and access code.
+- [Documents and requirements](/requirements): What each visa route asks for, readable before starting anything.
+- [Before you travel](/before-you-travel): Arrival readiness: what to carry, which ports accept an e-Visa, and what the e-Arrival Card is.
+- [Help](/help): Common questions, a plain-language glossary, and the real official contacts.
+
+## Reviewer entry point
+- [Demo scenarios](/demo): deterministic records for draft, processing, documents-required, granted, and refused states.
+
+## Agent documentation
+- [Complete agent interface](/agent.md): routes, actions, fields, state model, finder inputs, safety boundaries, and official sources.
+
+Ruleset 1.0.0; official sources reviewed 2026-08-26.
