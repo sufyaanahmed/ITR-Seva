@@ -130,7 +130,7 @@ export function RadioGroup({ field, value, onChange, error, options, size = 'def
           <span aria-hidden="true">⚠</span><span>{error}</span>
         </p>
       )}
-      <div className="grid gap-3">
+      <div className="border-t border-rule-control">
         {options.map((o) => {
           const id = `${groupId}-${o.value}`;
           const checked = value === o.value;
@@ -138,11 +138,11 @@ export function RadioGroup({ field, value, onChange, error, options, size = 'def
             <label
               key={o.value}
               htmlFor={id}
-              className={`flex items-start gap-4 min-h-touch px-4 py-4 cursor-pointer rounded-control
-                border transition-colors duration-quick
+              className={`flex items-start gap-4 min-h-touch px-4 py-4 cursor-pointer
+                border-b border-rule-control transition-colors duration-quick
                 ${checked
-                  ? 'border-emph border-indigo bg-indigo-50'
-                  : 'border-rule-control bg-paper-1 hover:bg-paper-2'}`}
+                  ? 'border-l-rail border-l-indigo bg-indigo-50 font-semibold'
+                  : 'bg-transparent hover:bg-paper-2'}`}
             >
               <input
                 type="radio"

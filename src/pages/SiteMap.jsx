@@ -7,8 +7,6 @@ const GROUPS = [
   ['service', 'Start here'],
   ['guide', 'Guidance'],
   ['info', 'Information'],
-  ['demo', 'Reviewers and testers'],
-  ['application', 'Inside an application'],
 ];
 
 const isConcrete = (path) => path !== '*' && !path.includes(':');
@@ -17,9 +15,9 @@ export default function SiteMap() {
   return (
     <Page
       routeId="site-map"
-      eyebrow="Every part of the prototype"
+      eyebrow="Directory"
       title="Site map"
-      lede="The complete service, grouped by purpose. Application pages appear after a fictional record has been started or loaded."
+      lede="Public guidance and services."
       width="dashboard"
     >
       <div className="grid gap-12 lg:grid-cols-2">
@@ -39,10 +37,6 @@ export default function SiteMap() {
                       </Link>
                     ) : (
                       <p className="text-subhead font-semibold text-ink">{route.title}</p>
-                    )}
-                    <p className="text-body text-ink-muted max-w-prose mt-1">{route.description}</p>
-                    {!isConcrete(route.path) && route.path !== '*' && (
-                      <p className="text-meta text-ink-faint mt-2">Available from an application record.</p>
                     )}
                   </li>
                 ))}

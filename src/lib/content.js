@@ -122,7 +122,7 @@ export const GLOSSARY = [
 export const FAQ = [
   {
     q: 'Is this a real visa service?',
-    a: 'No. Visa-Seva is a hackathon prototype. It is not connected to the Government of India, it cannot receive an application, and it issues nothing. The real service is at indianvisaonline.gov.in, it is free to start, and it needs no intermediary.',
+    a: 'No. Visa-Seva is an independent prototype. It is not connected to the Government of India, it cannot receive an application, and it issues nothing. The real service is at indianvisaonline.gov.in, it is free to start, and it needs no intermediary.',
   },
   {
     q: 'Where does what I type here go?',
@@ -147,38 +147,6 @@ export const FAQ = [
   {
     q: 'Can I get help from you?',
     a: 'Visa-Seva has no support team. The Government of India publishes a real e-Visa helpline; the verified contact details are listed below.',
-  },
-];
-
-/* ------------------------------------------------------------------ */
-/* Discover India                                                      */
-/* ------------------------------------------------------------------ */
-
-/**
- * Three plates, not twenty-seven cards.
- *
- * Code-drawn studies of Indian architectural and landscape rhythms add
- * atmosphere without shipping an unverified photograph or implying that an
- * image is evidence for a service claim.
- */
-export const PLATES = [
-  {
-    motif: 'stepwell',
-    title: 'The stepwell at dusk',
-    body: 'India builds downwards as readily as upwards. A stepwell is a piece of infrastructure — a way to reach water in a dry season — that generations of masons treated as an occasion for geometry. The pattern in this prototype’s borders comes from the same instinct: a lattice that is doing a job while being worth looking at.',
-    caption: 'Gujarat — a code-drawn study of stepwell geometry',
-  },
-  {
-    motif: 'water',
-    title: 'Still water in winter',
-    body: 'A lake under snow, a boat tied up for the season, a morning allowed to arrive slowly. India welcomes through moments of quiet as surely as through celebration — space to look, listen and find your own pace.',
-    caption: 'Kashmir — a code-drawn study of winter water',
-  },
-  {
-    motif: 'rail',
-    title: 'The slow train',
-    body: 'The Nilgiri railway climbs about 1,300 metres in five hours, which is slower than walking downhill and entirely the point. Plenty of India is arranged around the idea that arriving is not the only part of a journey worth having. Your visa is one step; the journey is only beginning.',
-    caption: 'Ooty, the Nilgiris — a code-drawn study of the mountain railway',
   },
 ];
 

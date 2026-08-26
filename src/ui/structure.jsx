@@ -26,7 +26,7 @@ export function StageProgress({ stages, currentId, appId }) {
         aria-valuenow={done}
         aria-valuemin={0}
         aria-valuemax={stages.length}
-        aria-label={`Application progress: ${done} of ${stages.length} stages complete`}
+        aria-label={`Application progress: ${done} of ${stages.length} sections currently have all required answers`}
         className="h-[3px] w-full bg-rule mb-2"
       >
         <div
@@ -37,9 +37,9 @@ export function StageProgress({ stages, currentId, appId }) {
 
       <p className="text-meta text-ink-muted mb-4 sm:hidden">
         {done === stages.length ? (
-          <>All <span className="numeric">{stages.length}</span> application stages complete</>
+          <>All <span className="numeric">{stages.length}</span> sections have their required answers</>
         ) : (
-          <>Stage <span className="numeric">{current + 1}</span> of{' '}
+          <>Step <span className="numeric">{current + 1}</span> of{' '}
             <span className="numeric">{stages.length}</span> — {stages[current]?.title}</>
         )}
       </p>
@@ -47,27 +47,34 @@ export function StageProgress({ stages, currentId, appId }) {
       <ol className="hidden sm:grid gap-1">
         {stages.map((s, i) => {
           const isCurrent = s.id === currentId;
-          const state = s.complete ? 'Complete' : isCurrent ? 'In progress' : 'Not started';
+          const state = s.complete ? 'Required answers present' : isCurrent ? 'In progress' : 'Not started';
+          const reachable = s.complete || isCurrent;
+          const row = (
+            <>
+              <span aria-hidden="true" className="numeric text-ink-faint w-4">{i + 1}</span>
+              <span className="flex-1">{s.title}</span>
+              <span className={s.complete ? 'text-success' : 'text-ink-faint'}>
+                <span aria-hidden="true">{s.complete ? '✓' : isCurrent ? '●' : '○'}</span>
+                <span className="sr-only">{state}</span>
+              </span>
+            </>
+          );
           return (
             <li key={s.id}>
-              <Link
-                to={s.id === 'review'
-                  ? `/application/${appId}/review`
-                  : s.id === 'submit'
-                    ? `/application/${appId}/submit`
-                    : `/application/${appId}/stage/${s.id}`}
-                aria-current={isCurrent ? 'step' : undefined}
-                className={`flex items-baseline gap-3 min-h-touch py-2 px-2 -mx-2 text-meta rounded-control
-                  hover:bg-paper-2 transition-colors duration-quick
-                  ${isCurrent ? 'font-semibold text-ink border-l-rail border-indigo pl-3 -ml-3' : 'text-ink-muted'}`}
-              >
-                <span aria-hidden="true" className="numeric text-ink-faint w-4">{i + 1}</span>
-                <span className="flex-1">{s.title}</span>
-                <span className={s.complete ? 'text-success' : 'text-ink-faint'}>
-                  <span aria-hidden="true">{s.complete ? '✓' : isCurrent ? '●' : '○'}</span>
-                  <span className="sr-only">{state}</span>
-                </span>
-              </Link>
+              {reachable ? (
+                <Link
+                  to={s.id === 'review'
+                    ? `/application/${appId}/review`
+                    : s.id === 'submit'
+                      ? `/application/${appId}/submit`
+                      : `/application/${appId}/stage/${s.id}`}
+                  aria-current={isCurrent ? 'step' : undefined}
+                  className={`flex items-baseline gap-3 min-h-touch py-2 px-2 -mx-2 text-meta hover:bg-paper-2 transition-colors duration-quick
+                    ${isCurrent ? 'font-semibold text-ink border-l-rail border-indigo pl-3 -ml-3' : 'text-ink-muted'}`}
+                >{row}</Link>
+              ) : (
+                <div className="flex items-baseline gap-3 min-h-touch py-2 px-2 -mx-2 text-meta text-ink-faint" aria-disabled="true">{row}</div>
+              )}
             </li>
           );
         })}
@@ -84,29 +91,21 @@ export function StageProgress({ stages, currentId, appId }) {
 export function Timeline({ events, className = '' }) {
   if (!events?.length) return null;
   return (
-    <ol className={`relative grid gap-6 ${className}`}>
-      {events.map((e, i) => {
-        const last = i === events.length - 1;
-        return (
-          <li key={e.seq} className="relative pl-8">
-            <span
-              aria-hidden="true"
-              className={`absolute left-0 top-1.5 h-3 w-3 border-2 border-indigo ${last ? 'bg-indigo' : 'bg-paper-0'}`}
-            />
-            {!last && (
-              <span aria-hidden="true" className="absolute left-[5px] top-5 bottom-[-1.5rem] w-px bg-rule-strong" />
-            )}
-            <p className="text-body font-semibold text-ink">{e.label}</p>
-            {e.detail && <p className="text-body text-ink-muted mt-1 max-w-prose">{e.detail}</p>}
-            <p className="text-meta text-ink-faint numeric mt-1">
+    <ol className={`border-t border-rule-strong ${className}`}>
+      {events.map((e) => (
+          <li key={e.seq} className="grid sm:grid-cols-[10rem_1fr] gap-1 sm:gap-5 py-4 border-b border-rule">
+            <p className="text-meta text-ink-faint numeric">
               <time dateTime={e.at}>
                 {new Date(e.at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}
               </time>
-              {e.actor === 'demo' && <span className="not-numeric"> · simulated by the demo</span>}
             </p>
+            <div>
+              <p className="text-body font-semibold text-ink">{e.label}</p>
+              {e.detail && <p className="text-body text-ink-muted mt-1 max-w-prose">{e.detail}</p>}
+              {e.actor === 'demo' && <p className="text-meta text-ink-faint mt-1">Simulated by the demo</p>}
+            </div>
           </li>
-        );
-      })}
+      ))}
     </ol>
   );
 }
@@ -202,124 +201,32 @@ export function DefinitionList({ items, className = '' }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* The stamp                                                           */
+/* Decision overprint                                                  */
 /* ------------------------------------------------------------------ */
 
-/**
- * The decision stamp.
- *
- * The reference number and the "not an official visa" disclaimer live inside
- * the ring, so a screenshot of a granted certificate carries its own denial
- * with it and can never be passed off as real.
- *
- * Inline SVG with real <text>, so it survives images-off; the octagon echoes
- * the jali cell rather than being generic clip art.
- */
+/** A rectangular typographic overprint: unmistakably fictional when cropped. */
 export function Stamp({ reference, label = 'Demo decision', tone = 'gold' }) {
-  const colour = tone === 'gold' ? 'var(--gold)' : 'var(--ink-muted)';
+  const colour = tone === 'gold' ? 'var(--terracotta-ink)' : 'var(--ink-muted)';
   return (
     <svg
-      viewBox="0 0 160 160"
-      width="128"
-      height="128"
+      viewBox="0 0 220 118"
+      width="220"
+      height="118"
       role="img"
       aria-label={`${label}. Prototype — not an official visa document. Reference ${reference}.`}
-      className="shrink-0 -rotate-3 motion-safe:transition-transform"
+      className="shrink-0 max-w-full h-auto"
     >
-      <defs>
-        <path id="stamp-ring" d="M80 22a58 58 0 1 1 0 116 58 58 0 1 1 0-116" fill="none" />
-      </defs>
-      <g fill="none" stroke={colour} strokeWidth="2">
-        <path d="M46.9 8h66.2L152 46.9v66.2L113.1 152H46.9L8 113.1V46.9Z" />
-        <path d="M55 24h50l31 31v50l-31 31H55L24 105V55Z" strokeWidth="1" />
-      </g>
-      <text fill={colour} fontSize="9.5" fontFamily="var(--font-sans)" letterSpacing="1.6">
-        <textPath href="#stamp-ring" startOffset="2%">
-          PROTOTYPE · NOT AN OFFICIAL VISA DOCUMENT · {reference} ·
-        </textPath>
+      <rect x="1.5" y="1.5" width="217" height="115" fill="none" stroke={colour} strokeWidth="3" />
+      <path d="M14 14v90" stroke={colour} strokeWidth="5" />
+      <text x="28" y="40" fill={colour} fontSize="24" fontFamily="var(--font-display)" fontWeight="650" letterSpacing="1">
+        DEMO DECISION
       </text>
-      <text
-        x="80" y="76" textAnchor="middle" fill={colour}
-        fontSize="17" fontFamily="var(--font-display)" fontWeight="600"
-      >
-        DEMO
+      <text x="28" y="65" fill={colour} fontSize="12" fontFamily="var(--font-sans)" fontWeight="600" letterSpacing="1.2">
+        NOT AN OFFICIAL VISA DOCUMENT
       </text>
-      <text
-        x="80" y="94" textAnchor="middle" fill={colour}
-        fontSize="9" fontFamily="var(--font-sans)" letterSpacing="1.4"
-      >
-        NOT OFFICIAL
+      <text x="28" y="91" fill={colour} fontSize="11" fontFamily="var(--font-sans)" letterSpacing="0.6">
+        REF {reference}
       </text>
     </svg>
-  );
-}
-
-/**
- * An image presented as a poster, whole, in a paper mount.
- *
- * The available artwork carries its own baked-in titles, so cropping it to a
- * fixed aspect ratio slices through the typography — which is exactly what the
- * previous grid did. Here the file's own proportions are respected and its
- * title becomes the caption.
- */
-function PlateMotif({ motif }) {
-  const common = { fill: 'none', stroke: 'currentColor', strokeWidth: 2 };
-  return (
-    <svg viewBox="0 0 800 540" aria-hidden="true" className="block w-full h-auto text-indigo bg-paper-2 jali-ghost">
-      <rect x="34" y="34" width="732" height="472" fill="var(--paper-0)" stroke="var(--rule-strong)" />
-      {motif === 'stepwell' && (
-        <g {...common}>
-          <path d="M110 112h580M148 154h504M186 196h428M224 238h352M262 280h276M300 322h200M338 364h124" />
-          <path d="M110 112 338 364M690 112 462 364M338 364h124l-22 54h-80Z" />
-          <circle cx="400" cy="92" r="24" fill="var(--terracotta-050)" stroke="var(--terracotta-ink)" />
-        </g>
-      )}
-      {motif === 'water' && (
-        <g {...common}>
-          <path d="M92 230c104-46 181-58 276-20 87 34 158 36 340-38" opacity=".45" />
-          <path d="M92 286c142-24 238-15 332 9 100 25 174 17 284-7M92 338c142-24 238-15 332 9 100 25 174 17 284-7M92 390c142-24 238-15 332 9 100 25 174 17 284-7" opacity=".65" />
-          <path d="M326 306h172l-38 34h-98Z" fill="var(--indigo-050)" />
-          <path d="M412 306v-88l70 88" />
-          <circle cx="628" cy="142" r="34" fill="var(--paper-2)" />
-        </g>
-      )}
-      {motif === 'rail' && (
-        <g {...common}>
-          <path d="M84 332c92-142 190-174 294-92 91 72 162 74 338-66" opacity=".35" />
-          <path d="M76 406c156-96 272-110 362-34 74 62 146 54 286-42" opacity=".55" />
-          <path d="M110 454c98-128 226-142 354-70 96 54 171 36 258-26" strokeWidth="5" />
-          <path d="M122 472c98-128 226-142 354-70 96 54 171 36 258-26" strokeWidth="1" />
-          <g fill="var(--terracotta-ink)" stroke="none">
-            <rect x="352" y="335" width="72" height="36" rx="3" />
-            <rect x="432" y="354" width="58" height="32" rx="3" />
-          </g>
-        </g>
-      )}
-    </svg>
-  );
-}
-
-export function Plate({ src, alt, motif, caption, credit, className = '', suppressed = false }) {
-  if (suppressed) {
-    return (
-      <figure className={`border border-rule-strong bg-paper-2 p-6 jali-structure ${className}`}>
-        <figcaption className="text-meta text-ink-muted">
-          {caption} <span className="text-ink-faint">— image not loaded in Data Saver mode.</span>
-        </figcaption>
-      </figure>
-    );
-  }
-  return (
-    <figure className={`border border-rule-strong bg-paper-1 p-4 sm:p-6 ${className}`}>
-      {src ? (
-        <img src={src} alt={alt} loading="lazy" decoding="async" className="block w-full h-auto" />
-      ) : (
-        <PlateMotif motif={motif} />
-      )}
-      <figcaption className="text-meta text-ink-muted mt-4">
-        {caption}
-        {credit && <span className="block text-ink-faint mt-1">{credit}</span>}
-      </figcaption>
-    </figure>
   );
 }

@@ -11,7 +11,6 @@ export default function Requirements() {
       title="Documents and requirements"
       lede="Choose the likely visa route to see its published conditions, document checklist and official source. This is preparation, not an eligibility decision."
       width="dashboard"
-      decor
     >
       <ul className="list-none m-0 p-0 border-t border-rule-strong">
         {PATH_LIST.map((path, index) => (
@@ -34,7 +33,7 @@ export default function Requirements() {
         ))}
       </ul>
 
-      <div className="mt-10 border-l-rail border border-gold bg-paper-2 p-6 max-w-prose">
+      <div className="mt-10 border-l-rail border-terracotta bg-paper-2 p-6 max-w-prose">
         <h2 className="font-display text-title text-ink mb-2">A checklist is a beginning, not permission to travel</h2>
         <p className="text-body text-ink-muted">
           Visa rules depend on the passport, purpose, travel history and individual circumstances. The Government of India or the relevant Indian Mission makes the real decision. Confirm every requirement before paying or booking around it.

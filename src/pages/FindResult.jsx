@@ -7,7 +7,6 @@ import { SOURCES } from '../lib/rules/sources.js';
 import { getAnswers, clearAnswers } from '../lib/finder-answers.js';
 import { useStore } from '../state/store.jsx';
 import Button, { ExternalLink } from '../ui/Button.jsx';
-import { Banner } from '../ui/feedback.jsx';
 import { SourceNote, Section, RuleList } from '../ui/Page.jsx';
 import { ConfirmAction } from '../ui/structure.jsx';
 
@@ -22,11 +21,11 @@ import { ConfirmAction } from '../ui/structure.jsx';
  *    published rules say; it does not deliver a verdict.
  */
 
-const TONE = {
-  [OUTCOME.LIKELY_PATH]: 'info',
-  [OUTCOME.NEEDS_OFFICIAL_REVIEW]: 'warning',
-  [OUTCOME.NOT_AVAILABLE_ONLINE]: 'warning',
-  [OUTCOME.INSUFFICIENT_INFORMATION]: 'warning',
+const RAIL = {
+  [OUTCOME.LIKELY_PATH]: 'border-info',
+  [OUTCOME.NEEDS_OFFICIAL_REVIEW]: 'border-warning',
+  [OUTCOME.NOT_AVAILABLE_ONLINE]: 'border-warning',
+  [OUTCOME.INSUFFICIENT_INFORMATION]: 'border-warning',
 };
 
 const EYEBROW = {
@@ -80,13 +79,28 @@ export default function FindResult() {
       <p className="text-overline uppercase text-ink-muted mb-3">{EYEBROW[result.kind]}</p>
       <h1 className="font-display text-display-m text-ink mb-5 text-balance">{result.headline}</h1>
 
-      <Banner tone={TONE[result.kind]} title="This is guidance, not a decision" className="mb-8">
-        Only the Bureau of Immigration or an Indian Mission can decide an
-        application. Confirm on the official portal before you book travel or
-        pay anything.
-      </Banner>
-
       <p className="text-lede text-ink-muted max-w-prose">{result.summary}</p>
+      <p className={`mt-6 border-l-rail pl-4 text-body text-ink-muted ${RAIL[result.kind]}`}>
+        This is a sourced suggestion, not a decision. Confirm it with the
+        official service before you book or pay.
+      </p>
+
+      <div className="mt-8 pt-6 border-t border-rule-strong flex flex-col sm:flex-row flex-wrap gap-3">
+        <Button
+          size="lg"
+          href={result.officialUrl || SOURCES.portal.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {result.officialLabel || 'Continue on the official portal'} ↗
+          <span className="sr-only">(opens the official site in a new tab)</span>
+        </Button>
+        {canStart && (
+          <Button variant="secondary" size="lg" onClick={() => savedApp ? setConfirmingReplace(true) : begin()}>
+            Practise this application
+          </Button>
+        )}
+      </div>
 
       {result.kind === OUTCOME.INSUFFICIENT_INFORMATION && result.missing?.length > 0 && (
         <Section title="What is still missing">
@@ -158,23 +172,7 @@ export default function FindResult() {
         </Section>
       )}
 
-      <div className="mt-10 pt-8 border-t border-rule-strong flex flex-col sm:flex-row flex-wrap gap-4">
-        {/* Present only for a determined path. Never disabled — absent. */}
-        {canStart && (
-          <Button size="lg" onClick={() => savedApp ? setConfirmingReplace(true) : begin()}>
-            Start an e-Visa demo application
-          </Button>
-        )}
-        <Button
-          variant={canStart ? 'secondary' : 'primary'}
-          size="lg"
-          href={result.officialUrl || SOURCES.portal.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {result.officialLabel || 'Go to the official portal'} ↗
-          <span className="sr-only">(opens the official site in a new tab)</span>
-        </Button>
+      <div className="mt-10 pt-6 border-t border-rule-strong">
         <Link to="/find/q/1" className="inline-flex items-center min-h-touch text-body text-indigo underline underline-offset-4">
           Change my answers
         </Link>

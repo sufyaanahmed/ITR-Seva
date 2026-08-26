@@ -6,8 +6,8 @@ import { PATHS } from '../lib/content.js';
 import { SOURCES } from '../lib/rules/sources.js';
 import Page, { Section } from '../ui/Page.jsx';
 import Button, { ExternalLink } from '../ui/Button.jsx';
-import { Banner, StatusBadge } from '../ui/feedback.jsx';
-import { Stamp, Timeline } from '../ui/structure.jsx';
+import { Banner } from '../ui/feedback.jsx';
+import { Timeline } from '../ui/structure.jsx';
 
 function statusPanel(app) {
   const map = {
@@ -34,28 +34,23 @@ export default function Status() {
   const applicant = [app.data.given_name, app.data.surname].filter(Boolean).join(' ');
 
   return (
-    <Page routeId="application-status" eyebrow="Demo application status" title={STATE_META[app.status]?.label || 'Application status'} lede="The status and timeline below come from this record's own lifecycle events." width="dashboard">
-      <div className="flex flex-wrap items-start justify-between gap-5 mb-8">
-        <StatusBadge status={app.status} />
+    <Page routeId="application-status" eyebrow="Demo application status" title={STATE_META[app.status]?.label || 'Application status'} lede={panel.body} width="dashboard">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-y border-rule-strong py-5">
         <p className="text-meta text-ink-muted">Application <span className="numeric font-semibold text-ink">{app.id}</span></p>
+        <Button to={`/application/${app.id}/${panel.path}`}>{panel.label}</Button>
       </div>
 
-      <Banner tone={panel.tone} title={panel.title} action={<Button to={`/application/${app.id}/${panel.path}`}>{panel.label}</Button>}>
-        {panel.body}
-      </Banner>
-
       {app.status === 'GRANTED' && (
-        <section className="mt-10 border border-gold bg-paper-1 p-6 sm:p-8 flex flex-col sm:flex-row gap-7 items-start justify-between">
+        <section className="mt-10 border-t border-rule-strong pt-7">
           <div>
             <p className="text-overline uppercase text-ink-muted mb-2">Arrival readiness</p>
-            <h2 className="font-display text-title text-ink mb-3">A warm welcome starts with being prepared</h2>
+            <h2 className="font-display text-title text-ink mb-3">Before you travel</h2>
             <p className="text-body text-ink-muted max-w-prose mb-5">Carry the real ETA issued by the official service, check that your passport matches it, and complete the official e-Arrival Card before travel.</p>
             <div className="flex flex-wrap gap-4">
               <ExternalLink href={SOURCES.earrival.url}>Open the official e-Arrival Card</ExternalLink>
               <ExternalLink href={SOURCES.portal.url}>Check official visa guidance</ExternalLink>
             </div>
           </div>
-          <Stamp reference={app.decision?.etaNumber || app.id} label="Granted in this demo" />
         </section>
       )}
 

@@ -1,6 +1,6 @@
 # Visa-Seva
 
-Visa-Seva is a fictional hackathon prototype exploring what a calm, transparent and distinctly Indian visa journey could feel like. It is not affiliated with the Government of India, does not submit visa applications, and must only be used with invented information.
+Visa-Seva is an independent fictional prototype exploring what a calm, transparent Indian visa journey could feel like. It is not affiliated with the Government of India, does not submit visa applications, and must only be used with invented information.
 
 The product includes:
 
@@ -37,3 +37,20 @@ npm run test:e2e
 - `src/pages/Demo.jsx` exposes six deterministic reviewer scenarios.
 
 Demo application data stays in the current browser. Chosen files are never uploaded or retained; only fictional filename metadata is stored. Real Indian visa services are available at [indianvisaonline.gov.in](https://indianvisaonline.gov.in/).
+
+## Design and image provenance
+
+The visual direction is a restrained service publication: one Indian-designed
+typeface, a warm civic canvas, clear rules and a task-first reading order. It
+avoids region-as-theme palettes, state emblems, sacred imagery, generic
+mandalas and decorative Indic script without a translated experience.
+
+- **Anek Latin** was designed by Ek Type. The self-hosted variable font is
+  distributed under the SIL Open Font License in `public/fonts/OFL.txt`.
+- The India notebook uses only documentary photographs with explicit Creative
+  Commons reuse terms. Every on-page caption names the photographer, licence,
+  place and source page. The set includes work by Harvinder Chandigarh, Sumita
+  Roy Dutta, Kritzolina, the Government of Odisha, Visdaviva and Rainer Halama.
+  Full attribution is recorded in `public/india-notebook/CREDITS.md`.
+- Photographs are locally resized to responsive WebP. Data Saver requests none
+  of them. No generated cultural image ships in the product.

@@ -35,7 +35,6 @@ export default function Demo() {
       title="Demo scenarios"
       lede="Six deterministic fictional records expose the whole application lifecycle. Nothing here is official, live or connected to a government service."
       width="dashboard"
-      decor
     >
       <Banner tone="warning" title="Every person and document is invented" className="mb-10">
         Seeded records are session-only fixtures. Loading one changes the active record for this tab; any exploration resets on reload and cannot submit, approve or refuse anything in the real world.

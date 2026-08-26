@@ -4,7 +4,7 @@ import { requiredDocuments } from '../lib/fields.js';
 import { useStore } from '../state/store.jsx';
 import Page from '../ui/Page.jsx';
 import Button from '../ui/Button.jsx';
-import { Banner, EmptyState } from '../ui/feedback.jsx';
+import { EmptyState } from '../ui/feedback.jsx';
 import { ConfirmAction } from '../ui/structure.jsx';
 
 export default function DocumentsRequested() {
@@ -52,16 +52,16 @@ export default function DocumentsRequested() {
 
   return (
     <Page routeId="application-documents-requested" title="Replace requested documents" lede="Respond to the fictional request without uploading or retaining a real file." width="form">
-      <Banner tone="warning" title="Use an invented file" className="mb-8">
-        Only its filename, size and selection time are stored. The contents never leave the file picker and are not retained.
-      </Banner>
+      <p className="text-meta text-ink-muted border-l-rail border-warning pl-4 mb-8">
+        Use an invented file. Only its name, size and selection time are stored.
+      </p>
 
       <div className="grid gap-5">
         {requested.map((req) => {
           const event = [...app.timeline].reverse().find((item) => item.event === 'REQUEST_DOCUMENTS');
           const replacement = app.documents.find((doc) => doc.slot === req.type && doc.status === 'replaced');
           return (
-            <section key={req.type} className="border border-rule-strong bg-paper-1 p-6">
+            <section key={req.type} className="border-y border-rule-strong py-6">
               <p className="text-overline uppercase text-warning mb-2">Replacement requested</p>
               <h2 className="text-subhead font-semibold text-ink mb-2">{req.title}</h2>
               <p className="text-body text-ink-muted mb-2">{event?.detail || req.desc}</p>
@@ -95,7 +95,7 @@ export default function DocumentsRequested() {
 
       <div className="mt-8 pt-6 border-t border-rule flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
         <Button variant="secondary" to={`/application/${app.id}/status`}>Back to status</Button>
-        <Button disabled={!ready} onClick={() => setOpen(true)}>Send replacement metadata</Button>
+        <Button disabled={!ready} onClick={() => setOpen(true)}>Send replacement details</Button>
       </div>
 
       <ConfirmAction open={open} onClose={() => setOpen(false)} onConfirm={resubmit} title="Send this fictional response?" confirmLabel="Send demo response">

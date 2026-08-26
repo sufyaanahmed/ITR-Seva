@@ -42,19 +42,8 @@ export function PrefsProvider({ children }) {
     el.dataset.motion = prefs.motion;
     savePrefs(prefs);
 
-    // Keep Data Saver literal: a returning visitor who enabled it never makes
-    // a font request. System fallbacks remain deliberate and fully usable.
-    const id = 'visa-seva-webfonts';
-    const existing = document.getElementById(id);
-    if (prefs.dataSaver === 'on') {
-      existing?.remove();
-    } else if (!existing) {
-      const link = document.createElement('link');
-      link.id = id;
-      link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap';
-      document.head.appendChild(link);
-    }
+    // Anek Latin is self-hosted. Data Saver swaps to the system stack before
+    // it is used, so the browser has no reason to request the local font file.
   }, [prefs]);
 
   const value = useMemo(

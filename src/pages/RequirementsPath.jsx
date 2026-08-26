@@ -36,14 +36,24 @@ export default function RequirementsPath() {
       title={`${path.name} requirements`}
       lede={path.intro}
       width="dashboard"
-      decor
     >
-      <Banner tone="info" title="Guidance, not a decision">
-        This page summarises a published route. It does not decide whether anyone is eligible, and the rules can change without notice.
-      </Banner>
+      <p className="text-meta text-ink-muted border-t border-rule-strong pt-4">
+        Published guidance, not an eligibility decision. Confirm changes on the official page.
+      </p>
 
-      <div className="grid lg:grid-cols-[minmax(0,7fr)_minmax(18rem,5fr)] gap-10 lg:gap-14 mt-10">
-        <div>
+      <div className="grid lg:grid-cols-[minmax(0,7fr)_minmax(18rem,5fr)] gap-10 lg:gap-14 mt-8">
+        <aside className="lg:col-start-2 lg:row-start-1 lg:border-l lg:border-rule lg:pl-8">
+          <p className="text-overline uppercase text-ink-muted mb-3">Next step</p>
+          <h2 className="font-display text-title text-ink mb-3">Confirm, then continue</h2>
+          <div className="grid gap-3">
+            <ExternalLink href={path.source.url}>Read the official guidance</ExternalLink>
+            {canDemo && <Button to="/start" variant="secondary">Start a fictional application</Button>}
+            <Button to="/find/q/1" variant="quiet">Check the likely path first</Button>
+          </div>
+          <SourceNote source={path.source} />
+        </aside>
+
+        <div className="lg:col-start-1 lg:row-start-1">
           <Section title="What you will need" className="mt-0">
             <RuleList items={path.documents} />
           </Section>
@@ -84,19 +94,6 @@ export default function RequirementsPath() {
           )}
         </div>
 
-        <aside className="lg:border-l lg:border-rule lg:pl-8">
-          <p className="text-overline uppercase text-ink-muted mb-3">Your next step</p>
-          <h2 className="font-display text-title text-ink mb-3">Confirm, then continue</h2>
-          <p className="text-body text-ink-muted mb-6">
-            Read the official page before relying on this summary. If you are only exploring the prototype, use invented details throughout.
-          </p>
-          <div className="grid gap-3">
-            <ExternalLink href={path.source.url}>Read the official guidance</ExternalLink>
-            {canDemo && <Button to={`/start`} variant="secondary">Start a fictional application</Button>}
-            <Button to="/find/q/1" variant="quiet">Check the likely path first</Button>
-          </div>
-          <SourceNote source={path.source} />
-        </aside>
       </div>
     </Page>
   );

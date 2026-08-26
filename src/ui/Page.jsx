@@ -19,17 +19,17 @@ const WIDTH = {
  * one must exist.
  */
 export default function Page({
-  routeId, eyebrow, title, lede, width = 'doc', children, aside, decor = false,
+  routeId, eyebrow, title, lede, width = 'doc', children, aside, pageClass = '',
 }) {
   return (
-    <div className={decor ? 'jali-ghost' : undefined}>
+    <div className={pageClass}>
       <div className={`shell py-9 ${WIDTH[width]}`}>
         {routeId && <Breadcrumbs routeId={routeId} />}
         {eyebrow && (
-          <p className="text-overline uppercase text-ink-muted mb-3">{eyebrow}</p>
+          <p className="page-eyebrow text-overline uppercase text-ink-muted mb-3">{eyebrow}</p>
         )}
-        <h1 className="font-display text-display-m text-ink mb-4 text-balance">{title}</h1>
-        {lede && <p className="text-lede text-ink-muted max-w-prose mb-8">{lede}</p>}
+        <h1 className="page-title font-display text-display-m text-ink mb-4 text-balance">{title}</h1>
+        {lede && <p className="page-lede text-lede text-ink-muted max-w-prose mb-8">{lede}</p>}
         {aside}
         {children}
       </div>

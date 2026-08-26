@@ -2,7 +2,6 @@ import React from 'react';
 import Page, { Section, SourceNote } from '../ui/Page.jsx';
 import Button, { ExternalLink } from '../ui/Button.jsx';
 import { Disclosure } from '../ui/structure.jsx';
-import { Banner } from '../ui/feedback.jsx';
 import { FAQ, GLOSSARY } from '../lib/content.js';
 import {
   OFFICIAL_CONTACT, INTERMEDIARY_WARNING, SOURCES,
@@ -12,29 +11,13 @@ export default function Help() {
   return (
     <Page
       routeId="help"
-      eyebrow="Clear answers, real contacts"
-      title="Clear answers. Real contacts."
-      lede="This prototype can explain its guidance and your demo data. For a real application, it hands you clearly to the Government of India."
+      eyebrow="Help"
+      title="Answers and official contacts"
+      lede="For a real application, go directly to the Government of India."
       width="doc"
-      decor
     >
-      <Banner tone="warning" title="This is a prototype, not a support desk">
-        Nobody receives messages through Visa-Seva, and nothing you do here reaches
-        the Government of India. Do not enter real passport, payment or identity details.
-      </Banner>
-
-      <Section title="Frequently asked questions">
-        <div className="border-t border-rule">
-          {FAQ.map((item) => (
-            <Disclosure key={item.q} summary={item.q} className="border-b border-rule">
-              <p className="max-w-prose text-ink-muted">{item.a}</p>
-            </Disclosure>
-          ))}
-        </div>
-      </Section>
-
-      <Section title="Ask the real e-Visa team">
-        <div className="border border-rule-strong bg-paper-1 p-6 sm:p-8">
+      <Section title="Official e-Visa team" className="mt-0">
+        <div className="border-y border-rule-strong py-6">
           <p className="text-body text-ink-muted max-w-prose">
             The Government of India publishes these contacts for e-Visa questions.
             Availability and response times are controlled by the official service,
@@ -60,8 +43,18 @@ export default function Help() {
         </div>
       </Section>
 
+      <Section title="Frequently asked questions">
+        <div className="border-t border-rule">
+          {FAQ.map((item) => (
+            <Disclosure key={item.q} summary={item.q} className="border-b border-rule">
+              <p className="max-w-prose text-ink-muted">{item.a}</p>
+            </Disclosure>
+          ))}
+        </div>
+      </Section>
+
       <Section title="A warning about intermediaries">
-        <blockquote className="border-l-rail border-gold pl-5 text-body text-ink-muted max-w-prose">
+        <blockquote className="border-l-rail border-terracotta pl-5 text-body text-ink-muted max-w-prose">
           {INTERMEDIARY_WARNING}
         </blockquote>
         <p className="mt-5">

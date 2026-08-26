@@ -1,6 +1,6 @@
 # Visa-Seva
 
-> Fictional hackathon prototype; not an official Government of India service. Never use real personal, passport, payment, or document data.
+> Independent fictional prototype; not an official Government of India service. Never use real personal, passport, payment, or document data.
 
 ## Primary tasks
 - [Find my visa](/find/q/1): Six questions that produce a conservative, sourced suggestion of the likely visa path.

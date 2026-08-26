@@ -57,7 +57,7 @@ const sourceRows = SOURCE_LIST.map((source) => [
 const agent = `${generatedNotice}
 # ${SITE_NAME}: agent interface
 
-${SITE_NAME} is a fictional hackathon prototype for planning and practising an Indian visa journey. It is not an official Government of India service. Never enter real passport, payment, identity, or document data. It does not submit applications or collect payments.
+${SITE_NAME} is an independent fictional prototype for planning and practising an Indian visa journey. It is not an official Government of India service. Never enter real passport, payment, identity, or document data. It does not submit applications or collect payments.
 
 ## Safety and commitment boundaries
 
@@ -116,7 +116,7 @@ The active demo application is saved to this browser’s local storage. Preferen
 
 const llms = `# ${SITE_NAME}
 
-> Fictional hackathon prototype; not an official Government of India service. Never use real personal, passport, payment, or document data.
+> Independent fictional prototype; not an official Government of India service. Never use real personal, passport, payment, or document data.
 
 ## Primary tasks
 ${ROUTES.filter((route) => route.nav?.includes('header')).map((route) => {

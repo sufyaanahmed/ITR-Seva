@@ -6,8 +6,7 @@ import { PATHS } from '../lib/content.js';
 import { useStore } from '../state/store.jsx';
 import Page, { Section } from '../ui/Page.jsx';
 import Button from '../ui/Button.jsx';
-import { Banner, StatusBadge } from '../ui/feedback.jsx';
-import { DefinitionList, Stamp, Timeline } from '../ui/structure.jsx';
+import { DefinitionList, Timeline } from '../ui/structure.jsx';
 
 function valueFor(field, app) {
   const value = app.data[field.name];
@@ -25,7 +24,7 @@ export default function Print() {
   return (
     <Page routeId="application-print" title="Demo application record" lede="A printable local artefact that identifies itself as fictional even when separated from this website." width="doc">
       <div aria-hidden="true" className="hidden print:flex fixed inset-0 items-center justify-center pointer-events-none z-50">
-        <p className="-rotate-[32deg] text-[54pt] leading-none font-bold text-danger opacity-[0.10] text-center">HACKATHON PROTOTYPE<br />NOT OFFICIAL</p>
+        <p className="-rotate-[32deg] text-[54pt] leading-none font-bold text-danger opacity-[0.10] text-center">PROTOTYPE<br />NOT OFFICIAL</p>
       </div>
 
       <div className="no-print flex flex-wrap gap-3 mb-8">
@@ -33,14 +32,9 @@ export default function Print() {
         <Button variant="secondary" to={`/application/${app.id}`}>Back to application</Button>
       </div>
 
-      <Banner tone="warning" title="Not an official visa document" className="mb-8">
-        Printing or saving this page does not make it valid. It is a fictional hackathon artefact and cannot be used for travel.
-      </Banner>
-
       <article className="print-sheet relative border border-rule-strong bg-paper-1 p-6 sm:p-10 overflow-hidden">
-        <div aria-hidden="true" className="absolute -right-16 top-16 rotate-45 border-y-rail border-danger text-danger text-overline font-bold tracking-[0.16em] py-2 px-20 opacity-60">PROTOTYPE · NOT OFFICIAL</div>
         <header className="border-b-rail border-indigo pb-7 mb-8 pr-20">
-          <p className="text-overline uppercase text-ink-muted mb-2">Visa-Seva hackathon prototype</p>
+          <p className="text-overline uppercase text-danger mb-2">Prototype · not an official visa document</p>
           <h2 className="font-display text-display-m text-ink mb-3">{app.status === 'GRANTED' ? 'Fictional electronic travel authorisation' : 'Fictional application record'}</h2>
           <p className="text-body text-ink-muted">This page was generated locally. It was not issued, reviewed or endorsed by the Government of India.</p>
         </header>
@@ -52,10 +46,7 @@ export default function Print() {
             <div><dt className="text-meta text-ink-muted">Applicant</dt><dd>{name || 'Not answered'}</dd></div>
             <div><dt className="text-meta text-ink-muted">Visa route</dt><dd>{PATHS[app.pathId]?.name || app.pathId}</dd></div>
           </dl>
-          <div className="grid gap-4 justify-items-start sm:justify-items-end">
-            <StatusBadge status={app.status} />
-            <Stamp reference={app.decision?.etaNumber || app.id} label={`${app.status} in this demo`} tone={app.status === 'GRANTED' ? 'gold' : 'grey'} />
-          </div>
+          <p className="text-subhead font-semibold text-ink">{app.status === 'GRANTED' ? 'Granted in this demo' : 'Demo record'}</p>
         </div>
 
         {FORM_STAGES.map((stage) => (
@@ -75,7 +66,7 @@ export default function Print() {
         </Section>
 
         <Section title="Demo timeline" className="break-inside-avoid border-t border-rule pt-6"><Timeline events={app.timeline} /></Section>
-        <footer className="mt-10 pt-6 border-t-rail border-danger text-meta text-danger font-semibold uppercase tracking-[0.08em]">Hackathon prototype — not an official visa or travel document — {app.id}</footer>
+        <footer className="mt-10 pt-6 border-t-rail border-danger text-meta text-danger font-semibold uppercase tracking-[0.08em]">Prototype — not an official visa or travel document — {app.id}</footer>
       </article>
     </Page>
   );

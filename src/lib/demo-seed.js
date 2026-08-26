@@ -114,7 +114,7 @@ export const SEED_APPLICATIONS = [
     applicant: 'Amara Chinelo Okonjo',
     data: common,
     documents: [doc('passport', 'demo-passport.pdf'), doc('photograph', 'demo-photo.jpg')],
-    payment: { status: 'succeeded', lines: [{ label: 'Visa fee', amount: 2000 }, { label: 'Service charge', amount: 500 }], total: 2500, currency: 'INR', simulated: true, reference: 'DEMO-TXN-00003', at: T('19') },
+    payment: { status: 'succeeded', lines: [], total: null, currency: null, simulated: true, reference: 'DEMO-TXN-00003', at: T('19') },
     timeline: [
       { seq: 1, at: T('17'), from: 'NOT_STARTED', to: 'DRAFT', event: 'START_APPLICATION', actor: 'user', label: 'Application started' },
       { seq: 2, at: T('19'), from: 'DRAFT', to: 'READY_FOR_REVIEW', event: 'REQUEST_REVIEW', actor: 'user', label: 'Ready for review' },
@@ -131,7 +131,7 @@ export const SEED_APPLICATIONS = [
     data: { ...common, given_name: 'Lucia', surname: 'Marchetti', nationality: 'Italy', country_of_application: 'Italy', country_of_birth: 'Italy', place_of_birth: 'Bologna', visa_category: 'medical' },
     documents: [doc('passport', 'demo-passport.pdf'), doc('photograph', 'demo-photo.jpg'), doc('medical_document', 'demo-hospital-letter.pdf')],
     requestedDocuments: ['photograph'],
-    payment: { status: 'succeeded', lines: [{ label: 'Visa fee', amount: 2000 }, { label: 'Service charge', amount: 500 }], total: 2500, currency: 'INR', simulated: true, reference: 'DEMO-TXN-00004', at: T('18') },
+    payment: { status: 'succeeded', lines: [], total: null, currency: null, simulated: true, reference: 'DEMO-TXN-00004', at: T('18') },
     timeline: [
       { seq: 1, at: T('16'), from: 'NOT_STARTED', to: 'DRAFT', event: 'START_APPLICATION', actor: 'user', label: 'Application started' },
       { seq: 2, at: T('18'), from: 'DRAFT', to: 'READY_FOR_REVIEW', event: 'REQUEST_REVIEW', actor: 'user', label: 'Ready for review' },
@@ -148,7 +148,7 @@ export const SEED_APPLICATIONS = [
     applicant: 'Amara Chinelo Okonjo',
     data: common,
     documents: [doc('passport', 'demo-passport.pdf'), doc('photograph', 'demo-photo.jpg')],
-    payment: { status: 'succeeded', lines: [{ label: 'Visa fee', amount: 2000 }, { label: 'Service charge', amount: 500 }], total: 2500, currency: 'INR', simulated: true, reference: 'DEMO-TXN-00005', at: T('15') },
+    payment: { status: 'succeeded', lines: [], total: null, currency: null, simulated: true, reference: 'DEMO-TXN-00005', at: T('15') },
     decision: { outcome: 'GRANTED', at: T('21'), etaNumber: 'DEMO-ETA-00005', reason: null },
     timeline: [
       { seq: 1, at: T('14'), from: 'NOT_STARTED', to: 'DRAFT', event: 'START_APPLICATION', actor: 'user', label: 'Application started' },

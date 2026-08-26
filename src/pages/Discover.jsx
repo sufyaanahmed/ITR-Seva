@@ -1,9 +1,64 @@
 import React from 'react';
 import Page from '../ui/Page.jsx';
-import Button from '../ui/Button.jsx';
-import { Plate } from '../ui/structure.jsx';
-import { PLATES } from '../lib/content.js';
+import { ExternalLink } from '../ui/Button.jsx';
 import { usePrefs } from '../state/prefs.jsx';
+
+const PHOTOGRAPHS = [
+  {
+    id: 'thathera', className: 'notebook-photo--wide',
+    src: '/india-notebook/thathera-workshop-1280.webp', small: '/india-notebook/thathera-workshop-640.webp',
+    width: 1024, height: 768,
+    alt: 'The working floor and hand tools inside a Thathera brass workshop in Jandiala Guru.',
+    label: 'Jandiala Guru, Punjab · Thathera workshop',
+    author: 'Harvinder Chandigarh', license: 'CC BY 4.0',
+    url: 'https://commons.wikimedia.org/wiki/File:Tools_of_brass_utensil_making_in_workshop_of_Thathera_market_of_Jandiala_Guru._06.jpg',
+  },
+  {
+    id: 'longpi', className: 'notebook-photo--compact',
+    src: '/india-notebook/longpi-pottery-1280.webp', small: '/india-notebook/longpi-pottery-640.webp',
+    width: 1024, height: 768,
+    alt: 'An assortment of hand-shaped black Longpi pottery vessels.',
+    label: 'Longpi, Manipur · black pottery',
+    author: 'Sumita Roy Dutta', license: 'CC BY-SA 4.0',
+    url: 'https://commons.wikimedia.org/wiki/File:Longpi_pottery_of_Thankul_Naga_tribes_DSCN1244_03.jpg',
+  },
+  {
+    id: 'tasar', className: 'notebook-photo--portrait',
+    src: '/india-notebook/tasar-yarn-960.webp', small: '/india-notebook/tasar-yarn-480.webp',
+    width: 768, height: 1152,
+    alt: 'Tasar silk cocoons, golden yarn and a reeling machine at the Odisha Crafts Museum.',
+    label: 'Bhubaneswar, Odisha · tasar yarn',
+    author: 'Kritzolina', license: 'CC BY-SA 4.0',
+    url: 'https://commons.wikimedia.org/wiki/File:Silk_and_weaving_at_the_Odisha_Crafts_Museum_03.jpg',
+  },
+  {
+    id: 'dhokra', className: 'notebook-photo--landscape',
+    src: '/india-notebook/dhokra-casting-1200.webp', small: '/india-notebook/dhokra-casting-640.webp',
+    width: 1024, height: 683,
+    alt: 'An artisan shaping a Dhokra cast by hand in Odisha.',
+    label: 'Odisha · Dhokra casting',
+    author: 'Government of Odisha', license: 'CC BY 4.0',
+    url: 'https://commons.wikimedia.org/wiki/File:A_Dhokra_cast_being_made_by_a_Dharua_tribal_woman.jpg',
+  },
+  {
+    id: 'ajrakh', className: 'notebook-photo--tall',
+    src: '/india-notebook/ajrakh-artisan-960.webp', small: '/india-notebook/ajrakh-artisan-480.webp',
+    width: 768, height: 1024,
+    alt: 'An Ajrakh artisan in Kutch holding a large indigo and madder block-printed cloth.',
+    label: 'Kutch, Gujarat · Ajrakh',
+    author: 'Visdaviva', license: 'CC BY-SA 3.0',
+    url: 'https://commons.wikimedia.org/wiki/File:Ajrak_Craft_artisan.jpeg',
+  },
+  {
+    id: 'athangudi', className: 'notebook-photo--wide',
+    src: '/india-notebook/athangudi-tiles-1280.webp', small: '/india-notebook/athangudi-tiles-640.webp',
+    width: 1024, height: 683,
+    alt: 'Rows of handmade Athangudi cement tiles curing in water at a workshop.',
+    label: 'Athangudi, Tamil Nadu · tile workshop',
+    author: 'Rainer Halama', license: 'CC BY-SA 4.0',
+    url: 'https://commons.wikimedia.org/wiki/File:Chettinad-Manufacturing_Athangudi_Tiles-WUS-04332.jpg',
+  },
+];
 
 export default function Discover() {
   const { imagesSuppressed } = usePrefs();
@@ -11,56 +66,31 @@ export default function Discover() {
   return (
     <Page
       routeId="discover"
-      eyebrow="The country beyond the form"
-      title="India contains more than one story"
-      lede="Three small observations, offered after the practical work rather than before it. This page is editorial; it is not part of an application and makes no tourism promises."
+      eyebrow="India notebook"
+      title="India, up close"
+      lede="Six real photographs. Six specific places. No single Indian aesthetic."
       width="dashboard"
-      decor
     >
-      <div className="border-y border-rule-strong py-6 mb-12 grid sm:grid-cols-[4rem_1fr] gap-3 sm:gap-6">
-        <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" className="text-terracotta-ink">
-          <g fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M14 2h20l12 12v20L34 46H14L2 34V14Z" />
-            <path d="m24 13 11 11-11 11-11-11Z" opacity=".55" />
-          </g>
-        </svg>
-        <p className="text-lede text-ink max-w-prose">
-          The first welcome is useful. The second can be beautiful. India has always made room for both.
-        </p>
-      </div>
-
-      <ol className="list-none m-0 p-0 grid gap-16 lg:gap-24">
-        {PLATES.map((plate, index) => (
-          <li key={plate.title} className={`grid gap-8 lg:grid-cols-2 lg:items-center ${index % 2 ? '' : ''}`}>
-            <Plate
-              src={plate.src}
-              alt={plate.alt}
-              motif={plate.motif}
-              caption={plate.caption}
-              credit={plate.credit}
-              suppressed={imagesSuppressed}
-              className={index % 2 ? 'lg:order-2' : ''}
-            />
-            <article className={index % 2 ? 'lg:order-1' : ''}>
-              <p className="text-overline uppercase numeric text-ink-faint mb-3">Plate 0{index + 1}</p>
-              <h2 className="font-display text-display-m text-ink mb-5 text-balance">{plate.title}</h2>
-              <p className="text-lede text-ink-muted max-w-prose">{plate.body}</p>
-            </article>
+      <ol className="notebook-grid">
+        {PHOTOGRAPHS.map((photo, index) => (
+          <li key={photo.id} className={`notebook-photo ${photo.className}`}>
+            <figure>
+              {imagesSuppressed ? (
+                <div className="notebook-photo__paused">Image not loaded in Data Saver mode. {photo.alt}</div>
+              ) : (
+                <picture>
+                  <source media="(max-width: 50rem)" srcSet={photo.small} type="image/webp" />
+                  <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
+                </picture>
+              )}
+              <figcaption>
+                <strong><span className="numeric">0{index + 1}</span> {photo.label}</strong>
+                <span>Photo: <ExternalLink href={photo.url}>{photo.author}</ExternalLink> · {photo.license}</span>
+              </figcaption>
+            </figure>
           </li>
         ))}
       </ol>
-
-      <div className="mt-16 lg:mt-24 border border-rule-strong bg-indigo text-on-indigo on-indigo jali-story p-7 sm:p-10">
-        <p className="text-overline uppercase opacity-75 mb-3">When you are ready</p>
-        <h2 className="font-display text-title mb-3">Return to the journey itself</h2>
-        <p className="text-body opacity-85 max-w-prose mb-6">
-          Read the requirements before entering anything, or use the finder for a conservative suggestion based on published rules.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button to="/find/q/1" className="bg-paper-1 text-indigo border-paper-1 hover:bg-paper-2">Find my likely path</Button>
-          <Button to="/before-you-travel" variant="secondary" className="text-on-indigo border-paper-1 hover:bg-indigo-600">Before you travel</Button>
-        </div>
-      </div>
     </Page>
   );
 }

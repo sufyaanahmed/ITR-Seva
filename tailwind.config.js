@@ -33,8 +33,6 @@ export default {
           ink: 'var(--terracotta-ink)',
           50: 'var(--terracotta-050)',
         },
-        peacock: { DEFAULT: 'var(--peacock)', 50: 'var(--peacock-050)' },
-        gold: 'var(--gold)',
         rule: {
           DEFAULT: 'var(--rule)',
           strong: 'var(--rule-strong)',

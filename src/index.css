@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Anek Latin";
+  src: url("/fonts/anek-latin-variable.woff2") format("woff2-variations");
+  font-style: normal;
+  font-weight: 400 700;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
 /* ==========================================================================
    Visa-Seva design tokens
    "Contemporary Indian editorial hospitality."
@@ -13,40 +22,33 @@
 
 :root {
   /* -- Paper: surfaces, warmest to deepest ------------------------------- */
-  --paper-0: #fcfaf5;   /* page ground */
-  --paper-1: #ffffff;   /* raised: cards, form panels */
-  --paper-2: #f4f0e7;   /* sunken: wells, review blocks */
-  --paper-3: #e9e2d4;   /* deep: footers, disabled fills */
+  --paper-0: #f7f5ef;   /* page ground */
+  --paper-1: #ffffff;   /* inputs, dialogs, printable artefacts */
+  --paper-2: #ecefeb;   /* quiet wells and review blocks */
+  --paper-3: #dfe3df;   /* disabled fills */
 
   /* -- Ink: text on paper ------------------------------------------------ */
-  --ink: #22201b;        /* 15.6:1 on paper-0 */
-  --ink-muted: #565045;  /*  7.7:1 on paper-0 */
-  --ink-faint: #6e675a;  /*  5.4:1 on paper-0, 4.9:1 on paper-2 — the floor */
+  --ink: #171b1a;
+  --ink-muted: #515754;
+  --ink-faint: #656c68;
 
   /* -- Primary ----------------------------------------------------------- */
-  --indigo-900: #101b38;
-  --indigo: #16244a;     /* 14.5:1 on paper-0 */
-  --indigo-600: #2b3d6b; /* 10.2:1 on paper-0 */
-  --indigo-050: #e7eaf1;
+  --indigo-900: #12313a;
+  --indigo: #123d49;
+  --indigo-600: #28556a;
+  --indigo-050: #dce7e9;
   --on-indigo: #ffffff;        /* 15.2:1 on indigo */
   --on-indigo-muted: #cfd7e6;  /* 10.5:1 on indigo — replaces the old failing footer blue */
 
   /* -- Accent: terracotta, deliberately scarce ---------------------------- */
-  --terracotta: #b8442a;      /* graphic only — 2.8:1 on indigo, never text there */
-  --terracotta-ink: #96311a;  /* 7.3:1 on paper-0 — the text-safe variant */
-  --terracotta-050: #faede8;
-
-  /* -- Secondary accent: storytelling only -------------------------------- */
-  --peacock: #0e5f70;
-  --peacock-050: #e5f0f2;
-
-  /* -- Gold: ceremonial graphic only. Never text on paper. ---------------- */
-  --gold: #b8912b;
+  --terracotta: #a33a2b;
+  --terracotta-ink: #8c2e21;
+  --terracotta-050: #f2ddd5;
 
   /* -- Rules ------------------------------------------------------------- */
-  --rule: #e2dacb;
-  --rule-strong: #c9bea9;
-  --rule-control: #8a8071; /* 3.7:1 on paper-0 — meets 1.4.11 for control borders */
+  --rule: #c8ccc8;
+  --rule-strong: #aeb4af;
+  --rule-control: #737a76;
 
   /* -- Semantic status --------------------------------------------------- */
   --info: #1b5583;      --info-bg: #e8f0f7;
@@ -55,20 +57,18 @@
   --danger: #9c2a1e;    --danger-bg: #fbebe7;
 
   /* -- Focus ------------------------------------------------------------- */
-  --focus-inner: #fcfaf5;
-  --focus-outer: #16244a;
+  --focus-inner: #fffdf8;
+  --focus-outer: #17384a;
 
   /* -- Type -------------------------------------------------------------- */
-  --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Palatino,
-    Georgia, "Times New Roman", serif;
-  --font-sans: "IBM Plex Sans", "IBM Plex Sans Devanagari", ui-sans-serif,
-    "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    "Noto Sans Devanagari", "Nirmala UI", "Kohinoor Devanagari", sans-serif;
+  --font-display: "Anek Latin", "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Anek Latin", ui-sans-serif, "Segoe UI Variable Text", "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
 
   --text-scale: 1;
 
-  --fs-display-xl: calc(clamp(2.5rem, 6vw, 3.75rem) * var(--text-scale));
-  --fs-display-l: calc(clamp(2rem, 4.5vw, 2.75rem) * var(--text-scale));
+  --fs-display-xl: calc(clamp(3.25rem, 7.4vw, 6.25rem) * var(--text-scale));
+  --fs-display-l: calc(clamp(2.5rem, 5vw, 4.25rem) * var(--text-scale));
   --fs-display-m: calc(2.125rem * var(--text-scale));
   --fs-title: calc(1.625rem * var(--text-scale));
   --fs-heading: calc(1.3125rem * var(--text-scale));
@@ -104,11 +104,6 @@
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* -- Jali: octagon-and-square lattice, three intensities ---------------- */
-  --jali-story: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%2316244A' stroke-width='1'%3E%3Cpath stroke-opacity='.10' d='M18.75 0H45.25L64 18.75V45.25L45.25 64H18.75L0 45.25V18.75Z'/%3E%3Cpath stroke-opacity='.06' d='M32 12 52 32 32 52 12 32Z'/%3E%3C/g%3E%3C/svg%3E");
-  --jali-structure: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath fill='none' stroke='%2316244A' stroke-opacity='.05' stroke-width='1' d='M9.37 0H22.63L32 9.37V22.63L22.63 32H9.37L0 22.63V9.37Z'/%3E%3C/svg%3E");
-  --jali-ghost: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%2316244A' stroke-opacity='.022' stroke-width='1' d='M7.03 0H16.97L24 7.03V16.97L16.97 24H7.03L0 16.97V7.03Z'/%3E%3C/svg%3E");
-  --jali-on-indigo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23FCFAF5' stroke-width='1'%3E%3Cpath stroke-opacity='.10' d='M18.75 0H45.25L64 18.75V45.25L45.25 64H18.75L0 45.25V18.75Z'/%3E%3Cpath stroke-opacity='.055' d='M32 12 52 32 32 52 12 32Z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 @media (min-width: 48rem) { :root { --gutter: 2.5rem; } }
@@ -131,24 +126,17 @@
   --ink: #000000; --ink-muted: #000000; --ink-faint: #1a1a1a;
   --indigo: #0b1733; --indigo-600: #0b1733; --indigo-900: #000000; --indigo-050: #ffffff;
   --terracotta: #7a1f10; --terracotta-ink: #7a1f10; --terracotta-050: #ffffff;
-  --peacock: #0a4653; --peacock-050: #ffffff;
   --info: #103f63; --success: #0b4a2e; --warning: #5a3d00; --danger: #7e1b12;
   --info-bg: #ffffff; --success-bg: #ffffff; --warning-bg: #ffffff; --danger-bg: #ffffff;
   --rule: #000000; --rule-strong: #000000; --rule-control: #000000;
   --sh-raise: none; --sh-lift: none;
 }
-:root[data-contrast='high'] .jali-story,
-:root[data-contrast='high'] .jali-structure,
-:root[data-contrast='high'] .jali-ghost { background-image: none; }
 
 /* -- Data Saver: no webfont, no pattern, no decorative image ------------- */
 :root[data-saver='on'] {
-  --font-display: "Iowan Old Style", Palatino, Georgia, serif;
+  --font-display: "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
 }
-:root[data-saver='on'] .jali-story,
-:root[data-saver='on'] .jali-structure,
-:root[data-saver='on'] .jali-ghost { background-image: none; }
 
 @layer base {
   html {
@@ -164,8 +152,6 @@
     font-size: var(--fs-body);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    /* Nothing may push the document sideways. This is the 320px guarantee. */
-    overflow-x: hidden;
   }
 
   /* Long unbroken strings — passport numbers, URLs, translated labels —
@@ -205,11 +191,6 @@
 }
 
 @layer components {
-  .jali-story { background-image: var(--jali-story); background-size: 64px 64px; }
-  .jali-structure { background-image: var(--jali-structure); background-size: 32px 32px; }
-  .jali-ghost { background-image: var(--jali-ghost); background-size: 24px 24px; }
-  .on-indigo.jali-story { background-image: var(--jali-on-indigo); }
-
   /* Tabular figures for anything a person will read out loud or compare:
      application IDs, access codes, dates, fees. */
   .numeric { font-variant-numeric: tabular-nums; }
@@ -236,9 +217,342 @@
   /* The real file input is visually hidden, so its visible label carries the
      keyboard focus indication. */
   .file-picker-label:has(input:focus-visible) {
-    outline: 3px solid var(--focus);
+    outline: 3px solid var(--focus-outer);
     outline-offset: 3px;
     box-shadow: 0 0 0 6px var(--focus-outer);
+  }
+
+  /* Home: the Traveller's Folio. Art occupies one deliberate field; service
+     actions are indexed like a working document rather than boxed as cards. */
+  .home-kicker {
+    color: var(--ink-muted);
+    font-size: var(--fs-meta);
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    line-height: 1.35;
+  }
+
+  .home-title {
+    max-width: 12.5ch;
+    margin-block: 1.25rem 1.5rem;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: calc(clamp(2.85rem, 5.8vw, 4.75rem) * var(--text-scale));
+    font-stretch: 112%;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.97;
+    text-wrap: balance;
+  }
+
+  .home-intro {
+    max-width: 34rem;
+    color: var(--ink-muted);
+    font-size: var(--fs-lede);
+    line-height: 1.5;
+  }
+
+  .home-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .home-official {
+    max-width: 39rem;
+    margin-top: 1.5rem;
+    color: var(--ink-muted);
+    font-size: var(--fs-meta);
+    line-height: 1.55;
+  }
+
+  .saved-journey {
+    display: grid;
+    gap: 1rem;
+    align-items: end;
+    margin-top: 2rem;
+    padding-block: 1.25rem;
+    border-block: 1px solid var(--rule-strong);
+  }
+
+  .saved-journey__record {
+    margin-top: 0.35rem;
+    color: var(--ink);
+    font-size: var(--fs-body);
+  }
+
+  .service-index {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  .service-index__heading h2 {
+    max-width: 13ch;
+    margin-block: 0.75rem 1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display-l);
+    font-stretch: 110%;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  .service-index__heading > p:last-child {
+    max-width: 28rem;
+    color: var(--ink-muted);
+  }
+
+  .service-index__list {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule-strong);
+    list-style: none;
+  }
+
+  .service-index__list > li {
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  .service-index__link {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: 1rem;
+    min-height: 44px;
+    padding-block: clamp(1.4rem, 3vw, 2rem);
+    color: var(--ink);
+    text-decoration: none;
+    transition: color var(--dur-quick) var(--ease-out),
+      padding-left var(--dur-base) var(--ease-out);
+  }
+
+  .service-index__link:hover {
+    padding-left: 0.5rem;
+    color: var(--indigo);
+  }
+
+  .service-index__number {
+    color: var(--terracotta-ink);
+    font-size: var(--fs-meta);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  .service-index__content {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .service-index__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-stretch: 108%;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .service-index__body {
+    max-width: 42rem;
+    color: var(--ink-muted);
+    font-size: var(--fs-body);
+  }
+
+  .service-index__action {
+    margin-top: 0.35rem;
+    color: var(--indigo);
+    font-size: var(--fs-meta);
+    font-weight: 600;
+  }
+
+
+  /* Service edition reset: a calm publication grid, not a campaign page. */
+  .home-cover { border-bottom: 1px solid var(--rule-strong); }
+
+  .home-cover__register {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-muted);
+    font-size: var(--fs-meta);
+  }
+
+  .home-cover__grid {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: clamp(3rem, 7vw, 6.5rem);
+  }
+
+  .home-cover__copy { min-width: 0; }
+
+  .home-cover .home-title {
+    max-width: 12ch;
+    margin-block: 1rem 1.35rem;
+    font-size: calc(clamp(2.65rem, 5.4vw, 4.75rem) * var(--text-scale));
+    font-stretch: normal;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+  }
+
+  .home-cover__official {
+    align-self: end;
+    padding-block: 1.25rem;
+    border-block: 1px solid var(--rule-strong);
+  }
+
+  .home-cover__official > p:nth-child(2) { margin-block: 0.5rem 1rem; color: var(--ink-muted); }
+  .home-cover__official > p:last-child { margin-top: 0.75rem; }
+
+  .service-index__link { transition: color var(--dur-quick) var(--ease-out); }
+  .service-index__link:hover { padding-left: 0; color: var(--indigo); }
+  .service-index__title { font-stretch: normal; }
+
+  .home-principles {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: clamp(4rem, 8vw, 7rem);
+    border-top: 1px solid var(--rule-strong);
+  }
+
+  .home-principles__heading h2,
+  .home-next h2 {
+    max-width: 14ch;
+    margin-block: 0.75rem 1rem;
+    font-size: var(--fs-display-l);
+    font-stretch: normal;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  .home-principles__heading > p:last-child { max-width: 36rem; color: var(--ink-muted); }
+
+  .home-principles__list {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule-strong);
+    list-style: none;
+  }
+
+  .home-principles__list li {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .home-principles__list h3 { margin-bottom: 0.15rem; font-size: var(--fs-subhead); }
+  .home-principles__list p { color: var(--ink-muted); }
+
+  .home-next {
+    padding-block: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--rule-strong);
+  }
+
+  .home-next > div {
+    display: grid;
+    margin-top: 2rem;
+    border-top: 1px solid var(--rule-strong);
+  }
+
+  .home-next a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .home-next a:hover { color: var(--terracotta-ink); }
+
+  .page-title { font-stretch: normal; letter-spacing: -0.02em; }
+  .page-lede { margin-bottom: 2rem; }
+
+  /* India notebook: documentary photographs carry the page; captions stay short. */
+  .notebook-grid {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .notebook-photo { min-width: 0; }
+  .notebook-photo figure { margin: 0; }
+  .notebook-photo picture,
+  .notebook-photo img { display: block; width: 100%; height: auto; }
+  .notebook-photo img { background: var(--paper-2); }
+
+  .notebook-photo figcaption {
+    display: grid;
+    gap: 0.2rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--ink);
+    font-size: var(--fs-meta);
+  }
+
+  .notebook-photo figcaption strong { font-weight: 600; }
+  .notebook-photo figcaption strong .numeric { margin-right: 0.65rem; color: var(--terracotta-ink); }
+  .notebook-photo figcaption > span { color: var(--ink-faint); }
+
+  .notebook-photo__paused {
+    display: grid;
+    min-height: 12rem;
+    align-content: end;
+    padding: 1.5rem;
+    background: var(--paper-2);
+    color: var(--ink-muted);
+  }
+
+  .stage-privacy-note {
+    margin-bottom: 1.5rem;
+    padding: 0.65rem 0 0.65rem 1rem;
+    border-left: 3px solid var(--info);
+    color: var(--ink-muted);
+    font-size: var(--fs-meta);
+  }
+
+  @media (max-width: 39.999rem) {
+    .application-stage-page > .shell { padding-block: 1.25rem 2.5rem; }
+    .application-stage-page .page-eyebrow { margin-bottom: 0.4rem; }
+    .application-stage-page .page-title {
+      margin-bottom: 0.45rem;
+      font-family: var(--font-sans);
+      font-size: calc(2rem * var(--text-scale));
+      line-height: 1.08;
+    }
+    .application-stage-page .page-lede {
+      margin-bottom: 1rem;
+      font-size: var(--fs-body);
+      line-height: 1.45;
+    }
+    .application-stage-page aside { margin-bottom: 0.25rem; }
+  }
+
+  @media (min-width: 40rem) {
+    .home-actions { flex-direction: row; }
+    .saved-journey { grid-template-columns: 1fr auto; }
+    .bearing-index ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .notebook-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: start; }
+    .notebook-photo--wide { grid-column: span 7; }
+    .notebook-photo--compact { grid-column: span 5; margin-top: 5rem; }
+    .notebook-photo--portrait { grid-column: span 4; }
+    .notebook-photo--landscape { grid-column: span 8; margin-top: 8rem; }
+    .notebook-photo--tall { grid-column: span 5; }
+  }
+
+  @media (min-width: 64rem) {
+    .home-hero__grid { grid-template-columns: minmax(0, 7fr) minmax(20rem, 5fr); }
+    .service-index { grid-template-columns: minmax(15rem, 4fr) minmax(0, 8fr); }
+    .service-index__heading { position: sticky; top: 8rem; align-self: start; }
+    .home-cover__grid { grid-template-columns: minmax(0, 8fr) minmax(18rem, 4fr); }
+    .home-principles { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
   }
 }
 

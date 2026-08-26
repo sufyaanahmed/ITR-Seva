@@ -7,6 +7,13 @@ import { storedItems } from '../lib/persist.js';
 import { useStore } from '../state/store.jsx';
 
 const number = new Intl.NumberFormat();
+const ITEM_LABELS = {
+  'visaseva.app.v1': 'Demo application',
+  'visaseva.seq.v1': 'Local reference counter',
+  'visaseva.prefs.v1': 'Display preferences',
+  'visaseva.quarantine.v1': 'Unreadable draft copy',
+  'visaseva.finder.v1': 'Finder answers for this tab',
+};
 
 export default function YourData() {
   const { savedApp, clear, storageBlocked } = useStore();
@@ -41,16 +48,15 @@ export default function YourData() {
         </Banner>
       )}
 
-      <div className="border border-rule-strong bg-paper-1 p-6 sm:p-8">
-        <p className="text-overline uppercase text-ink-muted mb-2">Stored now</p>
-        <p className="font-display text-display-m numeric text-ink mb-1">{number.format(totalBytes)} bytes</p>
-        <p className="text-meta text-ink-muted">A small local record, never uploaded by this prototype.</p>
+      <div className="flex flex-wrap justify-between gap-3 border-y border-rule-strong py-4 text-meta">
+        <span className="font-semibold">Stored in this browser</span>
+        <span className="numeric text-ink-muted">{number.format(totalBytes)} bytes · never uploaded</span>
       </div>
 
       <Section title="What the browser may hold">
         <DefinitionList
           items={items.map((item) => ({
-            term: item.present ? `${item.key} · stored` : `${item.key} · not stored`,
+            term: `${ITEM_LABELS[item.key] || 'Local prototype data'} · ${item.present ? 'stored' : 'not stored'}`,
             value: `${item.purpose} ${item.present ? `${number.format(item.bytes)} bytes.` : ''}${item.clearable ? ' Cleared by the button below.' : ' Kept when demo data is cleared.'}`,
           }))}
         />

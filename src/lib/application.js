@@ -196,11 +196,10 @@ const EVENT_LABEL = {
 /** Paths that carry a fee in this simulation. Only the e-Visa route does. */
 export const feeApplies = (app) => app.pathId === 'evisa';
 
-export const FEE_LINES = [
-  { label: 'Visa fee', amount: 2000 },
-  { label: 'Service charge', amount: 500 },
-];
-export const FEE_TOTAL = FEE_LINES.reduce((n, l) => n + l.amount, 0);
+// Real visa fees vary by nationality and route. The prototype deliberately
+// quotes no amount and never invents a service charge.
+export const FEE_LINES = [];
+export const FEE_TOTAL = null;
 
 const TRANSITIONS = [
   {
@@ -213,7 +212,7 @@ const TRANSITIONS = [
     confirm: true, guard: feeApplies,
     reduce: (app, e) => ({
       ...app,
-      payment: { status: 'pending', lines: FEE_LINES, total: FEE_TOTAL, currency: 'INR', simulated: true, at: e.at },
+      payment: { status: 'pending', lines: FEE_LINES, total: FEE_TOTAL, currency: null, simulated: true, at: e.at },
     }),
   },
   {

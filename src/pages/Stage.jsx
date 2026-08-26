@@ -146,17 +146,17 @@ export default function Stage() {
   return (
     <Page
       routeId="application-stage"
-      eyebrow={`Stage ${stageIndex + 1} of ${STAGES.length}`}
       title={stage.title}
       lede={`${stage.purpose} Estimated effort: ${stage.effort}.`}
       width="dashboard"
+      pageClass="application-stage-page"
     >
-      <div className="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
+      <div className="grid gap-6 lg:gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <aside aria-label="Application stages"><StageProgress stages={progress} currentId={stage.id} appId={app.id} /></aside>
         <div className="min-w-0">
           {stage.id === 'documents' ? <DocumentsStage app={app} /> : (
             <form onSubmit={submit} noValidate>
-              <Banner tone="info" className="mb-8">Use made-up details throughout. Sensitive-looking answers are saved only in this browser.</Banner>
+              <p className="stage-privacy-note">Use made-up details. Answers stay in this browser.</p>
               <ErrorSummary ref={summaryRef} errors={Object.fromEntries(Object.entries(errors).filter(([, value]) => value))} />
               {stage.groups.map((group) => {
                 const fields = group.fields.filter((field) => !field.showIf || field.showIf(app.data));

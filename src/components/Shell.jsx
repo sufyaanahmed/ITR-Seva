@@ -11,29 +11,14 @@ import { Announcer, SaveState } from '../ui/feedback.jsx';
 /* Wordmark                                                            */
 /* ------------------------------------------------------------------ */
 
-/**
- * A bespoke mark, not the State Emblem of India.
- *
- * The emblem was removed from this product entirely. Its use in a masthead
- * implies Government of India endorsement that a hackathon prototype has not
- * got, and its use is restricted under the State Emblem of India (Prohibition
- * of Improper Use) Act, 2005. This octagon is the jali cell used throughout
- * the interface — of the place, without borrowing its authority.
- */
 function Wordmark() {
   return (
-    <span className="flex items-center gap-3 min-w-0">
-      <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" className="shrink-0">
-        <g fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M9.37 1H22.63L31 9.37V22.63L22.63 31H9.37L1 22.63V9.37Z" />
-          <path d="M16 9 23 16 16 23 9 16Z" strokeWidth="1" strokeOpacity=".55" />
-        </g>
-      </svg>
-      <span className="flex flex-col leading-none min-w-0">
-        <span className="font-display text-[1.35rem] font-semibold tracking-tight truncate">
-          Visa-Seva
-        </span>
-        <span className="text-overline uppercase text-ink-muted mt-1">Prototype · Not official</span>
+    <span className="flex flex-col min-w-0 leading-none">
+      <span className="font-display text-[1.35rem] sm:text-[1.5rem] font-semibold tracking-[-0.025em] truncate">
+        Visa Seva
+      </span>
+      <span className="text-[0.68rem] tracking-[0.045em] text-ink-muted mt-1.5">
+        Independent prototype · not an official service
       </span>
     </span>
   );
@@ -50,18 +35,22 @@ function Wordmark() {
 export function PrototypeStrip() {
   return (
     <div className="bg-indigo-900 text-on-indigo on-indigo no-print">
-      <div className="shell py-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-meta">
-        <strong className="font-semibold">A demonstration, not a government service.</strong>
-        <span className="text-on-indigo-muted">
+      <div className="shell py-2 sm:py-3 flex items-baseline gap-x-3 text-[0.78rem] sm:text-meta">
+        <strong className="font-semibold shrink-0">
+          <span className="hidden sm:inline">Prototype — not a government service.</span>
+          <span className="sm:hidden">Prototype · not official</span>
+        </strong>
+        <span className="text-on-indigo-muted hidden md:inline">
           Nothing here reaches any authority. Please do not enter real passport details.
         </span>
         <a
           href={SOURCES.portal.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-on-indigo underline underline-offset-4 decoration-1 hover:decoration-2 whitespace-nowrap"
+          className="ml-auto text-on-indigo underline underline-offset-4 decoration-1 hover:decoration-2 whitespace-nowrap"
         >
-          Apply at indianvisaonline.gov.in ↗
+          <span className="hidden sm:inline">Apply at indianvisaonline.gov.in ↗</span>
+          <span className="sm:hidden">Official site ↗</span>
           <span className="sr-only">(opens the official site in a new tab)</span>
         </a>
       </div>
@@ -143,8 +132,8 @@ function DisplayPanel({ open, onClose }) {
 /* ------------------------------------------------------------------ */
 
 const navLinkClass = ({ isActive }) =>
-  `flex items-center min-h-touch px-3 text-meta rounded-control transition-colors duration-quick
-   hover:bg-paper-2 ${isActive ? 'font-semibold text-ink border-b-emph border-indigo' : 'text-ink-muted'}`;
+  `flex items-center min-h-touch px-3 text-meta transition-colors duration-quick
+   hover:text-ink ${isActive ? 'font-semibold text-ink border-b-emph border-terracotta' : 'text-ink-muted'}`;
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -169,7 +158,7 @@ export function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="bg-paper-0 border-b border-rule-strong sticky top-0 z-40 shadow-raise no-print">
+    <header className="bg-paper-0 border-b border-rule-strong sticky top-0 z-40 no-print">
       <div className="shell flex items-center justify-between gap-4 py-3">
         <Link to="/" className="text-ink no-underline min-w-0 flex items-center min-h-touch">
           <Wordmark />
@@ -189,7 +178,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="compact" onClick={() => setDisplayOpen(true)}>
+          <Button variant="quiet" size="compact" onClick={() => setDisplayOpen(true)}>
             <span aria-hidden="true">Aa</span>
             <span className="hidden sm:inline">Display</span>
             <span className="sm:hidden sr-only">Display settings</span>
@@ -245,19 +234,10 @@ export function Header() {
                 </NavLink>
               </li>
             ))}
-            <li className="border-b border-rule">
-              <NavLink to="/discover-india" className="flex items-center min-h-[3.5rem] px-4 text-body text-ink-muted">
-                Discover India
-              </NavLink>
-            </li>
           </ul>
         </nav>
 
         <div className="p-4 border-t border-rule">
-          <p className="text-overline uppercase text-ink-faint mb-2">For reviewers</p>
-          <Link to="/demo" className="flex items-center min-h-touch text-body text-indigo underline underline-offset-4">
-            Demo scenarios
-          </Link>
           <Link to="/help/your-data" className="flex items-center min-h-touch text-body text-indigo underline underline-offset-4">
             Your data on this device
           </Link>
@@ -310,23 +290,31 @@ export function Breadcrumbs({ routeId }) {
     if (key === 'step') return '1';
     return '';
   });
+  const parent = chain[chain.length - 2];
   return (
-    <nav aria-label="Breadcrumb" className="mb-6">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 list-none m-0 p-0 text-meta text-ink-muted">
-        {chain.map((r, i) => (
-          <li key={r.id} className="flex items-center gap-2">
-            {i > 0 && <span aria-hidden="true">/</span>}
-            {i === chain.length - 1 ? (
-              <span aria-current="page" className="text-ink">{r.navLabel || r.title}</span>
-            ) : (
-              <Link to={pathFor(r.path)} className="underline underline-offset-4 decoration-1 hover:decoration-2">
-                {r.navLabel || r.title}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
+    <>
+      <nav aria-label="Breadcrumb" className="mb-4 sm:hidden">
+        <Link to={pathFor(parent.path)} className="inline-flex items-center min-h-touch text-meta text-ink-muted underline underline-offset-4">
+          <span aria-hidden="true">←</span>&nbsp; {parent.navLabel || parent.title}
+        </Link>
+      </nav>
+      <nav aria-label="Breadcrumb" className="mb-6 hidden sm:block">
+        <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 list-none m-0 p-0 text-meta text-ink-muted">
+          {chain.map((r, i) => (
+            <li key={r.id} className="flex items-center gap-2">
+              {i > 0 && <span aria-hidden="true">/</span>}
+              {i === chain.length - 1 ? (
+                <span aria-current="page" className="text-ink">{r.navLabel || r.title}</span>
+              ) : (
+                <Link to={pathFor(r.path)} className="underline underline-offset-4 decoration-1 hover:decoration-2">
+                  {r.navLabel || r.title}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </>
   );
 }
 
@@ -378,56 +366,52 @@ export function SkipLink() {
 /* ------------------------------------------------------------------ */
 
 export function Footer() {
-  const groups = [
-    { title: 'Services', ids: ['find', 'start', 'track'] },
-    { title: 'Guidance', ids: ['requirements', 'before-you-travel', 'help'] },
-    { title: 'About this prototype', ids: ['your-data', 'site-map', 'discover'] },
+  const ids = [
+    'find', 'start', 'track', 'requirements', 'before-you-travel', 'help',
+    'your-data', 'site-map',
   ];
   const all = navRoutes('header').concat(navRoutes('footer'));
   const find = (id) => all.find((r) => r.id === id);
 
   return (
-    <footer className="on-indigo bg-indigo-900 text-on-indigo mt-12 border-t-rail border-gold no-print">
-      <div className="shell py-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="mt-12 border-t border-rule-strong bg-paper-0 no-print">
+      <div className="shell py-10 grid gap-10 lg:grid-cols-[5fr_7fr]">
         <div>
-          <p className="font-display text-title mb-3">Visa-Seva</p>
-          <p className="text-meta text-on-indigo-muted max-w-[32ch]">
-            A hackathon prototype exploring how a visa service could welcome a
-            traveller. It is not affiliated with the Government of India and
-            issues nothing.
+          <p className="font-display text-title font-semibold tracking-[-0.025em] mb-3">Visa Seva</p>
+          <p className="text-body text-ink-muted max-w-[36ch]">
+            An independent prototype for a clearer, calmer journey through
+            Indian visa guidance. It is not a Government of India service.
           </p>
         </div>
-        {groups.map((g) => (
-          <nav key={g.title} aria-label={g.title}>
-            <h2 className="text-overline uppercase text-on-indigo-muted mb-4">{g.title}</h2>
-            <ul className="list-none m-0 p-0 grid gap-1">
-              {g.ids.map((id) => {
+        <nav aria-label="Visa-Seva directory">
+          <h2 className="text-meta font-semibold text-ink-muted mb-4">Directory</h2>
+          <ul className="list-none m-0 p-0 grid sm:grid-cols-2 border-t border-rule-strong">
+            {ids.map((id) => {
                 const r = find(id);
                 if (!r) return null;
                 return (
-                  <li key={id}>
+                  <li key={id} className="border-b border-rule sm:odd:mr-6">
                     <Link
                       to={r.path.replace(':step', '1')}
-                      className="flex items-center min-h-touch text-meta text-on-indigo-muted hover:text-on-indigo underline underline-offset-4 decoration-1 hover:decoration-2"
+                      className="flex items-center min-h-touch text-meta text-ink-muted hover:text-ink no-underline"
                     >
                       {r.navLabel || r.title}
                     </Link>
                   </li>
                 );
               })}
-            </ul>
-          </nav>
-        ))}
+          </ul>
+        </nav>
       </div>
-      <div className="shell pb-10 pt-6 border-t border-[rgba(255,255,255,0.18)]">
-        <p className="text-meta text-on-indigo-muted max-w-prose">
-          The Government of India does not authorise any agent to charge fees
-          for e-Visas, emergency visas or the e-Arrival Card. The real
-          application is free to start and needs no intermediary.{' '}
-          <ExternalLink href={SOURCES.portal.url} className="text-on-indigo">
-            indianvisaonline.gov.in
+      <div className="on-indigo bg-indigo-900 text-on-indigo">
+        <div className="shell py-6 flex flex-col gap-2 lg:flex-row lg:items-baseline lg:justify-between">
+          <p className="text-meta text-on-indigo-muted max-w-prose">
+            The real application is free to start and needs no intermediary.
+          </p>
+          <ExternalLink href={SOURCES.portal.url} className="text-on-indigo shrink-0">
+            Continue at indianvisaonline.gov.in
           </ExternalLink>
-        </p>
+        </div>
       </div>
     </footer>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import Page, { Section, SourceNote } from '../ui/Page.jsx';
 import Button, { ExternalLink } from '../ui/Button.jsx';
-import { Banner, StatusBadge } from '../ui/feedback.jsx';
+import { StatusBadge } from '../ui/feedback.jsx';
 import { Disclosure } from '../ui/structure.jsx';
 import { TRAVEL_CHECKLIST } from '../lib/content.js';
 import { EVISA_PORTS, EARRIVAL } from '../lib/rules/reference.js';
@@ -28,8 +28,8 @@ export default function BeforeYouTravel() {
       lede="A calm final check for travellers using an e-Visa. A visa or authorisation never guarantees admission; the Immigration Officer at the port makes that decision."
       width="dashboard"
     >
-      {granted ? (
-        <div className="border border-gold bg-paper-2 p-6 sm:p-8 jali-structure mb-10">
+      {granted && (
+        <div className="border-l-rail border-terracotta bg-paper-2 p-6 sm:p-8 mb-10">
           <p className="text-overline uppercase text-ink-muted mb-3">Your loaded demo record</p>
           <div className="flex flex-wrap items-center gap-4 mb-4">
             <h2 className="font-display text-title text-ink">Prepare for the journey</h2>
@@ -40,10 +40,6 @@ export default function BeforeYouTravel() {
           </p>
           <Button to={`/application/${app.id}/status`} variant="secondary">Return to demo status</Button>
         </div>
-      ) : (
-        <Banner tone="neutral" title="You can prepare without starting an application" className="mb-10">
-          This checklist is public and does not assume you have been granted anything. If you load a granted demo scenario, the same application record will connect to this page.
-        </Banner>
       )}
 
       <ol className="list-none m-0 p-0 border-t border-rule-strong">
@@ -56,7 +52,9 @@ export default function BeforeYouTravel() {
               {item.external && (
                 <p className="mt-4"><ExternalLink href={item.external}>{item.externalLabel}</ExternalLink></p>
               )}
-              <SourceNote source={item.source} />
+              <p className="text-meta text-ink-faint mt-4">
+                Source: <ExternalLink href={item.source.url}>{item.source.title}</ExternalLink>
+              </p>
             </div>
           </li>
         ))}

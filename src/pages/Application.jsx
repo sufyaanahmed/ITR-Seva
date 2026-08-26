@@ -7,7 +7,7 @@ import {
 import { PATHS } from '../lib/content.js';
 import Page, { Section } from '../ui/Page.jsx';
 import Button from '../ui/Button.jsx';
-import { Banner, EmptyState, StatusBadge } from '../ui/feedback.jsx';
+import { EmptyState } from '../ui/feedback.jsx';
 import { StageProgress, Timeline } from '../ui/structure.jsx';
 
 function nextAction(app) {
@@ -55,27 +55,16 @@ export default function Application() {
     <Page
       routeId="application"
       eyebrow={path?.name || 'Demo visa application'}
-      title={app.status === 'DRAFT' ? 'Continue your application' : 'Your application'}
-      lede="One clear record for your answers, documents, simulated submission and demo decision."
+      title={action.title}
+      lede={action.body}
       width="dashboard"
     >
-      {app.kind === 'seed' && (
-        <Banner tone="info" title="Seeded reviewer scenario" className="mb-6">
-          This record is invented and resets when the page is reloaded. It is safe to explore.
-        </Banner>
-      )}
-
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_19rem]">
         <div>
-          <section className="border border-rule-strong bg-paper-1 p-6 sm:p-8">
-            <div className="flex flex-wrap justify-between items-start gap-5 mb-6">
-              <div>
-                <p className="text-overline uppercase text-ink-muted mb-2">Current position</p>
-                <h2 className="font-display text-title text-ink mb-2">{action.title}</h2>
-                <p className="text-body text-ink-muted max-w-prose">{action.body}</p>
-              </div>
-              <StatusBadge status={app.status} />
-            </div>
+          <section className="border-y border-rule-strong py-6">
+            <p className="text-meta text-ink-muted mb-4">
+              {STATE_META[app.status]?.label}{app.kind === 'seed' ? ' · reviewer scenario · resets on reload' : ''}
+            </p>
             <Button to={`/application/${app.id}/${action.to}`} size="lg">{action.label}</Button>
           </section>
 

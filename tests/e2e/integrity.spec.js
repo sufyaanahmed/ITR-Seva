@@ -9,7 +9,7 @@ test('finder validation moves focus to the unanswered control', async ({ page })
 
 test('reviewer scenarios never hide or overwrite a personal saved application', async ({ page }) => {
   await page.goto('/start');
-  await page.getByRole('button', { name: 'Start an e-Visa demo' }).click();
+  await page.getByRole('button', { name: 'Start the e-Visa demo' }).click();
   const personalId = page.url().match(/DEMO\d{4}E\d{5}/)?.[0];
   expect(personalId).toBeTruthy();
   await page.waitForFunction(() => Boolean(localStorage.getItem('visaseva.app.v1')));
@@ -25,11 +25,11 @@ test('reviewer scenarios never hide or overwrite a personal saved application', 
 
 test('starting again asks before replacing the saved record', async ({ page }) => {
   await page.goto('/start');
-  await page.getByRole('button', { name: 'Start an e-Visa demo' }).click();
+  await page.getByRole('button', { name: 'Start the e-Visa demo' }).click();
   const firstId = page.url().match(/DEMO\d{4}E\d{5}/)?.[0];
   await page.goto('/start');
 
-  await page.getByRole('button', { name: 'Start an e-Visa demo' }).click();
+  await page.getByRole('button', { name: 'Start again' }).click();
   const dialog = page.getByRole('dialog', { name: 'Replace the saved demo application?' });
   await expect(dialog).toBeVisible();
   await dialog.getByRole('button', { name: 'Go back' }).click();

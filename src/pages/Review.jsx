@@ -35,6 +35,10 @@ export default function Review() {
   if (!app) return <Navigate to="/start" replace />;
 
   const issues = outstandingIssues(app);
+  const issueGroups = FORM_STAGES.map((stage) => ({
+    stage,
+    issues: issues.filter((issue) => issue.stageId === stage.id),
+  })).filter((group) => group.issues.length > 0);
   const committed = !['DRAFT', 'READY_FOR_REVIEW'].includes(app.status);
 
   const continueToSubmit = () => {
@@ -61,14 +65,21 @@ export default function Review() {
         <section className="border border-emph border-danger bg-danger-bg p-6 sm:p-8 mb-10" role="alert">
           <p className="text-overline uppercase text-danger mb-2">Needs attention</p>
           <h2 className="font-display text-title text-ink mb-2">Resolve {issues.length} {issues.length === 1 ? 'issue' : 'issues'} before submission</h2>
-          <ol className="mt-5 grid gap-3 list-decimal pl-5">
-            {issues.map((issue) => (
-              <li key={`${issue.stageId}-${issue.field}`} className="text-body text-ink-muted pl-1">
-                <span>{issue.message}</span>{' '}
-                <Link to={`/application/${app.id}/stage/${issue.stageId}#field-${issue.field.replaceAll('_', '-')}`} className="text-indigo underline underline-offset-4 font-semibold">Edit {issue.stageTitle.toLowerCase()}</Link>
-              </li>
+          <div className="mt-5 border-t border-danger/40">
+            {issueGroups.map(({ stage, issues: stageIssues }) => (
+              <details key={stage.id} className="border-b border-danger/40 py-3">
+                <summary className="cursor-pointer font-semibold text-ink min-h-touch py-2">
+                  {stage.title} · <span className="numeric">{stageIssues.length}</span> {stageIssues.length === 1 ? 'issue' : 'issues'}
+                </summary>
+                <ul className="grid gap-2 list-disc pl-6 pb-3 text-body text-ink-muted">
+                  {stageIssues.map((issue) => <li key={issue.field}>{issue.message}</li>)}
+                </ul>
+                <Link to={`/application/${app.id}/stage/${stage.id}`} className="inline-flex min-h-touch items-center text-indigo underline underline-offset-4 font-semibold">
+                  Edit {stage.title.toLowerCase()}
+                </Link>
+              </details>
             ))}
-          </ol>
+          </div>
         </section>
       ) : (
         <Banner tone="success" title="Ready for the final check" className="mb-10">

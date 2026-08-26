@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { FEE_LINES, FEE_TOTAL } from '../lib/application.js';
 import { useStore } from '../state/store.jsx';
+import { SOURCES } from '../lib/rules/sources.js';
 import Page from '../ui/Page.jsx';
-import Button from '../ui/Button.jsx';
-import { Banner } from '../ui/feedback.jsx';
+import Button, { ExternalLink } from '../ui/Button.jsx';
 import { ConfirmAction } from '../ui/structure.jsx';
-
-const money = (amount) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
 
 export default function Payment() {
   const { appId } = useParams();
@@ -15,7 +12,7 @@ export default function Payment() {
   const { app: active, resolve, loadScenario, dispatch, announce } = useStore();
   const resolved = resolve(appId);
   const app = active?.id === appId ? active : resolved;
-  const [action, setAction] = useState(null);
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     if (resolved?.kind === 'seed' && active?.id !== appId) loadScenario(appId);
@@ -24,56 +21,48 @@ export default function Payment() {
   if (!app) return <Navigate to="/start" replace />;
   if (app.status !== 'PAYMENT_PENDING') return <Navigate to={`/application/${app.id}/status`} replace />;
 
-  const run = (type) => {
-    const event = type === 'success' ? 'SIMULATE_PAYMENT_SUCCESS' : type === 'failure' ? 'SIMULATE_PAYMENT_FAILURE' : 'CANCEL_PAYMENT';
-    const error = dispatch({ type: event, confirmed: true, actor: 'user' });
-    setAction(null);
-    if (error) {
-      announce(error);
-      return;
-    }
-    if (type === 'success') navigate(`/application/${app.id}/status`);
-    if (type === 'cancel') navigate(`/application/${app.id}/review`);
+  const continueDemo = () => {
+    const error = dispatch({ type: 'SIMULATE_PAYMENT_SUCCESS', confirmed: true, actor: 'user' });
+    setConfirming(false);
+    if (error) return announce(error);
+    navigate(`/application/${app.id}/status`);
   };
 
   return (
-    <Page routeId="application-payment" title="Simulated payment" lede="Practise the handoff without entering a card number, bank account or payment identity." width="form">
-      <Banner tone="warning" title="Fictional fee — no money moves" className="mb-8">
-        These amounts exist only to demonstrate a fee summary. They are not a quote and may not match any official fee.
-      </Banner>
+    <Page
+      routeId="application-payment"
+      title="Practise the payment handoff"
+      lede="No card, bank account, wallet or money is involved."
+      width="form"
+    >
+      <dl className="border-t border-rule-strong mb-8">
+        <div className="grid sm:grid-cols-[9rem_1fr] gap-1 py-4 border-b border-rule">
+          <dt className="font-semibold">Amount</dt>
+          <dd className="text-ink-muted">Not shown. Real fees depend on the route and nationality.</dd>
+        </div>
+        <div className="grid sm:grid-cols-[9rem_1fr] gap-1 py-4 border-b border-rule">
+          <dt className="font-semibold">Payment data</dt>
+          <dd className="text-ink-muted">No fields are provided and no payment service is contacted.</dd>
+        </div>
+        <div className="grid sm:grid-cols-[9rem_1fr] gap-1 py-4 border-b border-rule">
+          <dt className="font-semibold">Official fees</dt>
+          <dd><ExternalLink href={SOURCES.evisa.url}>Check the Government of India guidance</ExternalLink></dd>
+        </div>
+      </dl>
 
-      {app.payment?.status === 'failed' && (
-        <Banner tone="danger" title="The simulated payment failed" className="mb-8">
-          No charge was attempted. Choose success to continue the demo, or return to review.
-        </Banner>
-      )}
-
-      <section className="border border-rule-strong bg-paper-1 p-6 sm:p-8 mb-8">
-        <p className="text-overline uppercase text-ink-muted mb-2">Demonstration only</p>
-        <h2 className="font-display text-title text-ink mb-5">Fictional fee summary</h2>
-        <dl>
-          {FEE_LINES.map((line) => (
-            <div key={line.label} className="flex justify-between gap-4 py-3 border-b border-rule text-body"><dt>{line.label}</dt><dd className="numeric">{money(line.amount)}</dd></div>
-          ))}
-          <div className="flex justify-between gap-4 pt-5 text-subhead font-semibold"><dt>Total simulated amount</dt><dd className="numeric">{money(FEE_TOTAL)}</dd></div>
-        </dl>
-        <p className="text-meta text-ink-faint mt-5">Reference {app.id}. No payment fields are intentionally provided.</p>
-      </section>
-
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Button onClick={() => setAction('success')}>Simulate successful payment</Button>
-        <Button variant="secondary" onClick={() => setAction('failure')}>Simulate failed payment</Button>
-        <Button variant="quiet" className="sm:col-span-2" onClick={() => setAction('cancel')}>Cancel and return to review</Button>
+      <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
+        <Button variant="quiet" to={`/application/${app.id}/review`}>Return to review</Button>
+        <Button onClick={() => setConfirming(true)}>Complete practice handoff</Button>
       </div>
 
-      <ConfirmAction open={action === 'success'} onClose={() => setAction(null)} onConfirm={() => run('success')} title="Mark this fictional payment successful?" confirmLabel="Simulate success">
-        No payment service will be contacted. The record will receive a reference beginning DEMO-TXN and move to Submitted.
-      </ConfirmAction>
-      <ConfirmAction open={action === 'failure'} onClose={() => setAction(null)} onConfirm={() => run('failure')} title="Show the failure path?" confirmLabel="Simulate failure">
-        No charge will be attempted. The record will stay on this page so the recovery state can be tested.
-      </ConfirmAction>
-      <ConfirmAction open={action === 'cancel'} onClose={() => setAction(null)} onConfirm={() => run('cancel')} title="Cancel this simulated payment?" confirmLabel="Cancel payment">
-        The application will return to Ready for review. Your answers and document metadata remain saved.
+      <ConfirmAction
+        open={confirming}
+        onClose={() => setConfirming(false)}
+        onConfirm={continueDemo}
+        title="Complete this practice step?"
+        confirmLabel="Complete handoff"
+      >
+        The fictional record will move to Submitted. No charge or network request will happen.
       </ConfirmAction>
     </Page>
   );

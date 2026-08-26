@@ -10,23 +10,23 @@ import { STATE_META } from '../lib/application.js';
  */
 
 const TONES = {
-  info: 'bg-info-bg border-info text-ink',
-  success: 'bg-success-bg border-success text-ink',
+  info: 'border-info text-ink',
+  success: 'border-success text-ink',
   warning: 'bg-warning-bg border-warning text-ink',
   danger: 'bg-danger-bg border-danger text-ink',
-  neutral: 'bg-paper-2 border-rule-strong text-ink',
+  neutral: 'border-rule-strong text-ink',
 };
 
-const TONE_MARK = { info: 'ⓘ', success: '✓', warning: '⚠', danger: '⚠', neutral: '•' };
+const TONE_MARK = { info: 'NOTE', success: 'DONE', warning: 'CHECK', danger: 'STOP', neutral: 'INFO' };
 
 export function Banner({ tone = 'info', title, children, action, live = false, className = '' }) {
   return (
     <div
-      className={`border-l-rail border ${TONES[tone]} p-5 rounded-control ${className}`}
+      className={`border-l-rail ${TONES[tone]} p-5 ${className}`}
       {...(live ? { role: 'status', 'aria-live': 'polite' } : {})}
     >
       <div className="flex gap-3">
-        <span aria-hidden="true" className="text-subhead leading-none pt-0.5">{TONE_MARK[tone]}</span>
+        <span aria-hidden="true" className="text-[0.68rem] font-semibold tracking-[0.06em] leading-none pt-1.5">{TONE_MARK[tone]}</span>
         <div className="min-w-0 flex-1">
           {title && <p className="text-subhead font-semibold mb-1">{title}</p>}
           <div className="text-body text-ink-muted [&_a]:text-indigo [&_a]:underline [&_a]:underline-offset-4">
@@ -38,16 +38,6 @@ export function Banner({ tone = 'info', title, children, action, live = false, c
     </div>
   );
 }
-
-/** Shapes are drawn in CSS so they survive images-off and forced colours. */
-const SHAPES = {
-  circle: 'rounded-full border-2 bg-transparent',
-  'circle-half': 'rounded-full border-2 bg-gradient-to-r from-current from-50% to-transparent to-50%',
-  square: 'border-2 bg-transparent',
-  'square-filled': 'border-2 bg-current',
-  'square-open': 'border-2 border-dashed bg-transparent',
-  triangle: 'border-2 rounded-[1px] rotate-45 bg-transparent',
-};
 
 const BADGE_TONE = {
   info: 'text-info border-info bg-info-bg',
@@ -61,9 +51,9 @@ export function StatusBadge({ status, className = '' }) {
   const meta = STATE_META[status] || STATE_META.NOT_STARTED;
   return (
     <span
-      className={`inline-flex items-center gap-3 border-l-rail border px-4 py-2 ${BADGE_TONE[meta.tone]} ${className}`}
+      className={`inline-flex items-center gap-3 border-l-rail px-4 py-2 ${BADGE_TONE[meta.tone]} ${className}`}
     >
-      <span aria-hidden="true" className={`inline-block h-3 w-3 shrink-0 ${SHAPES[meta.shape]}`} />
+      <span aria-hidden="true" className="inline-block h-2.5 w-2.5 shrink-0 bg-current" />
       <span className="text-label font-semibold uppercase tracking-[0.08em]">{meta.label}</span>
       {meta.note && <span className="text-meta font-normal normal-case tracking-normal">{meta.note}</span>}
     </span>
@@ -72,7 +62,7 @@ export function StatusBadge({ status, className = '' }) {
 
 export function EmptyState({ title, children, action, className = '' }) {
   return (
-    <div className={`border border-rule-strong bg-paper-1 p-8 jali-structure ${className}`}>
+    <div className={`border-y border-rule-strong py-7 ${className}`}>
       <h2 className="font-display text-title text-ink mb-3">{title}</h2>
       <div className="text-body text-ink-muted max-w-prose mb-6">{children}</div>
       {action}
@@ -112,8 +102,9 @@ export function SaveState({ saving, lastSavedAt, blocked, online }) {
   return (
     <p className="flex items-center gap-2 text-meta text-ink-muted">
       <span aria-hidden="true" className="text-success">✓</span>
-      Saved on this device at <span className="numeric">{time}</span>
-      {!online && <span className="text-warning">· offline, still safe here</span>}
+      <span className="sm:hidden">Saved locally</span>
+      <span className="hidden sm:inline">Saved on this device at <span className="numeric">{time}</span></span>
+      {!online && <span className="text-warning">· offline</span>}
     </p>
   );
 }
