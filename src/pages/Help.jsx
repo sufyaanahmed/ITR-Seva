@@ -1,50 +1,90 @@
 import React from 'react';
+import Page, { Section, SourceNote } from '../ui/Page.jsx';
+import Button, { ExternalLink } from '../ui/Button.jsx';
+import { Disclosure } from '../ui/structure.jsx';
+import { Banner } from '../ui/feedback.jsx';
+import { FAQ, GLOSSARY } from '../lib/content.js';
+import {
+  OFFICIAL_CONTACT, INTERMEDIARY_WARNING, SOURCES,
+} from '../lib/rules/sources.js';
 
 export default function Help() {
   return (
-    <div className="max-w-3xl mx-auto py-12 px-6">
-      <h1 className="text-4xl font-serif font-bold mb-8">Get Help</h1>
-      
-      <div className="space-y-8">
-        <section>
-          <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            <details className="border border-border p-4 rounded bg-white cursor-pointer group">
-              <summary className="font-bold list-none flex justify-between">
-                What is an e-Visa?
-                <span className="text-primary group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <div className="mt-4 text-text-secondary text-sm">
-                An e-Visa is an electronic authorization to travel to India for tourism, business, or medical purposes. You can apply for it completely online without visiting an embassy.
-              </div>
-            </details>
-            <details className="border border-border p-4 rounded bg-white cursor-pointer group">
-              <summary className="font-bold list-none flex justify-between">
-                How long does processing take?
-                <span className="text-primary group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <div className="mt-4 text-text-secondary text-sm">
-                Typically, e-Visas are processed within 72 hours. Regular paper visas may take longer depending on the mission and nationality.
-              </div>
-            </details>
-            <details className="border border-border p-4 rounded bg-white cursor-pointer group">
-              <summary className="font-bold list-none flex justify-between">
-                What documents do I need?
-                <span className="text-primary group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <div className="mt-4 text-text-secondary text-sm">
-                You generally need a recent photograph with a white background and a scanned copy of your passport's bio page. Business and medical visas may require additional documentation.
-              </div>
-            </details>
-          </div>
-        </section>
+    <Page
+      routeId="help"
+      eyebrow="Clear answers, real contacts"
+      title="Clear answers. Real contacts."
+      lede="This prototype can explain its guidance and your demo data. For a real application, it hands you clearly to the Government of India."
+      width="doc"
+      decor
+    >
+      <Banner tone="warning" title="This is a prototype, not a support desk">
+        Nobody receives messages through Visa-Seva, and nothing you do here reaches
+        the Government of India. Do not enter real passport, payment or identity details.
+      </Banner>
 
-        <section className="bg-primary text-white p-8 rounded-lg mt-12 text-center" style={{ backgroundColor: '#172554' }}>
-          <h2 className="text-2xl font-bold mb-4">Still need help?</h2>
-          <p className="mb-6">Our support team is available 24/7 to assist you with your application process.</p>
-          <button className="bg-white text-primary px-6 py-3 rounded font-bold hover:bg-gray-100 transition">Contact Support</button>
-        </section>
+      <Section title="Frequently asked questions">
+        <div className="border-t border-rule">
+          {FAQ.map((item) => (
+            <Disclosure key={item.q} summary={item.q} className="border-b border-rule">
+              <p className="max-w-prose text-ink-muted">{item.a}</p>
+            </Disclosure>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Ask the real e-Visa team">
+        <div className="border border-rule-strong bg-paper-1 p-6 sm:p-8">
+          <p className="text-body text-ink-muted max-w-prose">
+            The Government of India publishes these contacts for e-Visa questions.
+            Availability and response times are controlled by the official service,
+            not by Visa-Seva.
+          </p>
+          <dl className="mt-6 grid gap-5 sm:grid-cols-[9rem_1fr]">
+            <dt className="text-label uppercase tracking-[0.08em] text-ink-faint">Telephone</dt>
+            <dd className="flex flex-col items-start gap-2">
+              {OFFICIAL_CONTACT.phones.map((phone) => (
+                <a key={phone} className="text-indigo underline underline-offset-4 numeric" href={`tel:${phone.replace(/\s/g, '')}`}>
+                  {phone}
+                </a>
+              ))}
+            </dd>
+            <dt className="text-label uppercase tracking-[0.08em] text-ink-faint">Email</dt>
+            <dd>
+              <a className="text-indigo underline underline-offset-4 break-all" href={`mailto:${OFFICIAL_CONTACT.email}`}>
+                {OFFICIAL_CONTACT.email}
+              </a>
+            </dd>
+          </dl>
+          <SourceNote source={OFFICIAL_CONTACT.source} />
+        </div>
+      </Section>
+
+      <Section title="A warning about intermediaries">
+        <blockquote className="border-l-rail border-gold pl-5 text-body text-ink-muted max-w-prose">
+          {INTERMEDIARY_WARNING}
+        </blockquote>
+        <p className="mt-5">
+          <ExternalLink href={SOURCES.portal.url}>Open the official Indian visa portal</ExternalLink>
+        </p>
+        <SourceNote source={SOURCES.portal} />
+      </Section>
+
+      <Section title="Words you may meet">
+        <div className="border-t border-rule columns-1 md:columns-2 md:gap-10">
+          {GLOSSARY.map((item) => (
+            <div key={item.term} className="break-inside-avoid border-b border-rule py-5">
+              <h3 className="text-subhead font-semibold text-ink">{item.term}</h3>
+              <p className="mt-2 text-body text-ink-muted">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <div className="mt-10 flex flex-wrap gap-3">
+        <Button to="/help/your-data" variant="secondary">See what this prototype stores</Button>
+        <Button to="/site-map" variant="quiet">Browse every page</Button>
       </div>
-    </div>
+    </Page>
   );
 }
