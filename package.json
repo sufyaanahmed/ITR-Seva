@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "node --test tests/*.test.js",
     "test:eligibility": "node --test tests/visaEligibility.test.js",
-    "test:documents": "node --test tests/documentRequirements.test.js"
+    "test:documents": "node --test tests/documentRequirements.test.js",
+    "load:local": "node scripts/load-test.mjs"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.5",

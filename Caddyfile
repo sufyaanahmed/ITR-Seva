@@ -11,7 +11,6 @@
 	# Defense in depth: these operational paths must never fall through to the SPA
 	# or become reachable through the public tunnel.
 	@privatePaths path /metrics /metrics/* /admin /admin/* /debug /debug/* /internal /internal/* /actuator /actuator/*
-	respond @privatePaths 404
 
 	header {
 		-Server
@@ -31,12 +30,29 @@
 	@publicHttps header X-Forwarded-Proto https
 	header @publicHttps Strict-Transport-Security "max-age=86400"
 
-	@assets path /assets/*
-	header @assets Cache-Control "public, max-age=31536000, immutable"
+	# Avoid a filesystem existence check on every SPA request. At high arrival
+	# rates, try_files becomes substantially more expensive than deterministic
+	# routing. Hashed bundles and known public-file extensions go directly to the
+	# file server; every other public route is the SPA entry point.
+	route {
+		respond @privatePaths 404
 
-	@index path / /index.html
-	header @index Cache-Control "no-store"
+		@immutableAssets path /assets/*
+		handle @immutableAssets {
+			header Cache-Control "public, max-age=31536000, immutable"
+			file_server
+		}
 
-	try_files {path} /index.html
-	file_server
+		@publicFiles path *.avif *.gif *.ico *.jpeg *.jpg *.json *.png *.svg *.txt *.webmanifest *.webp *.woff *.woff2 *.xml
+		handle @publicFiles {
+			header Cache-Control "public, max-age=86400"
+			file_server
+		}
+
+		handle {
+			rewrite * /index.html
+			header Cache-Control "no-store"
+			file_server
+		}
+	}
 }
