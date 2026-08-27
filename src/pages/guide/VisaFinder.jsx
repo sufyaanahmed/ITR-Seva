@@ -18,14 +18,14 @@ const questions = [
     id: 'purpose',
     title: 'What is the main purpose of your trip?',
     type: 'select',
-    options: ['Tourism / Sightseeing', 'Business Meetings', 'Medical Treatment', 'Employment / Work', 'Study'],
+    options: ['Tourism / Sightseeing', 'Business Meetings', 'Medical Treatment', 'Conference', 'Employment / Work', 'Study'],
     help: 'We need to ensure you apply for the visa that legally permits your activities in India.'
   },
   {
     id: 'duration',
     title: 'How long do you plan to stay in India?',
     type: 'select',
-    options: ['Less than 30 days', '1 to 6 months', 'More than 6 months']
+    options: ['Less than 60 days', '1 to 6 months', 'More than 6 months']
   },
   {
     id: 'visited',
@@ -33,6 +33,15 @@ const questions = [
     type: 'select',
     options: ['Yes', 'No'],
     help: 'If you have visited before, you may already have a visa history that helps process your application faster.'
+  },
+  {
+    id: 'uae_prior_visa',
+    title: 'Have you previously obtained an Indian e-Visa or regular/paper visa?',
+    type: 'select',
+    options: ['Yes', 'No'],
+    help: 'UAE nationals must have previously obtained an Indian visa to be eligible for Visa-on-Arrival. First-time visitors must apply for an e-Visa or paper visa before travelling.',
+    // Only shown if passport is UAE
+    conditional: (answers) => answers.passport === 'United Arab Emirates'
   }
 ];
 
@@ -44,14 +53,18 @@ export default function VisaFinder() {
   const [showHelp, setShowHelp] = useState(false);
   const [result, setResult] = useState(null);
 
-  const currentQ = questions[currentStep];
+  // Filter questions based on conditional logic (e.g., UAE prior visa question)
+  const activeQuestions = questions.filter(q => !q.conditional || q.conditional(answers));
+  const currentQ = activeQuestions[currentStep];
 
   const handleSelect = (option) => {
     setAnswers(prev => ({ ...prev, [currentQ.id]: option }));
   };
 
   const handleNext = () => {
-    if (currentStep < questions.length - 1) {
+    // Determine the active questions (skip UAE prior visa question for non-UAE)
+    const activeQuestions = questions.filter(q => !q.conditional || q.conditional(answers));
+    if (currentStep < activeQuestions.length - 1) {
       setCurrentStep(prev => prev + 1);
       setShowHelp(false);
     } else {
@@ -68,21 +81,36 @@ export default function VisaFinder() {
     }
   };
 
+  const VOA_COUNTRIES = ['Japan', 'South Korea', 'United Arab Emirates'];
+  const VOA_PURPOSES = ['Tourism / Sightseeing', 'Business Meetings', 'Medical Treatment', 'Conference'];
+
   const generateRecommendation = () => {
     let recommendation = {};
+    const isVoaCountry = VOA_COUNTRIES.includes(answers.passport);
+    const isVoaPurpose = VOA_PURPOSES.includes(answers.purpose);
+    const isUae = answers.passport === 'United Arab Emirates';
+    const uaeHasPriorVisa = answers.uae_prior_visa === 'Yes';
+
     if (answers.passport === 'Afghanistan') {
       recommendation = {
         type: 'Afghan National Visa',
-        desc: 'Based on your nationality, you must apply for a specific visa for Afghan Nationals.',
+        desc: 'Based on your nationality, you must apply for a specific visa for Afghan Nationals through the dedicated Afghan portal.',
         path: '/flow/afghan',
-        category: 'regular'
+        category: 'afghan'
       };
-    } else if (answers.passport === 'Japan' && answers.purpose === 'Tourism / Sightseeing') {
+    } else if (isVoaCountry && isVoaPurpose && answers.duration === 'Less than 60 days' && (!isUae || uaeHasPriorVisa)) {
       recommendation = {
         type: 'Visa on Arrival',
-        desc: 'As a Japanese national traveling for tourism, you are eligible to receive your visa upon arrival at designated Indian airports.',
+        desc: `As a ${answers.passport} national, you are eligible for a Visa-on-Arrival at designated Indian airports. No prior online application is needed — you will complete a form and pay ₹2,000 on arrival.`,
         path: '/flow/voa',
         category: 'voa'
+      };
+    } else if (isUae && !uaeHasPriorVisa) {
+      recommendation = {
+        type: 'e-Visa (First-Time UAE Visitor)',
+        desc: 'UAE nationals visiting India for the first time must obtain an e-Visa or paper visa before travel. You are not yet eligible for Visa-on-Arrival.',
+        path: '/apply',
+        category: 'evisa'
       };
     } else if (answers.duration === 'More than 6 months' || answers.purpose === 'Employment / Work' || answers.purpose === 'Study' || answers.passport === 'Pakistan') {
       recommendation = {

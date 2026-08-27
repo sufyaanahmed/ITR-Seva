@@ -25,6 +25,33 @@ function JaliPattern({ id = 'jali-hero', color = '#1E2A4F', opacity = 0.06 }) {
   );
 }
 
+/** Authentic Spirograph / Guilloche Star for Visa */
+function GuillocheStar({ className }) {
+  const numPaths = 20;
+  return (
+    <svg viewBox="0 0 100 100" className={className} fill="none" stroke="currentColor">
+      {[...Array(numPaths)].map((_, i) => {
+        // Radius grows from center outwards
+        const baseR = 4 + (i * 42 / numPaths);
+        let points = [];
+        for (let a = 0; a <= 360; a += 1) {
+          const angle = (a * Math.PI) / 180;
+          // Base 5-point star shape
+          const starShape = 1 + 0.15 * Math.cos(5 * angle);
+          // High-frequency wobble
+          const wobble = 1.2 * Math.sin(100 * angle);
+          
+          const r = (baseR * starShape) + wobble;
+          const x = 50 + r * Math.sin(angle);
+          const y = 50 - r * Math.cos(angle);
+          points.push(`${x},${y}`);
+        }
+        return <path key={i} d={`M ${points.join(' L ')} Z`} strokeWidth={0.3} opacity={0.6} style={{ mixBlendMode: 'multiply' }} />;
+      })}
+    </svg>
+  );
+}
+
 /** Royal Bengal Tiger Image */
 function TigerIllustration({ className = '' }) {
   return (
@@ -260,68 +287,88 @@ export default function Home() {
         </div>
 
         {/* ── Hero Content (revealed behind the doors) ── */}
-        {/* ── Hero Content (revealed behind the doors) ── */}
         <div
-          className="relative z-30 flex flex-col items-center gap-8 w-full max-w-[420px]"
+          className="relative z-30 flex flex-col items-center gap-6 w-full max-w-3xl px-4 mb-20 sm:mb-32"
           style={{
             transition: 'opacity 1.8s ease 0.8s, transform 1.8s ease 0.8s',
             opacity: doorsOpen ? 1 : 0,
             transform: doorsOpen ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.97)',
           }}
         >
-          {/* PASSPORT COVER */}
+
+
+          {/* LUXURY PASSPORT CARD */}
           <div 
-            className="relative flex flex-col items-center w-full aspect-[88/125] rounded-lg shadow-[20px_20px_50px_rgba(0,0,0,0.8),inset_5px_0_15px_rgba(255,255,255,0.05),inset_-5px_0_15px_rgba(0,0,0,0.4)] overflow-hidden"
+            className="relative flex flex-col justify-between w-full min-h-[400px] sm:min-h-[460px] rounded-2xl overflow-hidden border border-[#D4AF37]/25"
             style={{
-              backgroundColor: '#0a0d1e',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='0.15' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+              background: 'linear-gradient(160deg, #1E2A4F 0%, #162040 40%, #1E2A4F 70%, #243260 100%)',
+              boxShadow: '0 30px 60px rgba(30,42,79,0.6), 0 0 0 1px rgba(212,175,55,0.15), inset 0 1px 0 rgba(255,255,255,0.08)',
             }}
           >
-            {/* Darker spine gradient on the left edge */}
-            <div className="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-black/60 to-transparent pointer-events-none" />
+            {/* Guilloche / Security Pattern Overlay - Gold */}
+            <div className="absolute inset-0 opacity-20 pointer-events-none"
+                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q 25 20, 50 10 T 100 10' fill='none' stroke='%23D4AF37' stroke-width='0.3'/%3E%3Cpath d='M0 10 Q 25 0, 50 10 T 100 10' fill='none' stroke='%23D4AF37' stroke-width='0.15'/%3E%3C/svg%3E")` }}
+            />
 
-            <div className="flex flex-col items-center justify-between h-full py-[10%] px-[8%] w-full text-center">
-              
-              {/* TOP TEXT: Visa Title */}
-              <div className="flex flex-col items-center gap-2 mt-2">
-                <p className="uppercase tracking-[0.2em] text-[#F5C518] font-sans font-bold text-[0.55rem] sm:text-[0.65rem] flex items-center gap-2 drop-shadow-md opacity-90">
-                  <span className="w-4 h-px bg-[#F5C518]/60 inline-block" />
-                  Government of India
-                  <span className="w-4 h-px bg-[#F5C518]/60 inline-block" />
-                </p>
-                <h1 className="text-3xl sm:text-4xl font-serif font-bold text-[#F5C518] leading-tight tracking-wide drop-shadow-md">
-                  India Awaits You.
-                </h1>
-              </div>
-              
-              {/* EMBLEM */}
-              <div className="flex flex-col items-center my-4 w-1/3 max-w-[100px] relative">
-                <img 
-                  src="/emblem.svg" 
-                  alt="Emblem of India" 
-                  className="w-full h-auto drop-shadow-lg"
-                  style={{ filter: 'brightness(0) saturate(100%) invert(77%) sepia(70%) saturate(2311%) hue-rotate(352deg) brightness(102%) contrast(92%)' }}
-                />
-              </div>
+            {/* Radial glow in center */}
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,175,55,0.08) 0%, transparent 70%)' }} />
 
-              {/* BOTTOM TEXT & CTA */}
-              <div className="flex flex-col items-center gap-4 w-full mb-2">
-                <p className="text-[#F5C518]/90 font-serif italic text-xs sm:text-sm leading-relaxed px-2 drop-shadow-md">
-                  From the snow-capped Himalayas to the Keralan coast, every journey starts with a visa.
-                </p>
-                
-                <div className="flex flex-col w-full px-4 gap-3 mt-2">
-                  <Link to="/guide/visa-finder"
-                    className="w-full bg-[#F5C518] text-[#0a0d1e] py-3 font-sans font-bold uppercase tracking-widest text-[0.65rem] sm:text-[0.7rem] shadow-lg hover:shadow-xl transition-shadow text-center rounded-sm">
-                    Find My Visa →
-                  </Link>
-                  <Link to="/status"
-                    className="w-full border border-[#F5C518]/40 text-[#F5C518] py-3 font-sans font-bold uppercase tracking-widest text-[0.65rem] sm:text-[0.7rem] hover:bg-[#F5C518]/10 transition-colors text-center rounded-sm">
-                    Check Status
-                  </Link>
+            {/* Central Emblem Watermark */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
+              <img src="/emblem.svg" alt="Emblem Watermark" className="w-2/3 max-w-[260px] h-auto" style={{ filter: 'brightness(0) invert(1)' }} />
+            </div>
+
+            {/* Guilloche Stars (Bottom Right) */}
+            <div className="absolute bottom-16 right-4 sm:right-8 opacity-30 pointer-events-none z-0 flex flex-col items-end">
+               <GuillocheStar className="w-14 h-14 text-[#D4AF37]" />
+               <GuillocheStar className="w-10 h-10 text-[#D4AF37] -mt-3 mr-8 transform -rotate-12" />
+               <GuillocheStar className="w-12 h-12 text-[#D4AF37] -mt-5 mr-1 transform rotate-12" />
+            </div>
+
+            {/* Repeating text lines as subtle borders */}
+            <div className="absolute left-0 w-full h-full pointer-events-none flex flex-col justify-between py-[20%] opacity-[0.07] text-[5px] leading-none overflow-hidden text-[#D4AF37] font-serif tracking-widest">
+               <div className="w-[200%] whitespace-nowrap">REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA</div>
+               <div className="w-[200%] whitespace-nowrap">REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA</div>
+            </div>
+
+            <div className="relative z-10 flex flex-col flex-1 p-5 sm:p-8 w-full text-[#FAF7F0]">
+              
+              {/* Header Row */}
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.3em] uppercase">भारत गणराज्य</h2>
+                  <h2 className="text-sm font-bold font-serif text-[#D4AF37] tracking-[0.25em] uppercase mt-0.5">Republic of India</h2>
                 </div>
+                <span className="text-xs font-bold font-sans text-white/30 tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">e-VISA</span>
               </div>
 
+              {/* Divider */}
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4" />
+
+              {/* Central gateway text */}
+              <div className="flex-1 flex flex-col items-center justify-center py-2 z-10 text-center">
+                 <p className="text-[10px] font-sans font-bold tracking-[0.5em] text-white/40 uppercase mb-3">Welcome To</p>
+                 <h2 className="text-4xl sm:text-5xl font-serif font-light text-white leading-[1.15]">
+                    Your Gateway
+                 </h2>
+                 <h2 className="text-4xl sm:text-5xl font-serif italic font-light text-[#D4AF37] leading-[1.15] mt-1">
+                    to India
+                 </h2>
+                 <p className="text-[11px] font-sans text-white/40 tracking-widest uppercase mt-4">Gateway of India · Discover · Experience</p>
+              </div>
+            </div>
+
+            {/* ACTION BUTTONS (Inside the sticker) */}
+            <div className="relative z-10 flex flex-col sm:flex-row gap-3 p-4 sm:p-6 w-full justify-center border-t border-white/10 bg-gradient-to-r from-white/5 to-white/[0.03]">
+              <Link to="/guide/visa-finder"
+                className="relative bg-gradient-to-r from-[#D4AF37] to-[#C9933A] text-[#1E2A4F] px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs overflow-hidden group shadow-[0_8px_20px_rgba(212,175,55,0.25)] hover:shadow-[0_12px_28px_rgba(212,175,55,0.35)] transition-all duration-300 hover:-translate-y-0.5 text-center rounded-lg">
+                <span className="absolute inset-1 border border-[#1E2A4F]/15 pointer-events-none rounded transition-all duration-300" />
+                <span className="relative z-10 flex items-center justify-center gap-2">Find My Visa <span className="text-sm">→</span></span>
+              </Link>
+              <Link to="/status"
+                className="bg-white/[0.06] border border-white/20 text-white/80 px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white hover:border-white/30 transition-all duration-300 hover:-translate-y-0.5 text-center rounded-lg">
+                Check Status
+              </Link>
             </div>
           </div>
         </div>
@@ -355,7 +402,7 @@ export default function Home() {
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Kashmir & the Himalayas</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Snow leopards, Dal Lake shikaras, and Mughal gardens where saffron blooms each autumn.</p>
-                <div className="px-8 py-4 border border-[#D4AF37] text-[#D4AF37] font-bold text-xs uppercase tracking-widest hover:bg-[#D4AF37] hover:text-[#1E2A4F] transition-colors opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 backdrop-blur-sm">
+                <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
                   Apply for e-Tourist Visa
                 </div>
               </div>
@@ -373,7 +420,7 @@ export default function Home() {
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Palaces & Forts</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Royal elephants march towards Jaipur's Amber Fort as it rises above the plains in magnificent sandstone.</p>
-                <div className="px-8 py-4 border border-[#D4AF37] text-[#D4AF37] font-bold text-xs uppercase tracking-widest hover:bg-[#D4AF37] hover:text-[#1E2A4F] transition-colors opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 backdrop-blur-sm">
+                <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
                   Apply for e-Business Visa
                 </div>
               </div>
@@ -391,7 +438,7 @@ export default function Home() {
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Backwaters & Temples</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">The peacock dances in Periyar's forests as houseboats drift through ancient lush waterways.</p>
-                <div className="px-8 py-4 border border-[#D4AF37] text-[#D4AF37] font-bold text-xs uppercase tracking-widest hover:bg-[#D4AF37] hover:text-[#1E2A4F] transition-colors opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 backdrop-blur-sm">
+                <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
                   Apply for e-Medical Visa
                 </div>
               </div>
@@ -415,77 +462,87 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── SERVICES SECTION ── */}
-      <section className="relative py-28 px-6 overflow-hidden">
+      {/* ── VISA PATHWAY SELECTOR ── */}
+      <section className="relative pt-28 pb-12 px-6 overflow-hidden">
         {/* Deep Royal Texture Background */}
         <div className="absolute inset-0 z-0 bg-[#0c1222]">
           <img src="/royal_indian_texture.jpg" alt="Royal Texture" className="w-full h-full object-cover opacity-60 mix-blend-overlay" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0c1222]/80 via-[#1E2A4F]/60 to-[#0c1222]/90" />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <div className="text-center mb-20">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-3 font-sans">Your Journey Starts Here</p>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Essential Services</h2>
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-3 font-sans">Choose Your Path</p>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Which visa applies to you?</h2>
             <div className="w-16 h-px bg-[#D4AF37] mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                icon: (
-                  <svg viewBox="0 0 40 40" className="w-10 h-10 drop-shadow-md" fill="none">
-                    <circle cx="18" cy="18" r="12" stroke="#D4AF37" strokeWidth="1.5" />
-                    <path d="M26 26 L34 34" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" />
-                    <path d="M18 12 L18 24 M12 18 L24 18" stroke="#D4AF37" strokeWidth="1" opacity="0.6" />
-                  </svg>
-                ),
-                title: 'Visa Finder',
-                desc: 'Answer 4 questions to discover which visa category fits your journey to India.',
+                title: 'e-Visa',
+                desc: 'Most nationalities — apply online in minutes',
                 link: '/guide/visa-finder',
-                cta: 'Start Guide',
+                flags: null
               },
               {
-                icon: (
-                  <svg viewBox="0 0 40 40" className="w-10 h-10 drop-shadow-md" fill="none">
-                    <rect x="8" y="6" width="24" height="28" rx="2" stroke="#D4AF37" strokeWidth="1.5" />
-                    <path d="M13 14 L27 14 M13 20 L27 20 M13 26 L20 26" stroke="#D4AF37" strokeWidth="1" opacity="0.7" />
-                    <path d="M26 23 L30 27 L26 31" stroke="#D4AF37" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                  </svg>
-                ),
-                title: 'Apply Online',
-                desc: 'Submit your e-Visa application, upload documents, and pay — fully online.',
-                link: '/apply',
-                cta: 'Apply Now',
+                title: 'Visa on Arrival',
+                desc: 'Available at the airport for specific citizens',
+                link: '/flow/voa',
+                flags: ['jp', 'kr', 'ae']
               },
               {
-                icon: (
-                  <svg viewBox="0 0 40 40" className="w-10 h-10 drop-shadow-md" fill="none">
-                    <circle cx="20" cy="20" r="14" stroke="#D4AF37" strokeWidth="1.5" />
-                    <path d="M20 12 L20 20 L26 26" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                ),
-                title: 'Track Status',
-                desc: 'Check your application status, download your ETA, or update arrival details.',
-                link: '/status',
-                cta: 'Check Status',
+                title: 'Afghan Nationals',
+                desc: 'Dedicated portal — Business, Medical & Student visas',
+                link: '/flow/afghan',
+                flags: ['af']
               },
-            ].map(s => (
-              <div key={s.title} className="group relative bg-[#151D36]/70 backdrop-blur-md border border-[#D4AF37]/20 p-10 flex flex-col items-center text-center gap-5 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 overflow-hidden rounded-xl">
+              {
+                title: 'Regular Visa',
+                desc: 'Long-stay, Employment, or embassy-preference applicants',
+                link: '/flow/regular',
+                flags: null
+              }
+            ].map(path => (
+              <Link 
+                key={path.title} 
+                to={path.link}
+                className="group relative bg-[#151D36]/70 backdrop-blur-md border border-[#D4AF37]/20 flex flex-col items-center text-center shadow-2xl hover:shadow-[0_15px_40px_rgba(212,175,55,0.15)] hover:-translate-y-3 transition-all duration-500 overflow-hidden rounded-xl min-h-[320px] p-8"
+              >
                 {/* Gold inner border */}
-                <div className="absolute inset-2 border border-[#D4AF37]/10 pointer-events-none group-hover:border-[#D4AF37]/30 transition-colors duration-500 rounded-lg" />
+                <div className="absolute inset-2 border border-[#D4AF37]/10 pointer-events-none group-hover:border-[#D4AF37]/40 transition-colors duration-500 rounded-lg" />
                 
-                <div className="mb-2 p-5 rounded-full bg-gradient-to-br from-[#1E2A4F] to-[#0c1222] border border-[#D4AF37]/30 group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                  {s.icon}
+                {/* Subtle watermark */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(212,175,55,1)_0%,transparent_70%)]" />
+                
+                {/* Top Gold Accent */}
+                <div className="w-8 h-[2px] bg-[#D4AF37] mb-8 group-hover:w-16 transition-all duration-500" />
+                
+                {path.flags && (
+                  <div className="flex gap-2 mb-4">
+                    {path.flags.map(code => (
+                      <img key={code} src={`https://flagcdn.com/w40/${code}.png`} alt={code} className="w-8 h-auto shadow-sm rounded-sm" />
+                    ))}
+                  </div>
+                )}
+                
+                <h3 className="text-2xl font-serif font-bold text-[#D4AF37] mb-4 group-hover:text-white transition-colors duration-300">{path.title}</h3>
+                
+                <p className="text-sm font-sans text-white/70 leading-relaxed flex-1 group-hover:text-white/90 transition-colors duration-300">{path.desc}</p>
+                
+                <div className="mt-8 text-xs font-bold font-sans text-white uppercase tracking-widest group-hover:text-[#D4AF37] transition-colors relative inline-block">
+                  Select <span className="text-sm">→</span>
+                  <span className="block h-[2px] w-0 bg-[#D4AF37] absolute -bottom-2 left-0 group-hover:w-full transition-all duration-500" />
                 </div>
-                <h3 className="text-2xl font-serif font-bold text-[#D4AF37]">{s.title}</h3>
-                <p className="text-sm font-sans text-white/70 leading-relaxed flex-1">{s.desc}</p>
-                <Link to={s.link} className="mt-4 text-xs font-bold font-sans text-white uppercase tracking-widest group-hover:text-[#D4AF37] transition-colors relative inline-block">
-                  {s.cta} 
-                  <span className="block h-[2px] w-0 bg-[#D4AF37] absolute -bottom-1 left-0 group-hover:w-full transition-all duration-500" />
-                </Link>
-              </div>
+              </Link>
             ))}
+          </div>
+
+          <div className="mt-20 text-center">
+             <Link to="/guide/visa-finder" className="inline-flex items-center gap-3 text-white/60 hover:text-[#D4AF37] transition-colors font-sans text-sm tracking-wider uppercase group">
+               Not sure? <span className="border-b border-white/20 group-hover:border-[#D4AF37] transition-colors">Use the Visa Finder</span>
+               <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+             </Link>
           </div>
         </div>
       </section>

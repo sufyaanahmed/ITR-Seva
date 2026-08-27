@@ -105,3 +105,29 @@
     @apply m-4;
   }
 }
+
+@layer utilities {
+  /* Accessibility: Text Zoom */
+  .text-zoom-1 {
+    font-size: 110% !important;
+  }
+  .text-zoom-2 {
+    font-size: 125% !important;
+  }
+  
+  /* Accessibility: High Contrast (Smart Invert) */
+  .high-contrast {
+    filter: invert(1) hue-rotate(180deg) contrast(120%) !important;
+    background-color: #111 !important;
+  }
+  .high-contrast img, .high-contrast video, .high-contrast svg {
+    filter: invert(1) hue-rotate(180deg) !important;
+  }
+
+  /* Accessibility: Highlight Links */
+  .highlight-links a, .highlight-links button {
+    outline: 3px solid #ffaa00 !important;
+    outline-offset: 2px !important;
+    text-decoration: underline !important;
+  }
+}

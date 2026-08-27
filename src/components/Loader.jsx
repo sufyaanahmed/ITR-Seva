@@ -37,7 +37,7 @@ export default function Loader() {
   return (
     <section 
       id="welcome-loader" 
-      className={`fixed inset-0 z-50 flex items-center justify-center font-serif transition-opacity duration-700 ${phase === 'done' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      className={`fixed inset-0 z-[200] flex items-center justify-center font-serif transition-opacity duration-700 ${phase === 'done' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       style={{ backgroundColor: '#f4ead9', color: '#4c1f1a' }}
     >
       <div className="absolute inset-0 overflow-hidden opacity-70">
@@ -58,8 +58,8 @@ export default function Loader() {
       </div>
       
       <div className="relative z-10 text-center scale-100 animate-[scaleIn_0.8s_ease-out_forwards]">
-        <p className="text-[clamp(3.5rem,10vw,9rem)] font-bold mb-4 leading-none tracking-tight" style={{ color: '#5e1d17' }} lang="hi">स्वागत है</p>
-        <p className="text-[0.72rem] font-sans font-extrabold uppercase tracking-[0.15em] mt-5" style={{ color: '#173a5d' }}>Bharat Visa Portal</p>
+        <p className="text-[clamp(3.5rem,10vw,9rem)] font-bold mb-4 leading-none tracking-tight" style={{ color: '#5e1d17' }}>Welcome</p>
+        <p className="text-[0.8rem] font-sans font-extrabold tracking-[0.15em] mt-5" style={{ color: '#173a5d' }} lang="hi">भारत वीज़ा पोर्टल</p>
       </div>
       
       <style>{`

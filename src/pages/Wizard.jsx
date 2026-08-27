@@ -7,7 +7,7 @@ import SmartDocuments from '../components/SmartDocuments';
 // Generate dynamic steps based on the application type (evisa, afghan, voa, regular)
 const getDynamicSteps = (appType) => {
   const isVoa = appType === 'voa';
-  const isAfghan = appType === 'regular' || appType === 'afghan'; // simplified check
+  const isAfghan = appType === 'afghan'; // Only Afghan nationals get the Tazkira field
 
   const baseSteps = [
     { id: 'applicant', title: 'Personal details', fields: [
@@ -64,6 +64,8 @@ const getDynamicSteps = (appType) => {
 export default function Wizard() {
   const { state, updateState, updateData, addDocument } = useStore();
   const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
   
   if (state.submitted) {
     return (
@@ -80,26 +82,54 @@ export default function Wizard() {
   const step = steps[state.step];
   
   const fillDemoData = () => {
-    const demoPayload = {
-      country_of_application: 'United States',
-      given_name: 'Sam',
-      surname: 'Altman',
-      date_of_birth: '1985-04-22',
+    const appType = state.data.application_type || 'evisa';
+    
+    let basePayload = {
+      date_of_birth: '1990-06-15',
       marital_status: 'single',
-      passport_number: 'P12345678',
-      date_of_issue: '2020-01-01',
-      date_of_expiry: '2030-01-01',
-      expected_arrival_date: '2026-10-01',
-      expected_departure_date: '2026-10-15',
+      passport_number: 'A12345678',
+      date_of_issue: '2021-03-10',
+      date_of_expiry: '2031-03-09',
+      expected_arrival_date: '2026-11-15',
+      expected_departure_date: '2026-11-30',
       port_of_arrival: 'Delhi',
       places_to_visit: 'Delhi, Agra, Jaipur',
-      address_in_india: 'Taj Palace Hotel, New Delhi',
-      tazkira_number: '123-456-789',
-      parents_nationality: 'United States',
+      address_in_india: 'The Leela Palace, New Delhi',
       pakistani_descent: 'no',
-      occupation: 'CEO',
-      employer_name: 'OpenAI',
+      occupation: 'Software Engineer',
+      employer_name: 'Acme Technologies',
       visited_saarc: 'no',
+    };
+
+    if (appType === 'afghan') {
+      basePayload = {
+        ...basePayload,
+        country_of_application: 'Afghanistan',
+        given_name: 'Ahmad',
+        surname: 'Shah',
+        parents_nationality: 'Afghanistan',
+        tazkira_number: 'TK-123-456-789',
+      };
+    } else if (appType === 'voa') {
+      basePayload = {
+        ...basePayload,
+        country_of_application: 'Japan',
+        given_name: 'Kenji',
+        surname: 'Sato',
+        parents_nationality: 'Japan',
+      };
+    } else {
+      basePayload = {
+        ...basePayload,
+        country_of_application: 'Canada',
+        given_name: 'Alex',
+        surname: 'Kumar',
+        parents_nationality: 'Canada',
+      };
+    }
+
+    const demoPayload = {
+      ...basePayload,
       ...state.data
     };
     
@@ -112,8 +142,27 @@ export default function Wizard() {
       updateState({ step: state.step + 1 });
       window.scrollTo(0, 0);
     } else {
-      updateState({ submitted: true });
+      handleFinalSubmit(true); // Default to success if enter is pressed
     }
+  };
+
+  const handleFinalSubmit = (isSuccess) => {
+    setSubmitting(true);
+    setSubmitStatus(null);
+    
+    // Simulate network delay
+    setTimeout(() => {
+      setSubmitStatus(isSuccess ? 'success' : 'error');
+      
+      if (isSuccess) {
+        setTimeout(() => updateState({ submitted: true }), 2000);
+      } else {
+        setTimeout(() => {
+          setSubmitting(false);
+          setSubmitStatus(null);
+        }, 3000);
+      }
+    }, 1500);
   };
   
   const handleBack = () => {
@@ -216,9 +265,62 @@ export default function Wizard() {
         
         <div className="mt-12 flex gap-4 pt-6 border-t border-border">
           {state.step > 0 && <button type="button" onClick={handleBack} className="btn-secondary">Back</button>}
-          <button type="submit" className="btn-primary ml-auto">{state.step === steps.length - 1 ? 'Submit Application' : 'Save and continue'}</button>
+          
+          {state.step === steps.length - 1 ? (
+            <div className="ml-auto flex gap-3">
+              <button type="button" onClick={() => handleFinalSubmit(false)} className="btn-secondary border-red-200 text-red-600 hover:bg-red-50">Demo Fail</button>
+              <button type="button" onClick={() => handleFinalSubmit(true)} className="btn-primary">Submit Application</button>
+            </div>
+          ) : (
+            <button type="submit" className="btn-primary ml-auto">Save and continue</button>
+          )}
         </div>
       </form>
+
+      {/* SUBMISSION ANIMATION OVERLAY */}
+      {submitting && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-[#0c1222]/80 backdrop-blur-md">
+          <div className="bg-white p-10 rounded-2xl shadow-2xl flex flex-col items-center justify-center w-[350px] min-h-[350px] text-center transform transition-all">
+             
+             {/* Loading State */}
+             {!submitStatus && (
+               <div className="flex flex-col items-center animate-[fadeIn_0.3s_ease-out]">
+                 <div className="w-16 h-16 border-4 border-gray-100 border-t-[#D4AF37] rounded-full animate-spin mb-8 shadow-sm" />
+                 <p className="text-xl font-serif font-bold text-[#1E2A4F] animate-pulse">Processing...</p>
+                 <p className="text-sm text-gray-500 mt-3 font-sans">Connecting to secure server</p>
+               </div>
+             )}
+
+             {/* Success State */}
+             {submitStatus === 'success' && (
+               <div className="flex flex-col items-center animate-[scaleIn_0.4s_ease-out_forwards]">
+                 <div className="w-24 h-24 mb-6 bg-green-50 rounded-full flex items-center justify-center text-green-600 border-4 border-green-100 shadow-inner">
+                   <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+                   </svg>
+                 </div>
+                 <p className="text-2xl font-serif font-bold text-green-700">Approved!</p>
+                 <p className="text-sm text-gray-500 mt-3 font-sans">Generating your application ID...</p>
+               </div>
+             )}
+
+             {/* Error State */}
+             {submitStatus === 'error' && (
+               <div className="flex flex-col items-center animate-[scaleIn_0.4s_ease-out_forwards]">
+                 <div className="w-24 h-24 mb-6 bg-red-50 rounded-full flex items-center justify-center text-red-600 border-4 border-red-100 shadow-inner">
+                   <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path>
+                   </svg>
+                 </div>
+                 <p className="text-2xl font-serif font-bold text-red-700">Transaction Failed</p>
+                 <p className="text-sm text-gray-500 mt-3 font-sans px-4">Unable to verify passport details. Please try again.</p>
+               </div>
+             )}
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
