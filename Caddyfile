@@ -1,0 +1,42 @@
+{
+	# This showcase needs no runtime configuration endpoint. Reload Caddy through
+	# the process supervisor after changing this file instead.
+	admin off
+}
+
+:8080 {
+	root * ./dist
+	encode zstd gzip
+
+	# Defense in depth: these operational paths must never fall through to the SPA
+	# or become reachable through the public tunnel.
+	@privatePaths path /metrics /metrics/* /admin /admin/* /debug /debug/* /internal /internal/* /actuator /actuator/*
+	respond @privatePaths 404
+
+	header {
+		-Server
+		Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self'; worker-src 'self' blob:; manifest-src 'self'"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		Permissions-Policy "accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), publickey-credentials-get=(), usb=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		Cross-Origin-Resource-Policy "same-origin"
+	}
+
+	# ngrok terminates public HTTPS and forwards this header. A short, host-only
+	# HSTS policy protects the public hostname without preloading or affecting its
+	# parent domain. Local http://localhost:8080 does not receive HSTS; browsers
+	# ignore HSTS delivered over plain HTTP in any case.
+	@publicHttps header X-Forwarded-Proto https
+	header @publicHttps Strict-Transport-Security "max-age=86400"
+
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	@index path / /index.html
+	header @index Cache-Control "no-store"
+
+	try_files {path} /index.html
+	file_server
+}
