@@ -234,7 +234,7 @@ export default function Home() {
                   <h2 className="text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.3em] uppercase">स्वतंत्र शैक्षिक नमूना</h2>
                   <h2 className="text-sm font-bold font-serif text-[#D4AF37] tracking-[0.25em] uppercase mt-0.5">Independent Visa Demo</h2>
                 </div>
-                <span className="text-xs font-bold font-sans text-white/30 tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">Demo</span>
+                <span className="text-xs font-bold font-sans text-white/30 tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">E-Visa</span>
               </div>
 
               {/* Divider */}
@@ -279,7 +279,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-20">
             <p className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-[#C4762A] mb-3">A Land of Contrasts</p>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#1E2A4F] mb-4">Where Will You Journey?</h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#1E2A4F] mb-4">Where Will Your Journey Take You?</h2>
             <div className="w-20 h-[2px] bg-[#D4AF37] mx-auto" />
           </div>
 

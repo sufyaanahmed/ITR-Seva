@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import ScrollToTop from './components/ScrollToTop';
+import Loader from './components/Loader';
 
 const Wizard = lazy(() => import('./pages/Wizard'));
 const Status = lazy(() => import('./pages/Status'));
@@ -16,6 +17,7 @@ const RegularFlow = lazy(() => import('./pages/flows/RegularFlow'));
 const VisaFinder = lazy(() => import('./pages/guide/VisaFinder'));
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
 const Reviews = lazy(() => import('./pages/Reviews'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -145,23 +147,12 @@ const RouteFallback = () => (
   </div>
 );
 
-const NotFound = () => (
-  <section className="mx-auto max-w-2xl px-6 py-20 text-center">
-    <p className="text-sm font-bold uppercase tracking-widest text-amber-700">Page not found</p>
-    <h1 className="mt-3 font-serif text-4xl font-bold">This demo route does not exist</h1>
-    <p className="my-6 text-text-secondary">Check the address or return to the route finder.</p>
-    <Link to="/guide/visa-finder" className="btn-primary inline-block">Open route finder</Link>
-  </section>
-);
 
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col bg-background font-sans text-text">
+      <Loader />
       <ScrollToTop />
-      <div role="note" className="sticky top-0 z-[100] border-b-4 border-amber-400 bg-[#2b180f] px-4 py-3 text-center text-sm text-amber-50 shadow-md">
-        <strong className="mr-2 uppercase tracking-wider text-amber-300">Independent educational prototype.</strong>
-        <span>Not a Government website, not affiliated with the Government of India, and unable to submit or approve a visa. Use synthetic data only.</span>
-      </div>
       <Header />
       <div className="bg-secondary-accent px-4 py-3 text-center text-sm font-medium tracking-wide text-white">
         Travel-guidance snapshot: review the separate <Link to="/e-arrival" className="font-bold underline transition-colors hover:text-primary-dark">e-Arrival Card explainer</Link> and verify it on the official service before travel.
