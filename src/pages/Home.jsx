@@ -397,7 +397,7 @@ export default function Home() {
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
               
-              <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+              <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] font-sans mb-3 opacity-90">The North · Kashmir</span>
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Kashmir & the Himalayas</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
@@ -415,7 +415,7 @@ export default function Home() {
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
               
-              <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+              <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] font-sans mb-3 opacity-90">The Heartlands · Rajasthan</span>
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Palaces & Forts</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
@@ -433,7 +433,7 @@ export default function Home() {
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
               
-              <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+              <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] font-sans mb-3 opacity-90">The South · Kerala</span>
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Backwaters & Temples</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />

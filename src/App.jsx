@@ -20,68 +20,98 @@ const Reviews = lazy(() => import('./pages/Reviews'));
 
 const Header = ({ toggleHighContrast, toggleLargeText, isHighContrast, isLargeText }) => {
   const [isAccessOpen, setIsAccessOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-background border-b border-border">
-      <div className="max-w-[1200px] mx-auto w-full min-h-[104px] py-4 px-6 grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] items-center gap-6">
-        <Link to="/" className="flex items-center gap-4 text-primary no-underline font-serif text-[1.4rem] md:text-2xl mr-auto group" aria-label="India Visa Seva home">
-          <span className="h-[56px] w-[56px] grid place-items-center" aria-hidden="true">
-            <img src="/emblem.svg" alt="National Emblem" className="h-14 w-auto drop-shadow-sm opacity-90" />
+    <header className="bg-background border-b border-border relative z-50">
+      <div className="max-w-[1200px] mx-auto w-full min-h-[104px] py-4 px-6 flex items-center justify-between gap-4">
+        
+        <Link to="/" className="flex items-center gap-3 sm:gap-4 text-primary no-underline font-serif text-[1.2rem] sm:text-[1.4rem] md:text-2xl mr-auto group shrink-0" aria-label="India Visa Seva home">
+          <span className="h-[48px] w-[48px] sm:h-[56px] sm:w-[56px] grid place-items-center shrink-0" aria-hidden="true">
+            <img src="/emblem.svg" alt="National Emblem" className="h-10 sm:h-14 w-auto drop-shadow-sm opacity-90" />
           </span>
-          <div className="flex flex-col leading-tight border-l border-border pl-4">
-            <span className="text-secondary-accent text-[0.65rem] font-sans uppercase tracking-[0.2em] font-medium mb-1">Republic of India</span>
+          <div className="flex flex-col leading-tight border-l border-border pl-3 sm:pl-4">
+            <span className="text-secondary-accent text-[0.60rem] sm:text-[0.65rem] font-sans uppercase tracking-[0.2em] font-medium mb-1">Republic of India</span>
             <span className="font-bold text-primary-dark">India Visa Seva</span>
           </div>
         </Link>
-        <nav className="flex flex-wrap items-center gap-6 md:justify-end row-start-2 md:row-start-1 md:col-start-2 col-span-full md:col-span-1 w-full md:w-auto">
-          <Link to="/guide/visa-finder" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Apply</Link>
-          <Link to="/dashboard" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">My Application</Link>
-          <Link to="/status" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Before You Travel</Link>
-          <Link to="/tourism" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Discover India</Link>
-          <Link to="/help" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Help</Link>
+        
+        <nav className="hidden md:flex items-center gap-6">
+          <Link to="/guide/visa-finder" className="text-text font-sans font-medium text-[0.85rem] lg:text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Apply</Link>
+          <Link to="/dashboard" className="text-text font-sans font-medium text-[0.85rem] lg:text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">My Application</Link>
+          <Link to="/status" className="text-text font-sans font-medium text-[0.85rem] lg:text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Before You Travel</Link>
+          <Link to="/tourism" className="text-text font-sans font-medium text-[0.85rem] lg:text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Discover India</Link>
+          <Link to="/help" className="text-text font-sans font-medium text-[0.85rem] lg:text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Help</Link>
         </nav>
-        <div className="flex items-center row-start-1 col-start-2 md:col-start-3 justify-self-end relative">
-          <button 
-            onClick={() => setIsAccessOpen(!isAccessOpen)}
-            className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 h-[40px] px-4 rounded-full font-sans text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-            aria-label="Accessibility options"
-            aria-expanded={isAccessOpen}
-          >
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-600" fill="currentColor">
-              <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
-            </svg>
-            Accessibility
-          </button>
-          
-          {isAccessOpen && (
-            <div className="absolute top-full right-0 mt-3 w-56 bg-white shadow-xl border border-gray-100 z-50 rounded-xl py-2 overflow-hidden transform origin-top-right transition-all">
-              <div className="px-4 py-2 border-b border-gray-50 bg-gray-50/50">
-                <span className="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest">Display Settings</span>
+
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="relative">
+            <button 
+              onClick={() => setIsAccessOpen(!isAccessOpen)}
+              className="flex items-center gap-1 sm:gap-2 bg-white border border-gray-200 text-gray-700 h-[36px] sm:h-[40px] px-2 sm:px-4 rounded-full font-sans text-xs sm:text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              aria-label="Accessibility options"
+              aria-expanded={isAccessOpen}
+            >
+              <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-600" fill="currentColor">
+                <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+              </svg>
+              <span className="hidden sm:inline">Accessibility</span>
+            </button>
+            
+            {isAccessOpen && (
+              <div className="absolute top-full right-0 mt-3 w-56 bg-white shadow-xl border border-gray-100 z-50 rounded-xl py-2 overflow-hidden transform origin-top-right transition-all">
+                <div className="px-4 py-2 border-b border-gray-50 bg-gray-50/50">
+                  <span className="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest">Display Settings</span>
+                </div>
+                <button 
+                  onClick={toggleHighContrast}
+                  className="w-full text-left px-4 py-3 text-sm hover:bg-[#FAF7F0] flex items-center justify-between text-gray-800 font-medium transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/></svg>
+                    High Contrast
+                  </div>
+                  {isHighContrast && <span className="text-[#00b67a] font-bold">✓</span>}
+                </button>
+                <button 
+                  onClick={toggleLargeText}
+                  className="w-full text-left px-4 py-3 text-sm hover:bg-[#FAF7F0] flex items-center justify-between text-gray-800 font-medium transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                    Large Text
+                  </div>
+                  {isLargeText && <span className="text-[#00b67a] font-bold">✓</span>}
+                </button>
               </div>
-              <button 
-                onClick={toggleHighContrast}
-                className="w-full text-left px-4 py-3 text-sm hover:bg-[#FAF7F0] flex items-center justify-between text-gray-800 font-medium transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/></svg>
-                  High Contrast
-                </div>
-                {isHighContrast && <span className="text-[#00b67a] font-bold">✓</span>}
-              </button>
-              <button 
-                onClick={toggleLargeText}
-                className="w-full text-left px-4 py-3 text-sm hover:bg-[#FAF7F0] flex items-center justify-between text-gray-800 font-medium transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
-                  Large Text
-                </div>
-                {isLargeText && <span className="text-[#00b67a] font-bold">✓</span>}
-              </button>
-            </div>
-          )}
+            )}
+          </div>
+
+          <button 
+            className="md:hidden flex items-center justify-center p-2 text-primary focus:outline-none"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+
+      {isMenuOpen && (
+        <nav className="md:hidden bg-white border-t border-gray-100 absolute w-full left-0 z-40 shadow-xl flex flex-col px-6 py-4">
+          <Link to="/guide/visa-finder" onClick={() => setIsMenuOpen(false)} className="py-3 text-text font-sans font-medium text-[0.95rem] uppercase tracking-wider hover:text-secondary-accent border-b border-gray-50">Apply</Link>
+          <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="py-3 text-text font-sans font-medium text-[0.95rem] uppercase tracking-wider hover:text-secondary-accent border-b border-gray-50">My Application</Link>
+          <Link to="/status" onClick={() => setIsMenuOpen(false)} className="py-3 text-text font-sans font-medium text-[0.95rem] uppercase tracking-wider hover:text-secondary-accent border-b border-gray-50">Before You Travel</Link>
+          <Link to="/tourism" onClick={() => setIsMenuOpen(false)} className="py-3 text-text font-sans font-medium text-[0.95rem] uppercase tracking-wider hover:text-secondary-accent border-b border-gray-50">Discover India</Link>
+          <Link to="/help" onClick={() => setIsMenuOpen(false)} className="py-3 text-text font-sans font-medium text-[0.95rem] uppercase tracking-wider hover:text-secondary-accent">Help</Link>
+        </nav>
+      )}
     </header>
   );
 };
