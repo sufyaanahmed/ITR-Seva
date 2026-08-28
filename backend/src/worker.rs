@@ -27,6 +27,7 @@ pub async fn run(state: AppState, mut shutdown: broadcast::Receiver<()>) {
                 }
             }
             _ = cleanup_tick.tick() => {
+                state.prune_memory();
                 if let Err(error) = cleanup_expired_records(&state).await {
                     warn!(%error, "expired-record cleanup failed; it will be retried");
                 }
@@ -42,7 +43,7 @@ async fn process_outbox_batch(state: &AppState) -> Result<u64, sqlx::Error> {
              SELECT id FROM outbox_events \
              WHERE processed_at IS NULL \
              ORDER BY created_at \
-             LIMIT 100 \
+             LIMIT 500 \
              FOR UPDATE SKIP LOCKED\
          ) \
          UPDATE outbox_events AS events \
@@ -56,14 +57,19 @@ async fn process_outbox_batch(state: &AppState) -> Result<u64, sqlx::Error> {
 
 async fn cleanup_expired_records(state: &AppState) -> Result<(), sqlx::Error> {
     let mut transaction = state.pool.begin().await?;
-    sqlx::query("DELETE FROM idempotency_records WHERE expires_at < now()")
-        .execute(&mut *transaction)
-        .await?;
+    sqlx::query(
+        "DELETE FROM idempotency_records WHERE (session_id, route, idempotency_key) IN (\
+             SELECT session_id, route, idempotency_key FROM idempotency_records \
+             WHERE expires_at < now() ORDER BY expires_at LIMIT 10000\
+         )",
+    )
+    .execute(&mut *transaction)
+    .await?;
     sqlx::query(
         "DELETE FROM demo_sessions WHERE id IN (\
              SELECT id FROM demo_sessions \
              WHERE expires_at < now() - interval '24 hours' \
-             ORDER BY expires_at LIMIT 1000\
+             ORDER BY expires_at LIMIT 10000\
          )",
     )
     .execute(&mut *transaction)

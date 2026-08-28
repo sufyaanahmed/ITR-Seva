@@ -239,9 +239,21 @@ const validateStep = (step, data, docs) => {
   (step.fields || []).filter((item) => isVisible(item, data)).forEach((item) => {
     const value = data[item.name];
     if (isRequired(item, data) && (item.type === 'checkbox' ? value !== true : String(value ?? '').trim() === '')) errors[item.name] = 'This field is required.';
+    if (item.type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value).trim())) errors[item.name] = 'Enter a complete email address.';
+    if (item.type === 'date' && value && !/^\d{4}-\d{2}-\d{2}$/.test(String(value))) errors[item.name] = 'Enter a valid calendar date.';
+    if (item.name.includes('phone') && value) {
+      const phone = String(value).trim();
+      const digitCount = phone.replace(/\D/g, '').length;
+      if (!/^\+?[0-9][0-9 ()-]*$/.test(phone) || digitCount < 7 || digitCount > 20) errors[item.name] = 'Enter a valid phone number using 7–20 digits and common separators.';
+    }
   });
 
-  if (data.email && data.confirm_email && data.email.trim().toLowerCase() !== data.confirm_email.trim().toLowerCase()) errors.confirm_email = 'Email addresses must match.';
+  if (data.email && data.confirm_email && String(data.email).trim().toLowerCase() !== String(data.confirm_email).trim().toLowerCase()) errors.confirm_email = 'Email addresses must match.';
+  const today = new Date().toISOString().slice(0, 10);
+  if (data.date_of_birth && data.date_of_birth >= today) errors.date_of_birth = 'Date of birth must be in the past.';
+  if (data.passport_issue_date && data.passport_issue_date > today) errors.passport_issue_date = 'Passport issue date cannot be in the future.';
+  if (data.passport_issue_date && data.passport_expiry_date && data.passport_expiry_date <= data.passport_issue_date) errors.passport_expiry_date = 'Passport expiry date must be after its issue date.';
+  if (data.expected_arrival_date && data.passport_expiry_date && data.passport_expiry_date <= data.expected_arrival_date) errors.passport_expiry_date = 'Passport must remain valid after the expected arrival date.';
   if (step.id === 'documents') {
     const missing = getRequiredDocuments(data).filter((requirement) => !docs.some((document) => document.type === requirement.type && document.status === 'selected-this-session'));
     if (missing.length) errors.documents = `Select every required item before continuing: ${missing.map((item) => item.title).join(', ')}.`;
@@ -456,13 +468,17 @@ export default function Wizard() {
     } else {
       setBackendSync({ status: 'saving', message: 'Committing the synthetic record to the self-hosted backend…' });
       try {
-        const backendRecord = await syncSyntheticApplication({ data: state.data, documents: state.docs });
+        const backendRecord = await syncSyntheticApplication({
+          data: state.data,
+          documents: state.docs,
+          attemptId: state.identifiers?.temporaryDemoId,
+        });
         completeDemo(appType === 'voa' ? 'voa-form' : 'application-preparation', backendRecord);
         setBackendSync({ status: 'saved', message: backendRecord ? 'Synthetic record committed.' : 'Backend sync is disabled.' });
       } catch (error) {
         setBackendSync({
           status: 'error',
-          message: `${error.message}${error.retryable ? ' You can retry safely.' : ''}`,
+          message: `${error.message}${error.retryable ? ' Retry will reuse the same completion key.' : ''}`,
         });
       }
     }
@@ -584,7 +600,7 @@ export default function Wizard() {
             </div>
             <div className="space-y-4">
               {renderField(field('review_accuracy', 'I reviewed every prepared field and document status for accuracy', 'checkbox'))}
-              {appType !== 'voa' && renderField(field('finality_acknowledged', 'I understand that final official submission may prevent further form edits; this demo completion is still local only', 'checkbox'))}
+              {appType !== 'voa' && renderField(field('finality_acknowledged', 'I understand that official submission may prevent further edits; this prototype does not submit to the Government, and self-hosted mode stores only a non-sensitive demo summary', 'checkbox'))}
               {appType === 'voa' && renderField(field('arrival_checklist_acknowledged', 'I will use the official Annexure I, print/sign it, carry the airport evidence, and complete the separate e-Arrival Card', 'checkbox'))}
               {renderField(field('demo_boundary_acknowledged', 'I understand this site does not submit to, represent, or grant approval from the Government of India', 'checkbox'))}
             </div>

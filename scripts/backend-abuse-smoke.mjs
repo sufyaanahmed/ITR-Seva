@@ -35,6 +35,17 @@ const oversized = await fetch(`${apiUrl}/sessions`, {
 });
 assert.equal(oversized.status, 413);
 
+const fakeTokenBurst = await Promise.all(Array.from({ length: 2_100 }, (_, index) => fetch(`${apiUrl}/applications`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', Authorization: `Bearer demo_${String(index).padStart(64, '0')}` },
+  body: JSON.stringify({ application_type: 'evisa', data: { application_type: 'evisa', demo_only: true } }),
+}).catch(() => ({ status: 'ERR' }))));
+const fakeTokenStatuses = fakeTokenBurst.reduce((counts, response) => {
+  counts[response.status] = (counts[response.status] || 0) + 1;
+  return counts;
+}, {});
+assert.ok((fakeTokenStatuses[429] || 0) > 0, 'rotating invalid bearer tokens must not bypass the peer rate limit');
+
 const burst = await Promise.all(Array.from({ length: 250 }, (_, index) => fetch(`${apiUrl}/sessions`, {
   method: 'POST',
   headers: {
@@ -43,7 +54,7 @@ const burst = await Promise.all(Array.from({ length: 250 }, (_, index) => fetch(
     'X-Forwarded-For': `203.0.113.${index % 250}`,
   },
   body: JSON.stringify({ client_label: `rate-limit-${index}` }),
-})));
+}).catch(() => ({ status: 'ERR' }))));
 const burstStatuses = burst.reduce((counts, response) => {
   counts[response.status] = (counts[response.status] || 0) + 1;
   return counts;
@@ -53,6 +64,7 @@ assert.ok((burstStatuses[429] || 0) > 0, 'the session-creation burst must be rat
 
 console.log(JSON.stringify({
   ok: true,
-  assertions: ['authentication', 'synthetic-only', 'operator-route-isolation', 'body-limit', 'rate-limit', 'forwarded-ip-not-trusted'],
+  assertions: ['authentication', 'synthetic-only', 'operator-route-isolation', 'body-limit', 'rate-limit', 'invalid-token-rotation', 'forwarded-ip-not-trusted'],
+  fakeTokenStatuses,
   burstStatuses,
 }, null, 2));

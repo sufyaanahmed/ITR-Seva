@@ -168,7 +168,7 @@ export default function SmartDocuments() {
       }
       addDocument(requirement.type, {
         extension: validation.extension,
-        mimeType: file.type,
+        mimeType: file.type || requirement.mimeTypes[0],
         size: file.size,
         width: validation.width,
         height: validation.height,
@@ -194,7 +194,7 @@ export default function SmartDocuments() {
     <div className="space-y-6">
       <div className="bg-blue-50 border border-blue-200 p-4 rounded text-sm text-blue-950">
         <strong className="block mb-1">Purpose-aware demo checklist</strong>
-        <p>Required for the selected <strong>{state.data.visa_category || 'unselected'}</strong> path. File bytes stay in your browser session and are not uploaded or saved; only non-sensitive validation metadata is stored locally.</p>
+        <p>Required for the selected <strong>{state.data.visa_category || 'unselected'}</strong> path. File bytes are never uploaded or saved. When the optional self-hosted showcase backend is enabled, only a non-sensitive completion summary and validation metadata are sent to it.</p>
       </div>
 
       {requiredDocs.map((requirement) => {

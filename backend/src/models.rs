@@ -29,10 +29,37 @@ pub struct UpdateApplication {
 
 #[derive(Deserialize)]
 pub struct PutDocument {
+    pub expected_version: i32,
     pub kind: String,
     pub media_type: String,
     pub size_bytes: i32,
     pub sha256_hex: String,
+}
+
+#[derive(Deserialize)]
+pub struct SubmitApplication {
+    pub expected_version: i32,
+}
+
+#[derive(Deserialize)]
+pub struct DocumentMetadataInput {
+    pub kind: String,
+    pub media_type: String,
+    pub size_bytes: i32,
+    pub sha256_hex: String,
+}
+
+#[derive(Deserialize)]
+pub struct ShowcaseCompletion {
+    pub application_type: String,
+    pub data: Value,
+    #[serde(default)]
+    pub documents: Vec<DocumentMetadataInput>,
+}
+
+#[derive(Serialize)]
+pub struct DocumentStored {
+    pub version: i32,
 }
 
 #[derive(Debug, FromRow)]
@@ -115,31 +142,88 @@ pub fn validate_application(application_type: &str, data: &Value) -> Result<(), 
     if object.get("application_type").and_then(Value::as_str) != Some(application_type) {
         return Err("data.application_type must match application_type".into());
     }
-    if object.len() > 200 {
-        return Err("data contains too many fields".into());
+    const ALLOWED_FIELDS: &[&str] = &[
+        "application_type",
+        "demo_only",
+        "journey_kind",
+        "visa_category",
+        "ruleset_id",
+        "document_count",
+        "benchmark_sequence",
+    ];
+    if object
+        .keys()
+        .any(|key| !ALLOWED_FIELDS.contains(&key.as_str()))
+    {
+        return Err(
+            "data may contain only the documented non-sensitive showcase summary fields".into(),
+        );
+    }
+    for key in ["journey_kind", "visa_category", "ruleset_id"] {
+        if let Some(value) = object.get(key) {
+            let value = value
+                .as_str()
+                .ok_or_else(|| format!("data.{key} must be a string"))?;
+            if value.len() > 80 || value.chars().any(char::is_control) {
+                return Err(format!(
+                    "data.{key} must contain at most 80 printable characters"
+                ));
+            }
+        }
+    }
+    for key in ["document_count", "benchmark_sequence"] {
+        if let Some(value) = object.get(key) {
+            let value = value
+                .as_u64()
+                .ok_or_else(|| format!("data.{key} must be a non-negative integer"))?;
+            if value > 10_000_000 {
+                return Err(format!("data.{key} is too large"));
+            }
+        }
     }
     Ok(())
 }
 
 pub fn validate_document(document: &PutDocument) -> Result<(), String> {
-    if document.kind.is_empty()
-        || document.kind.len() > 64
-        || !document
-            .kind
+    validate_document_fields(
+        &document.kind,
+        &document.media_type,
+        document.size_bytes,
+        &document.sha256_hex,
+    )
+}
+
+pub fn validate_document_input(document: &DocumentMetadataInput) -> Result<(), String> {
+    validate_document_fields(
+        &document.kind,
+        &document.media_type,
+        document.size_bytes,
+        &document.sha256_hex,
+    )
+}
+
+fn validate_document_fields(
+    kind: &str,
+    media_type: &str,
+    size_bytes: i32,
+    sha256_hex: &str,
+) -> Result<(), String> {
+    if kind.is_empty()
+        || kind.len() > 64
+        || !kind
             .chars()
             .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_'))
     {
         return Err("kind must contain 1-64 letters, numbers, hyphens, or underscores".into());
     }
-    if !["application/pdf", "image/jpeg", "image/png"].contains(&document.media_type.as_str()) {
+    if !["application/pdf", "image/jpeg", "image/png"].contains(&media_type) {
         return Err("media_type must be application/pdf, image/jpeg, or image/png".into());
     }
-    if !(1..=10_485_760).contains(&document.size_bytes) {
+    if !(1..=10_485_760).contains(&size_bytes) {
         return Err("size_bytes must be between 1 and 10485760".into());
     }
-    if document.sha256_hex.len() != 64
-        || !document
-            .sha256_hex
+    if sha256_hex.len() != 64
+        || !sha256_hex
             .chars()
             .all(|c| c.is_ascii_hexdigit() && !c.is_ascii_uppercase())
     {
@@ -172,11 +256,23 @@ mod tests {
     #[test]
     fn validates_document_hash_and_type() {
         let document = PutDocument {
+            expected_version: 1,
             kind: "passport_bio".into(),
             media_type: "application/pdf".into(),
             size_bytes: 1024,
             sha256_hex: "a".repeat(64),
         };
         assert!(validate_document(&document).is_ok());
+    }
+
+    #[test]
+    fn rejects_personal_data_fields() {
+        assert!(
+            validate_application(
+                "evisa",
+                &json!({"application_type": "evisa", "demo_only": true, "surname": "EXAMPLE"})
+            )
+            .is_err()
+        );
     }
 }

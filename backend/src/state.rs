@@ -57,13 +57,8 @@ impl AppState {
         }
 
         let now = Instant::now();
-        if self.limiter.windows.len() >= 90_000 {
-            self.limiter
-                .windows
-                .retain(|_, value| now.duration_since(value.started) < Duration::from_secs(60));
-            if self.limiter.windows.len() >= 100_000 && !self.limiter.windows.contains_key(&key) {
-                return false;
-            }
+        if self.limiter.windows.len() >= 100_000 && !self.limiter.windows.contains_key(&key) {
+            return false;
         }
         let mut entry = self.limiter.windows.entry(key).or_insert(RateWindow {
             started: now,
@@ -82,14 +77,19 @@ impl AppState {
 
     pub fn cache_session(&self, token_hash: String, id: Uuid, expires_at: DateTime<Utc>) {
         if self.sessions.len() >= 100_000 {
-            let now = Utc::now();
-            self.sessions.retain(|_, value| value.expires_at > now);
-            if self.sessions.len() >= 100_000 {
-                return;
-            }
+            return;
         }
         self.sessions
             .insert(token_hash, CachedSession { id, expires_at });
+    }
+
+    pub fn prune_memory(&self) {
+        let now = Instant::now();
+        self.limiter
+            .windows
+            .retain(|_, value| now.duration_since(value.started) < Duration::from_secs(60));
+        let utc_now = Utc::now();
+        self.sessions.retain(|_, value| value.expires_at > utc_now);
     }
 
     pub async fn authenticate(&self, authorization: Option<&str>) -> Result<Uuid, ApiError> {
@@ -124,13 +124,6 @@ pub fn token_hash(token: &str) -> [u8; 32] {
     Sha256::digest(token.as_bytes()).into()
 }
 
-pub fn rate_limit_key(authorization: Option<&str>, peer: &str) -> String {
-    match authorization.and_then(|value| value.strip_prefix("Bearer ")) {
-        Some(token) => format!("token:{}", hex::encode(token_hash(token))),
-        None => format!("peer:{peer}"),
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -144,13 +137,5 @@ mod tests {
             hex::encode(first),
             "demo-secret-token-value-that-is-long-enough"
         );
-    }
-
-    #[test]
-    fn authenticated_rate_limit_keys_do_not_include_bearer_tokens() {
-        let token = "demo-secret-token-value-that-is-long-enough";
-        let key = rate_limit_key(Some(&format!("Bearer {token}")), "127.0.0.1");
-        assert!(!key.contains(token));
-        assert!(key.starts_with("token:"));
     }
 }

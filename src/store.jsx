@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
-const sessionKey = 'bharat-visa-session-draft-v4';
+const sessionKey = 'bharat-visa-session-draft-v3';
+const abandonedSessionKey = 'bharat-visa-session-draft-v4';
+const showcaseSyncContextKey = 'visa-showcase-sync-v1';
 const legacyPersistentKey = 'bharat-visa-drafts';
 const legacyDatabaseName = 'bharat-visa-drafts';
 const schemaVersion = 4;
@@ -44,7 +46,7 @@ export const safeDocumentMetadata = (document, { hydrated = false } = {}) => {
     type: String(document.type),
     displayName: document.displayName || `${String(document.type).replace(/_/g, ' ')}${extension ? `.${extension}` : ''}`,
     extension,
-    mimeType: String(document.mimeType || ''),
+    mimeType: String(document.mimeType || (extension === 'pdf' ? 'application/pdf' : ['jpg', 'jpeg'].includes(extension) ? 'image/jpeg' : extension === 'png' ? 'image/png' : '')),
     size: Number.isFinite(document.size) ? document.size : null,
     width: Number.isFinite(document.width) ? document.width : null,
     height: Number.isFinite(document.height) ? document.height : null,
@@ -157,7 +159,10 @@ export const StoreProvider = ({ children }) => {
 
   const updateState = (newState) => {
     setState((previous) => {
-      const next = { ...previous, ...newState };
+      const normalized = newState.data
+        ? { ...newState, data: { ...newState.data, demo_only: true } }
+        : newState;
+      const next = { ...previous, ...normalized };
       const isExplicitFreshStart = newState.step === 0
         && newState.submitted === false
         && Array.isArray(newState.docs)
@@ -230,6 +235,8 @@ export const StoreProvider = ({ children }) => {
 
     try {
       globalThis.sessionStorage?.removeItem(sessionKey);
+      globalThis.sessionStorage?.removeItem(abandonedSessionKey);
+      globalThis.sessionStorage?.removeItem(showcaseSyncContextKey);
     } catch (error) {
       failures.push(`session draft: ${error instanceof Error ? error.message : 'browser storage error'}`);
     }

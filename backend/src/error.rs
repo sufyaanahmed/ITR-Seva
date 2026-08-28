@@ -22,6 +22,8 @@ pub enum ApiError {
     Overloaded,
     #[error("the request rate is too high")]
     RateLimited,
+    #[error("the demo session has reached its application limit")]
+    QuotaExceeded,
     #[error("the database is temporarily unavailable")]
     Database(#[source] sqlx::Error),
     #[error("internal server error")]
@@ -52,6 +54,7 @@ impl IntoResponse for ApiError {
             }
             Self::Overloaded => (StatusCode::SERVICE_UNAVAILABLE, "overloaded", true),
             Self::RateLimited => (StatusCode::TOO_MANY_REQUESTS, "rate_limited", true),
+            Self::QuotaExceeded => (StatusCode::TOO_MANY_REQUESTS, "quota_exceeded", false),
             Self::Database(_) => (
                 StatusCode::SERVICE_UNAVAILABLE,
                 "database_unavailable",
@@ -79,6 +82,12 @@ impl IntoResponse for ApiError {
             response
                 .headers_mut()
                 .insert("retry-after", "1".parse().unwrap());
+        }
+        if status == StatusCode::UNAUTHORIZED {
+            response.headers_mut().insert(
+                "www-authenticate",
+                "Bearer realm=\"visa-showcase\"".parse().unwrap(),
+            );
         }
         response
     }

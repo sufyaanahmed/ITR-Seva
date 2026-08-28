@@ -7,10 +7,11 @@ This directory contains the implemented Rust/PostgreSQL backend for the independ
 - Axum/Tokio HTTP service compiled as a native ARM64 container.
 - PostgreSQL schema and startup migrations through SQLx.
 - Opaque, expiring demo sessions; only SHA-256 token hashes are stored.
-- Synthetic-only application creation (`demo_only=true`).
+- Synthetic-only application creation with a strict allowlist of non-sensitive summary fields.
 - Ownership checks on every application operation.
-- Optimistic version checks for draft updates.
-- Validated document metadata; document bytes are not stored.
+- Optimistic version checks for draft updates, document changes, and submission.
+- Transactionally locked document metadata updates; document bytes are not stored.
+- A browser-facing atomic completion endpoint with durable idempotency for safe retries.
 - Atomic, idempotent final submission with a PostgreSQL advisory lock.
 - Status history, audit events, and a transactional outbox.
 - A bounded `FOR UPDATE SKIP LOCKED` outbox worker.
@@ -28,10 +29,11 @@ This directory contains the implemented Rust/PostgreSQL backend for the independ
 | GET | `/api/v1/reference/visa-categories` | Public | Cacheable reviewed reference metadata |
 | POST | `/api/v1/sessions` | Public, rate limited | Create an expiring opaque demo session |
 | POST | `/api/v1/applications` | Bearer token | Create a synthetic draft |
+| POST | `/api/v1/showcase-completions` | Bearer token + `Idempotency-Key` | Atomically create and submit a non-sensitive browser showcase record |
 | GET | `/api/v1/applications/{id}` | Bearer token + ownership | Read a draft/application |
 | PATCH | `/api/v1/applications/{id}` | Bearer token + ownership + version | Replace a synthetic draft safely |
-| PUT | `/api/v1/applications/{id}/documents` | Bearer token + ownership | Upsert validated document metadata |
-| POST | `/api/v1/applications/{id}/submit` | Bearer token + `Idempotency-Key` | Atomically submit a draft |
+| PUT | `/api/v1/applications/{id}/documents` | Bearer token + ownership + `expected_version` | Lock the draft and upsert validated document metadata |
+| POST | `/api/v1/applications/{id}/submit` | Bearer token + `Idempotency-Key` + `expected_version` | Atomically submit the exact reviewed draft version |
 | GET | `/api/v1/applications/{id}/status` | Bearer token + ownership | Read status and history |
 
 Operator-only routes listen on port `9090`: `/internal/live`, `/internal/ready`, and `/internal/metrics`. Caddy blocks `/internal`, `/metrics`, `/admin`, and similar paths on the public port.
@@ -43,6 +45,7 @@ Create a local environment file without committing it:
 ```sh
 cp .env.example .env
 # Replace POSTGRES_PASSWORD in .env with a long random local value.
+# VITE_SHOWCASE_BACKEND=enabled opts the production build into backend sync.
 docker compose up -d --build
 ```
 

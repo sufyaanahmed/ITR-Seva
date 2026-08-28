@@ -1,7 +1,6 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
-import Loader from './components/Loader';
 import ScrollToTop from './components/ScrollToTop';
 
 const Wizard = lazy(() => import('./pages/Wizard'));
@@ -18,9 +17,27 @@ const VisaFinder = lazy(() => import('./pages/guide/VisaFinder'));
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
 
 const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [accessibilityOpen, setAccessibilityOpen] = useState(false);
+  const [textZoom, setTextZoom] = useState(100);
+  const [highContrast, setHighContrast] = useState(false);
+  const [highlightLinks, setHighlightLinks] = useState(false);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.fontSize = `${textZoom}%`;
+    root.classList.toggle('high-contrast', highContrast);
+    root.classList.toggle('highlight-links', highlightLinks);
+    return () => {
+      root.style.fontSize = '';
+      root.classList.remove('high-contrast', 'highlight-links');
+    };
+  }, [textZoom, highContrast, highlightLinks]);
+
+  const navLinkClass = 'text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors';
   return (
     <header className="bg-background border-b border-border">
-      <div className="max-w-[1200px] mx-auto w-full min-h-[104px] py-4 px-6 grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] items-center gap-6">
+      <div className="max-w-[1200px] mx-auto w-full min-h-[88px] py-4 px-4 sm:px-6 flex flex-wrap items-center gap-4">
         <Link to="/" className="flex items-center gap-4 text-primary no-underline font-serif text-[1.4rem] md:text-2xl mr-auto group" aria-label="Visa Journey Lab home">
           <span className="h-[56px] w-[56px] rounded-full border-2 border-secondary-accent bg-surface grid place-items-center shadow-sm" aria-hidden="true">
             <svg viewBox="0 0 48 48" className="h-9 w-9 text-primary" fill="none">
@@ -34,24 +51,27 @@ const Header = () => {
             <span className="font-bold text-primary-dark">Visa Journey Lab</span>
           </div>
         </Link>
-        <nav className="flex flex-wrap items-center gap-6 md:justify-end row-start-2 md:row-start-1 md:col-start-2 col-span-full md:col-span-1 w-full md:w-auto">
-          <Link to="/guide/visa-finder" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Route demo</Link>
-          <Link to="/dashboard" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Local draft</Link>
-          <Link to="/status" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Travel demo</Link>
-          <Link to="/tourism" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Discover India</Link>
-          <Link to="/help" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Help</Link>
-        </nav>
-        <div className="flex items-center gap-3 row-start-1 col-start-2 md:col-start-3 justify-self-end">
-          <select className="bg-surface border border-border-dark text-text h-[44px] px-3 font-sans text-sm focus:outline-none focus:border-primary transition-colors cursor-pointer">
-            <option>English</option>
-            <option>हिन्दी</option>
-          </select>
-        </div>
-        <div className="flex items-center row-start-1 col-start-3 md:col-start-4 justify-self-end">
-          <button className="bg-transparent border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-medium hover:bg-surface-dark transition-colors">
+        <div className="ml-auto flex items-center gap-2">
+          <button type="button" aria-expanded={accessibilityOpen} aria-controls="accessibility-options" onClick={() => setAccessibilityOpen((open) => !open)} className="bg-transparent border border-border-dark text-text h-[44px] px-3 font-sans text-sm font-medium hover:bg-surface-dark transition-colors">
             Accessibility
           </button>
+          <button type="button" aria-expanded={menuOpen} aria-controls="primary-navigation" onClick={() => setMenuOpen((open) => !open)} className="md:hidden border border-border-dark h-[44px] px-3 font-bold" aria-label="Toggle navigation menu">Menu</button>
         </div>
+        <nav id="primary-navigation" aria-label="Primary navigation" className={`${menuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 md:ml-auto w-full md:w-auto`}>
+          <Link onClick={() => setMenuOpen(false)} to="/guide/visa-finder" className={navLinkClass}>Route demo</Link>
+          <Link onClick={() => setMenuOpen(false)} to="/dashboard" className={navLinkClass}>Local draft</Link>
+          <Link onClick={() => setMenuOpen(false)} to="/status" className={navLinkClass}>Travel demo</Link>
+          <Link onClick={() => setMenuOpen(false)} to="/tourism" className={navLinkClass}>Discover India</Link>
+          <Link onClick={() => setMenuOpen(false)} to="/help" className={navLinkClass}>Help</Link>
+        </nav>
+        {accessibilityOpen && (
+          <div id="accessibility-options" className="w-full flex flex-wrap items-center gap-3 border-t border-border pt-4" aria-label="Accessibility options">
+            <span className="text-sm font-bold">Text size: {textZoom}%</span>
+            {[100, 110, 125].map((size) => <button key={size} type="button" aria-pressed={textZoom === size} onClick={() => setTextZoom(size)} className="border border-border-dark px-3 py-2 text-sm">{size}%</button>)}
+            <button type="button" aria-pressed={highContrast} onClick={() => setHighContrast((value) => !value)} className="border border-border-dark px-3 py-2 text-sm">High contrast</button>
+            <button type="button" aria-pressed={highlightLinks} onClick={() => setHighlightLinks((value) => !value)} className="border border-border-dark px-3 py-2 text-sm">Highlight links</button>
+          </div>
+        )}
       </div>
     </header>
   );
@@ -92,11 +112,19 @@ const RouteFallback = () => (
   </div>
 );
 
+const NotFound = () => (
+  <section className="mx-auto max-w-2xl px-6 py-20 text-center">
+    <p className="text-sm font-bold uppercase tracking-widest text-amber-700">Page not found</p>
+    <h1 className="mt-3 text-4xl font-serif font-bold">This demo route does not exist</h1>
+    <p className="my-6 text-text-secondary">Check the address or return to the route finder.</p>
+    <Link to="/guide/visa-finder" className="btn-primary inline-block">Open route finder</Link>
+  </section>
+);
+
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans text-text">
       <ScrollToTop />
-      <Loader />
       <div role="note" className="sticky top-0 z-[100] border-b-4 border-amber-400 bg-[#2b180f] px-4 py-3 text-center text-sm text-amber-50 shadow-md">
         <strong className="mr-2 uppercase tracking-wider text-amber-300">Independent educational prototype.</strong>
         <span>Not a Government website, not affiliated with the Government of India, and unable to submit or approve a visa. Use synthetic data only.</span>
@@ -121,6 +149,7 @@ export default function App() {
             <Route path="/help" element={<Help />} />
             <Route path="/tourism" element={<Tourism />} />
             <Route path="/apply" element={<Wizard />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </main>

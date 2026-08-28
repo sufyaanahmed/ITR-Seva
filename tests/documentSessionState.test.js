@@ -14,6 +14,15 @@ const storeModuleUrl = `data:text/javascript;base64,${Buffer.from(pureStoreSourc
 const { applyDataUpdate, hydrateState, safeDocumentMetadata } = await import(storeModuleUrl);
 
 describe('document selection session state', () => {
+  test('normalizes an empty browser MIME type from a valid PDF extension', () => {
+    const metadata = safeDocumentMetadata({
+      type: 'passport',
+      name: 'passport.pdf',
+      mimeType: '',
+      size: 12_000,
+    });
+    assert.equal(metadata.mimeType, 'application/pdf');
+  });
   test('a newly validated selection is valid only for the current session', () => {
     const selected = safeDocumentMetadata({
       type: 'passport',

@@ -23,7 +23,7 @@ use config::Config;
 use error::ApiError;
 use metrics::Metrics;
 use sqlx::{Executor, postgres::PgPoolOptions};
-use state::{AppState, rate_limit_key};
+use state::AppState;
 use tokio::{net::TcpListener, sync::broadcast};
 use tower_http::{
     catch_panic::CatchPanicLayer,
@@ -120,6 +120,10 @@ fn public_router(state: AppState) -> Result<Router, Box<dyn std::error::Error>> 
         .route("/api/v1/sessions", post(routes::create_session))
         .route("/api/v1/applications", post(routes::create_application))
         .route(
+            "/api/v1/showcase-completions",
+            post(routes::create_showcase_completion),
+        )
+        .route(
             "/api/v1/applications/{id}",
             get(routes::get_application).patch(routes::update_application),
         )
@@ -200,10 +204,6 @@ async fn enforce_rate_limit(
     request: Request,
     next: Next,
 ) -> Response {
-    let authorization = request
-        .headers()
-        .get(header::AUTHORIZATION)
-        .and_then(|value| value.to_str().ok());
     let peer = request
         .extensions()
         .get::<ConnectInfo<SocketAddr>>()
@@ -217,7 +217,9 @@ async fn enforce_rate_limit(
     } else {
         ("general", state.config.rate_limit_per_second)
     };
-    let key = format!("{scope}:{}", rate_limit_key(authorization, &peer));
+    // Always apply the peer ceiling before authentication. Otherwise an attacker
+    // can rotate fake bearer tokens to manufacture unlimited limiter identities.
+    let key = format!("{scope}:peer:{peer}");
     if !state.rate_limit_allows(key, limit) {
         state.metrics.rate_limit_rejections.inc();
         return ApiError::RateLimited.into_response();
@@ -227,9 +229,15 @@ async fn enforce_rate_limit(
 
 async fn measure_requests(State(state): State<AppState>, request: Request, next: Next) -> Response {
     let method = request.method().as_str().to_owned();
+    let authenticated_request = request.headers().contains_key(header::AUTHORIZATION);
     let started = Instant::now();
     state.metrics.in_flight.inc();
-    let response = next.run(request).await;
+    let mut response = next.run(request).await;
+    if authenticated_request {
+        response
+            .headers_mut()
+            .insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
+    }
     state.metrics.in_flight.dec();
     let status = response.status().as_str().to_owned();
     state

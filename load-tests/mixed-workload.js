@@ -52,7 +52,7 @@ function createActor() {
 function createDraft(headers) {
   const response = jsonRequest('POST', '/applications', {
     application_type: 'evisa',
-    data: { application_type: 'evisa', demo_only: true, surname: 'LOAD', given_name: `VU ${__VU}` },
+    data: { application_type: 'evisa', demo_only: true, journey_kind: 'benchmark', benchmark_sequence: __VU },
   }, headers, { operation: 'draft_create' });
   return response.status === 201 ? response.json() : null;
 }
@@ -74,13 +74,13 @@ export default function () {
   } else if (roll < 0.90) {
     response = jsonRequest('PATCH', `/applications/${actor.application.id}`, {
       version: actor.application.version,
-      data: { ...actor.application.data, last_load_iteration: __ITER },
+      data: { ...actor.application.data, benchmark_sequence: __ITER },
     }, actor.headers, { operation: 'draft_update' });
     if (response.status === 200) actor.application = response.json();
   } else if (roll < 0.95) {
     response = jsonRequest('GET', `/applications/${actor.application.id}`, null, actor.headers, { operation: 'draft_read' });
   } else {
-    response = jsonRequest('POST', `/applications/${actor.application.id}/submit`, null, {
+    response = jsonRequest('POST', `/applications/${actor.application.id}/submit`, { expected_version: actor.application.version }, {
       ...actor.headers,
       'Idempotency-Key': `k6-load-${__VU}-${__ITER}`,
     }, { operation: 'submit' });
