@@ -10,7 +10,11 @@
     "test": "node --test tests/*.test.js",
     "test:eligibility": "node --test tests/visaEligibility.test.js",
     "test:documents": "node --test tests/documentRequirements.test.js",
-    "load:local": "node scripts/load-test.mjs"
+    "load:local": "node scripts/load-test.mjs",
+    "backend:up": "docker compose up -d --build",
+    "backend:down": "docker compose down",
+    "backend:smoke": "node scripts/backend-smoke.mjs",
+    "backend:abuse-smoke": "node scripts/backend-abuse-smoke.mjs"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.5",

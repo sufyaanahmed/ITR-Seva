@@ -37,6 +37,18 @@
 	route {
 		respond @privatePaths 404
 
+		# The public tunnel reaches only Caddy. Dynamic traffic is proxied to the
+		# loopback-bound Rust API; operator endpoints live on a separate port.
+		@api path /api/*
+		handle @api {
+			reverse_proxy 127.0.0.1:3000 {
+				health_uri /internal/ready
+				health_port 9090
+				health_interval 10s
+				health_timeout 2s
+			}
+		}
+
 		@immutableAssets path /assets/*
 		handle @immutableAssets {
 			header Cache-Control "public, max-age=31536000, immutable"

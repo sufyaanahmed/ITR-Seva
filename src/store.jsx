@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 
-const sessionKey = 'bharat-visa-session-draft-v3';
+const sessionKey = 'bharat-visa-session-draft-v4';
 const legacyPersistentKey = 'bharat-visa-drafts';
 const legacyDatabaseName = 'bharat-visa-drafts';
-const schemaVersion = 3;
+const schemaVersion = 4;
 
 const makeReference = (prefix) => {
   const random = globalThis.crypto?.randomUUID?.().replace(/-/g, '').slice(0, 12)
@@ -27,6 +27,7 @@ const makeDefaultState = () => ({
     formPreparationId: null,
   },
   outcome: null,
+  backend: null,
   submitted: false,
 });
 
@@ -197,20 +198,26 @@ export const StoreProvider = ({ children }) => {
     }));
   };
 
-  const completeDemo = (kind = 'application-preparation') => {
+  const completeDemo = (kind = 'application-preparation', backendRecord = null) => {
     setState((previous) => {
       const isFormOnly = kind === 'voa-form';
       return {
         ...previous,
         submitted: true,
         outcome: isFormOnly ? 'form-prepared' : 'demo-preparation-complete',
+        backend: backendRecord ? {
+          status: 'synced',
+          applicationId: backendRecord.id,
+          reference: backendRecord.reference,
+          submittedAt: backendRecord.submitted_at,
+        } : null,
         identifiers: {
           ...previous.identifiers,
           finalDemoId: isFormOnly
             ? previous.identifiers.finalDemoId
-            : previous.identifiers.finalDemoId || makeReference('FINAL-DEMO'),
+            : backendRecord?.reference || previous.identifiers.finalDemoId || makeReference('FINAL-DEMO'),
           formPreparationId: isFormOnly
-            ? previous.identifiers.formPreparationId || makeReference('VOA-FORM-DEMO')
+            ? backendRecord?.reference || previous.identifiers.formPreparationId || makeReference('VOA-FORM-DEMO')
             : previous.identifiers.formPreparationId,
         },
       };
