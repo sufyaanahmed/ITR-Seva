@@ -319,10 +319,10 @@ export default function Home() {
             </div>
 
             {/* Guilloche Stars (Bottom Right) */}
-            <div className="absolute bottom-16 right-4 sm:right-8 opacity-30 pointer-events-none z-0 flex flex-col items-end">
-               <GuillocheStar className="w-14 h-14 text-[#D4AF37]" />
-               <GuillocheStar className="w-10 h-10 text-[#D4AF37] -mt-3 mr-8 transform -rotate-12" />
-               <GuillocheStar className="w-12 h-12 text-[#D4AF37] -mt-5 mr-1 transform rotate-12" />
+            <div className="absolute bottom-16 right-4 sm:right-8 opacity-90 pointer-events-none z-0 flex flex-col items-end">
+               <GuillocheStar className="w-14 h-14 text-[#FF9933] drop-shadow-[0_0_8px_rgba(255,153,51,0.6)]" />
+               <GuillocheStar className="w-10 h-10 text-white -mt-3 mr-8 transform -rotate-12 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
+               <GuillocheStar className="w-12 h-12 text-[#138808] -mt-5 mr-1 transform rotate-12 drop-shadow-[0_0_8px_rgba(19,136,8,1)]" />
             </div>
 
             {/* Repeating text lines as subtle borders */}
@@ -463,17 +463,16 @@ export default function Home() {
       </div>
 
       {/* ── VISA PATHWAY SELECTOR ── */}
-      <section className="relative pt-28 pb-12 px-6 overflow-hidden">
-        {/* Deep Royal Texture Background */}
-        <div className="absolute inset-0 z-0 bg-[#0c1222]">
-          <img src="/royal_indian_texture.jpg" alt="Royal Texture" className="w-full h-full object-cover opacity-60 mix-blend-overlay" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0c1222]/80 via-[#1E2A4F]/60 to-[#0c1222]/90" />
+      <section className="relative pt-28 pb-12 px-6 overflow-hidden bg-[#FAF7F0]">
+        {/* Light Texture Background */}
+        <div className="absolute inset-0 z-0">
+          <img src="/royal_indian_texture.jpg" alt="Royal Texture" className="w-full h-full object-cover opacity-[0.12] mix-blend-multiply grayscale" />
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D4AF37] mb-3 font-sans">Choose Your Path</p>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Which visa applies to you?</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C4762A] mb-3 font-sans">Choose Your Path</p>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#1E2A4F] mb-6">Which visa applies to you?</h2>
             <div className="w-16 h-px bg-[#D4AF37] mx-auto" />
           </div>
 
@@ -507,7 +506,11 @@ export default function Home() {
               <Link 
                 key={path.title} 
                 to={path.link}
-                className="group relative bg-[#151D36]/70 backdrop-blur-md border border-[#D4AF37]/20 flex flex-col items-center text-center shadow-2xl hover:shadow-[0_15px_40px_rgba(212,175,55,0.15)] hover:-translate-y-3 transition-all duration-500 overflow-hidden rounded-xl min-h-[320px] p-8"
+                className="group relative flex flex-col items-center text-center hover:-translate-y-3 transition-all duration-500 overflow-hidden rounded-xl min-h-[320px] p-8"
+                style={{
+                  background: 'linear-gradient(160deg, #1E2A4F 0%, #162040 40%, #1E2A4F 70%, #243260 100%)',
+                  boxShadow: '0 20px 40px rgba(30,42,79,0.4), 0 0 0 1px rgba(212,175,55,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
+                }}
               >
                 {/* Gold inner border */}
                 <div className="absolute inset-2 border border-[#D4AF37]/10 pointer-events-none group-hover:border-[#D4AF37]/40 transition-colors duration-500 rounded-lg" />
@@ -539,8 +542,8 @@ export default function Home() {
           </div>
 
           <div className="mt-20 text-center">
-             <Link to="/guide/visa-finder" className="inline-flex items-center gap-3 text-white/60 hover:text-[#D4AF37] transition-colors font-sans text-sm tracking-wider uppercase group">
-               Not sure? <span className="border-b border-white/20 group-hover:border-[#D4AF37] transition-colors">Use the Visa Finder</span>
+             <Link to="/guide/visa-finder" className="inline-flex items-center gap-3 text-[#1E2A4F]/70 hover:text-[#C4762A] transition-colors font-sans text-sm tracking-wider uppercase group">
+               Not sure? <span className="border-b border-[#1E2A4F]/20 group-hover:border-[#C4762A] transition-colors">Use the Visa Finder</span>
                <span className="transform group-hover:translate-x-1 transition-transform">→</span>
              </Link>
           </div>
