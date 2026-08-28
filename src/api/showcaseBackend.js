@@ -103,16 +103,24 @@ export async function syncSyntheticApplication({ data, documents, attemptId }) {
     document_count: safeDocuments.length,
   };
 
-  try {
-    const result = await request('/showcase-completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${context.token}`, 'Idempotency-Key': context.idempotencyKey },
-      body: JSON.stringify({ application_type: data.application_type, data: summary, documents: safeDocuments }),
-    });
-    clearContext();
-    return result;
-  } catch (error) {
-    if (error.code === 'unauthorized') clearContext();
-    throw error;
-  }
+  const executeWithRetry = async (retriesLeft) => {
+    try {
+      const result = await request('/showcase-completions', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${context.token}`, 'Idempotency-Key': context.idempotencyKey },
+        body: JSON.stringify({ application_type: data.application_type, data: summary, documents: safeDocuments }),
+      });
+      clearContext();
+      return result;
+    } catch (error) {
+      if (error.code === 'unauthorized') clearContext();
+      if (error.retryable && retriesLeft > 0) {
+        await new Promise(resolve => globalThis.setTimeout(resolve, 1000)); // 1s backoff
+        return executeWithRetry(retriesLeft - 1);
+      }
+      throw error;
+    }
+  };
+
+  return executeWithRetry(1);
 }

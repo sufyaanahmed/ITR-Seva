@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 
 export default function Loader() {
   const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState('words'); // 'words', 'done'
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
+  useEffect(() => {
     // Auto-dismiss the loader after 2.5 seconds
     const timer1 = setTimeout(() => {
       setPhase('done');
@@ -18,7 +24,6 @@ export default function Loader() {
     
     return () => {
       clearTimeout(timer1);
-      document.body.style.overflow = 'auto';
     };
   }, []);
   

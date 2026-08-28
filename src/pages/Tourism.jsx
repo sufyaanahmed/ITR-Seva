@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import IndiaSvgMap from "../components/IndiaSvgMap";
 
 const destinations = [
   { img: '/Places/Assam.jpg', title: 'Assam', desc: 'Journey through emerald tea gardens where the morning mist rolls like a slow river. Let the mighty Brahmaputra wash over your soul.' },
@@ -30,54 +31,295 @@ const destinations = [
   { img: '/Places/Vizag.jpg', title: 'Visakhapatnam', desc: 'Where the lush Eastern Ghats plunge into the azure Bay of Bengal. Discover a coastal jewel glistening with untold marine secrets.' }
 ];
 
-export default function Tourism() {
+const stateToDestinations = {
+  'IN-AS': ['Assam'],
+  'IN-KA': ['Bangalore', 'Mysore'],
+  'IN-MP': ['Bhopal'],
+  'IN-JK': ['Dal Lake', 'Gulmarg', 'Kashmir', 'Srinagar', 'Ladakh'],
+  'IN-LA': ['Ladakh'],
+  'IN-DL': ['Delhi'],
+  'IN-GJ': ['Gir National Park', 'Gujarat'],
+  'IN-GA': ['Goa'],
+  'IN-TG': ['Hyderabad'],
+  'IN-RJ': ['Jaipur', 'Rajasthan'],
+  'IN-KL': ['Kerala'],
+  'IN-WB': ['Kolkata'],
+  'IN-ML': ['Meghalaya'],
+  'IN-MH': ['Mumbai'],
+  'IN-TN': ['Ooty', 'Tamil Nadu'],
+  'IN-HP': ['Shimla'],
+  'IN-SK': ['Sikkim'],
+  'IN-UP': ['Taj Mahal', 'Varanasi'],
+  'IN-AP': ['Visakhapatnam']
+};
+
+const stateDescriptions = {
+  'IN-AS': { name: 'Assam', desc: 'Renowned for its rolling tea estates, the mighty Brahmaputra river, and rich wildlife including the rare one-horned rhinoceros.' },
+  'IN-KA': { name: 'Karnataka', desc: 'A majestic blend of ancient ruins in Hampi, royal palaces in Mysore, lush Western Ghats, and the vibrant tech-hub of Bangalore.' },
+  'IN-MP': { name: 'Madhya Pradesh', desc: 'The heart of India, famous for its majestic tiger reserves, ancient Khajuraho temples, and deeply rooted heritage.' },
+  'IN-JK': { name: 'Jammu & Kashmir', desc: 'Often called Paradise on Earth, known for its breathtaking alpine scenery, Dal Lake shikaras, and tranquil Mughal gardens.' },
+  'IN-LA': { name: 'Ladakh', desc: 'A high-altitude desert renowned for its starkly beautiful landscapes, crystal-clear lakes, and ancient cliffside Buddhist monasteries.' },
+  'IN-DL': { name: 'Delhi', desc: 'A bustling metropolis that seamlessly bridges two different eras with its historic Mughal monuments and modern urban vibrancy.' },
+  'IN-GJ': { name: 'Gujarat', desc: 'Home to the Asiatic lion, the vast white salt desert of the Rann of Kutch, and a deeply rooted mercantile culture woven in silk.' },
+  'IN-GA': { name: 'Goa', desc: 'Famous for its pristine golden beaches, laid-back coastal vibe, Portuguese colonial architecture, and vibrant sunset nightlife.' },
+  'IN-TG': { name: 'Telangana', desc: 'A culturally rich state known for the historic Charminar, delectable Hyderabadi Biryani, and the ancient Golconda fort.' },
+  'IN-RJ': { name: 'Rajasthan', desc: 'The land of kings, defined by its golden sand dunes, invincible majestic forts, opulent palaces, and vibrant folklore.' },
+  'IN-KL': { name: 'Kerala', desc: "God's Own Country, celebrated for its tranquil palm-fringed backwaters, golden beaches, and rejuvenating Ayurvedic retreats." },
+  'IN-WB': { name: 'West Bengal', desc: 'A cultural melting pot known for the Sunderbans mangrove forest, colonial-era architecture, and a deeply intellectual literary heritage.' },
+  'IN-ML': { name: 'Meghalaya', desc: 'The abode of clouds, famous for its mesmerizing living root bridges, stunning monsoon waterfalls, and lush emerald hills.' },
+  'IN-MH': { name: 'Maharashtra', desc: 'A diverse state featuring the bustling city of Mumbai, ancient rock-cut caves of Ajanta and Ellora, and the pristine Western Ghats.' },
+  'IN-TN': { name: 'Tamil Nadu', desc: 'The spiritual heart of South India, distinguished by its monumental intricately-carved temple gopurams and classical arts.' },
+  'IN-HP': { name: 'Himachal Pradesh', desc: 'A Himalayan haven offering breathtaking mountain vistas, serene misty hill stations, and thrilling adventure sports.' },
+  'IN-SK': { name: 'Sikkim', desc: 'A pristine Himalayan kingdom known for its stunning orchids, majestic views of Mount Kanchenjunga, and serene Buddhist culture.' },
+  'IN-UP': { name: 'Uttar Pradesh', desc: 'The spiritual heartland of India, home to the iconic monument of love, the Taj Mahal, and the sacred eternal ghats of Varanasi.' },
+  'IN-AP': { name: 'Andhra Pradesh', desc: 'Known for its rich cultural heritage, ancient pilgrimage temples, and beautiful coastal landscapes along the azure Bay of Bengal.' }
+};
+
+const STATE_NAMES = {
+  "IN-AN": "Andaman and Nicobar Islands",
+  "IN-AP": "Andhra Pradesh",
+  "IN-AR": "Arunachal Pradesh",
+  "IN-AS": "Assam",
+  "IN-BR": "Bihar",
+  "IN-CH": "Chandigarh",
+  "IN-CT": "Chhattisgarh",
+  "IN-DD": "Daman and Diu",
+  "IN-DL": "Delhi",
+  "IN-DN": "Dadra and Nagar Haveli",
+  "IN-GA": "Goa",
+  "IN-GJ": "Gujarat",
+  "IN-HP": "Himachal Pradesh",
+  "IN-HR": "Haryana",
+  "IN-JH": "Jharkhand",
+  "IN-JK": "Jammu and Kashmir",
+  "IN-KA": "Karnataka",
+  "IN-KL": "Kerala",
+  "IN-LD": "Lakshadweep",
+  "IN-MH": "Maharashtra",
+  "IN-ML": "Meghalaya",
+  "IN-MN": "Manipur",
+  "IN-MP": "Madhya Pradesh",
+  "IN-MZ": "Mizoram",
+  "IN-NL": "Nagaland",
+  "IN-OR": "Odisha",
+  "IN-PB": "Punjab",
+  "IN-PY": "Puducherry",
+  "IN-RJ": "Rajasthan",
+  "IN-SK": "Sikkim",
+  "IN-TG": "Telangana",
+  "IN-TN": "Tamil Nadu",
+  "IN-TR": "Tripura",
+  "IN-UP": "Uttar Pradesh",
+  "IN-UT": "Uttarakhand",
+  "IN-WB": "West Bengal"
+};
+
+const ComingSoon = () => (
+  <div className="flex-1 flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-[#1E2A4F]/20 rounded-2xl bg-white/50 backdrop-blur-sm min-h-[300px]">
+    <svg className="w-16 h-16 text-[#D4AF37] mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <h3 className="text-2xl font-serif font-bold text-[#1E2A4F] mb-2">More Coming Soon</h3>
+    <p className="text-[#1E2A4F]/70 text-sm">We are curating premium experiences for this region. Check back later!</p>
+  </div>
+);
+
+const DestinationsGrid = ({ dests }) => (
+  <div className="columns-1 md:columns-2 gap-6 pb-12 relative z-10">
+    {dests.map((dest, i) => (
+      <div 
+        key={i} 
+        className="break-inside-avoid mb-6 group flex flex-col bg-white overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(30,42,79,0.12)] cursor-pointer shadow-lg rounded-3xl border border-[#EBE5D9]/60"
+      >
+        <div className="w-full overflow-hidden relative bg-[#1E2A4F]">
+          <img 
+            src={dest.img} 
+            alt={dest.title} 
+            className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-1000 ease-[cubic-bezier(0.21,0.83,0.26,1)]" 
+            loading="lazy" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1E2A4F]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10" />
+        </div>
+        <div className="flex flex-col relative bg-white flex-1 p-6 items-center text-center">
+          <h3 className="text-xl font-serif font-bold text-[#1E2A4F] mb-3 tracking-wide">{dest.title}</h3>
+          <div className="h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent w-8 group-hover:w-16 mb-4 opacity-70 group-hover:opacity-100 transition-all duration-700 ease-out" />
+          <p className="text-[0.85rem] text-[#1E2A4F]/80 leading-relaxed italic font-serif max-w-xl">
+            "{dest.desc}"
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const FeaturedShowcase = () => {
+  const featured = destinations.filter(d => ['Kashmir', 'Rajasthan', 'Kerala', 'Varanasi'].includes(d.title));
+  
   return (
-    <div className="w-full bg-white">
-      <div className="max-w-[1120px] mx-auto py-[4.75rem] px-6">
+    <div className="flex-1 flex flex-col relative z-10">
+      <div className="mb-6 flex flex-col items-center text-center">
+        <h3 className="text-2xl font-serif font-bold text-[#1E2A4F]">Editor's Picks</h3>
+        <p className="text-[#1E2A4F]/70 text-sm mt-1">Discover India's most breathtaking destinations.</p>
+        <div className="w-12 h-0.5 bg-[#D4AF37] mt-3" />
+      </div>
+      <DestinationsGrid dests={featured} />
+    </div>
+  );
+};
+
+const StateHeader = ({ stateId }) => {
+  const info = stateDescriptions[stateId] || { 
+    name: STATE_NAMES[stateId] || 'Selected Region', 
+    desc: 'Experience the unique culture, rich heritage, and stunning landscapes of this beautiful region.' 
+  };
+  return (
+    <div className="mb-8 flex flex-col items-center text-center">
+      <h2 className="text-3xl font-serif font-bold text-[#1E2A4F] mb-3">{info.name}</h2>
+      <p className="text-[#1E2A4F]/80 text-[0.95rem] max-w-lg leading-relaxed">{info.desc}</p>
+      <div className="w-16 h-0.5 bg-[#D4AF37] mt-5 opacity-70" />
+    </div>
+  );
+};
+
+export default function Tourism() {
+  const [activeStateId, setActiveStateId] = useState(null);
+
+  // Lock body scroll when bottom sheet is open on mobile
+  useEffect(() => {
+    if (activeStateId && window.innerWidth < 1024) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [activeStateId]);
+
+  const handleStateClick = (stateId) => {
+    setActiveStateId(stateId);
+  };
+
+  let displayedDestinations = [];
+  if (activeStateId && stateToDestinations[activeStateId]) {
+    const titles = stateToDestinations[activeStateId];
+    displayedDestinations = destinations.filter(d => titles.includes(d.title));
+  }
+
+  return (
+    // Changed overflow-hidden to overflow-x-hidden so vertical scrolling still works!
+    <div className="w-full bg-[#FAF7F0] min-h-screen relative overflow-x-hidden">
+      {/* Subtle Background Mandala for the page */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] opacity-[0.03] pointer-events-none translate-x-1/3 -translate-y-1/4">
+        <svg viewBox="0 0 100 100" className="w-full h-full text-[#1E2A4F] animate-[spin_120s_linear_infinite]">
+          <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 4" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="0.2" />
+          <path d="M50 2 L50 98 M2 50 L98 50 M16 16 L84 84 M16 84 L84 16" stroke="currentColor" strokeWidth="0.2" />
+        </svg>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto py-[4.75rem] px-6 relative z-10">
         
         {/* Header Section */}
         <section className="text-center mb-16 flex flex-col items-center">
-          <p className="uppercase tracking-widest text-[0.8rem] text-[#0b2540] font-bold mb-3">
+          <p className="uppercase tracking-widest text-[0.8rem] text-[#C4762A] font-bold mb-3">
             Incredible India
           </p>
-          <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 mb-6">
-            Travel & Tourism
+          <h1 className="text-5xl md:text-6xl font-serif font-bold text-[#1E2A4F] mb-6">
+            Interactive Travel Map
           </h1>
-          <p className="text-[1.15rem] text-text-secondary max-w-2xl leading-relaxed">
-            Discover a land of striking contrasts and cinematic beauty. From the snow-capped peaks of the Himalayas to the sun-kissed beaches of the south, every journey tells a story.
+          <p className="text-[1.15rem] text-[#1E2A4F]/80 max-w-2xl leading-relaxed">
+            Click on any state to uncover its hidden gems and timeless heritage.
           </p>
         </section>
 
-        {/* Responsive destination gallery using CSS Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-          {destinations.map((dest, i) => (
-            <div 
-              key={i} 
-              className="group flex flex-col bg-white overflow-hidden transition-transform duration-500 hover:-translate-y-2 cursor-pointer"
-              style={{ borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-            >
-              {/* Image Container with poster aspect ratio */}
-              <div className="w-full aspect-[3/4] overflow-hidden bg-gray-100">
-                <img 
-                  src={dest.img} 
-                  alt={dest.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out" 
-                  loading="lazy" 
-                />
+        {/* Split View: Map + Details */}
+        <div className="flex flex-col lg:flex-row gap-12 relative items-start">
+          
+          {/* LEFT: Map */}
+          <div className="w-full lg:w-1/2 bg-white rounded-2xl shadow-lg p-8 flex items-center justify-center border border-[#D4AF37]/20 relative z-20 sticky top-28 lg:h-[calc(100vh-10rem)]">
+            <style>{`
+              .india-map-container path,
+              svg path {
+                fill: #F3EFE7 !important;
+                stroke: #D4AF37 !important;
+                stroke-width: 1px !important;
+                cursor: pointer !important;
+                transition: fill 0.3s ease, stroke-width 0.3s ease !important;
+              }
+              .india-map-container path:hover,
+              svg path:hover {
+                fill: #C4762A !important;
+                stroke: #1E2A4F !important;
+                stroke-width: 2.5px !important;
+                outline: none;
+              }
+            `}</style>
+            <IndiaSvgMap onStateClick={handleStateClick} />
+          </div>
+
+          {/* RIGHT: Desktop Details & Mobile Fallback Content */}
+          <div className="w-full lg:w-1/2 flex flex-col relative z-10 lg:h-[calc(100vh-10rem)] lg:overflow-y-auto custom-scrollbar pr-2">
+            {!activeStateId ? (
+              <FeaturedShowcase />
+            ) : (
+              <div className="hidden lg:flex flex-col h-fit w-full pb-8">
+                <StateHeader stateId={activeStateId} />
+                {displayedDestinations.length === 0 ? <ComingSoon /> : <DestinationsGrid dests={displayedDestinations} />}
               </div>
-              
-              {/* Text Container */}
-              <div className="p-6 flex flex-col items-center text-center mt-2">
-                <h3 className="text-[1.3rem] font-serif font-bold text-gray-900 mb-3">{dest.title}</h3>
-                <p className="text-[0.95rem] text-text-secondary leading-relaxed line-clamp-2 italic font-serif">
-                  "{dest.desc}"
-                </p>
-              </div>
-            </div>
-          ))}
+            )}
+          </div>
+
+        </div>
+      </div>
+
+      {/* MOBILE OVERLAY (Darkens background when bottom sheet is active) */}
+      <div 
+        className={`lg:hidden fixed inset-0 bg-black/40 z-[90] transition-opacity duration-500 ${activeStateId ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} 
+        onClick={() => setActiveStateId(null)}
+      />
+
+      {/* MOBILE BOTTOM SHEET */}
+      <div 
+        className={`lg:hidden fixed inset-x-0 bottom-0 z-[100] bg-[#FAF7F0] rounded-t-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.3)] transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${activeStateId ? 'translate-y-0' : 'translate-y-full'}`} 
+        style={{ maxHeight: '85vh', minHeight: '50vh' }}
+      >
+        {/* Handle bar for swipe indication */}
+        <div 
+          className="w-full flex justify-center pt-4 pb-2 cursor-pointer" 
+          onClick={() => setActiveStateId(null)}
+        >
+          <div className="w-12 h-1.5 bg-[#1E2A4F]/20 rounded-full" />
         </div>
         
+        {/* Header */}
+        <div className="px-6 pb-4 border-b border-[#D4AF37]/20 flex justify-between items-center shrink-0">
+          <h2 className="font-serif font-bold text-2xl text-[#1E2A4F]">
+            {activeStateId ? (stateDescriptions[activeStateId]?.name || STATE_NAMES[activeStateId] || 'Selected Region') : 'Selected Region'}
+          </h2>
+          <button 
+            onClick={() => setActiveStateId(null)} 
+            className="p-2 rounded-full bg-[#1E2A4F]/5 text-[#1E2A4F] hover:bg-[#1E2A4F]/10 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        {/* Scrollable Content */}
+        <div className="p-6 overflow-y-auto flex-1 overscroll-contain">
+          {activeStateId && (
+            <div className="mb-6 text-center text-[#1E2A4F]/80 text-[0.95rem] leading-relaxed border-b border-[#D4AF37]/10 pb-6">
+              {stateDescriptions[activeStateId]?.desc || 'Experience the unique culture, rich heritage, and stunning landscapes of this beautiful region.'}
+            </div>
+          )}
+          {activeStateId && displayedDestinations.length === 0 ? (
+            <ComingSoon />
+          ) : (
+            <DestinationsGrid dests={displayedDestinations} />
+          )}
+        </div>
       </div>
+      
     </div>
   );
 }

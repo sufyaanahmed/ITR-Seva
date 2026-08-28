@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY index.html postcss.config.js tailwind.config.js vite.config.js ./
+COPY index.html postcss.config.js tailwind.config.js vite.config.js visa_seva_indianvisaonline_reviews_refined.json ./
 COPY public ./public
 COPY src ./src
 

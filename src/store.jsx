@@ -57,6 +57,15 @@ export const safeDocumentMetadata = (document, { hydrated = false } = {}) => {
   };
 };
 
+export const isMeaningfulDraft = (state) => Boolean(
+  state?.submitted
+  || state?.step > 0
+  || state?.docs?.length
+  || state?.data?.visa_category
+  || state?.data?.nationality
+  || state?.data?.given_name
+);
+
 export const hydrateState = (saved) => {
   const base = makeDefaultState();
   if (!saved || typeof saved !== 'object') return base;

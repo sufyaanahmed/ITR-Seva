@@ -66,14 +66,29 @@ export default function Status() {
     setResult(found || null);
   };
 
+  const fillDemoData = () => {
+    setApplicationId('DEMO2026E00001');
+    setPassport('DEMO123456');
+    setBirthDate('1992-04-18');
+  };
+
   return (
     <div className="max-w-3xl mx-auto py-12 px-6">
-      <h1 className="text-3xl font-serif font-bold mb-4">Check a demo application state</h1>
-      <p className="text-text-secondary mb-5">This local lookup requires an Application ID, passport number, and date of birth together. A production service must also rate-limit attempts and prevent account enumeration.</p>
-
-      <div className="bg-amber-50 border border-amber-300 p-5 rounded mb-8">
-        <p className="font-bold text-amber-950 mb-1">Synthetic demo records only</p>
-        <p className="text-sm text-amber-900">This page does not contact the Government of India and cannot display a real application or ETA. Never enter real identity or passport data here.</p>
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-3xl font-serif font-bold mb-4">Check Application Status</h1>
+          <p className="text-text-secondary">Enter your Application ID, passport number, and date of birth to track your visa.</p>
+        </div>
+        <button 
+          type="button" 
+          onClick={fillDemoData} 
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#D4AF37]/40 bg-[#FAF7F0] text-[#C4762A] text-xs font-bold uppercase tracking-widest hover:bg-[#D4AF37] hover:text-[#1E2A4F] hover:border-[#D4AF37] transition-all duration-300 shadow-sm hover:shadow-md"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Auto-fill Demo Data
+        </button>
       </div>
 
       <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -86,9 +101,8 @@ export default function Status() {
         <label className="text-sm font-bold text-gray-800">Date of birth
           <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} className="input-field mt-2 font-normal" required />
         </label>
-        <button type="submit" className="btn-primary md:col-span-2 md:justify-self-start">Search demo records</button>
+        <button type="submit" className="btn-primary md:col-span-2 md:justify-self-start">Search Records</button>
       </form>
-      <p className="text-xs text-gray-500 mb-10">Demo fixture: DEMO2026E00001 · DEMO123456 · 18 April 1992</p>
 
       {searched && (
         <div className="border border-border p-6 rounded bg-white shadow-sm">
@@ -133,14 +147,42 @@ export default function Status() {
               </div>
 
               {result.status === 'GRANTED' && (
-                <div className="bg-green-50 border border-green-200 rounded p-6">
-                  <h3 className="text-xl font-bold text-green-950 mb-4">Real-world travel readiness</h3>
-                  <ul className="list-disc pl-6 space-y-2 text-sm text-green-900">
-                    <li>Confirm the real official ETA itself says <strong>GRANTED</strong>; this synthetic state is not proof.</li>
-                    <li>Print and carry the official ETA. A screenshot or this demo summary is not an ETA.</li>
-                    <li>Carry the passport used in the application; if replaced, carry both the old and new passports.</li>
-                    <li>Verify permitted entry points, yellow-fever requirements, restricted-area rules, and expect biometrics at immigration.</li>
-                    <li>Complete the separate e-Arrival Card within 72 hours before arrival.</li>
+                <div className="bg-[#FAF7F0] border border-[#D4AF37]/30 rounded-2xl p-8 relative overflow-hidden shadow-sm">
+                  {/* Decorative background element */}
+                  <div className="absolute -top-10 -right-10 w-40 h-40 text-[#D4AF37] opacity-[0.03] pointer-events-none">
+                    <svg viewBox="0 0 100 100" fill="currentColor">
+                      <path d="M50 0C50 27.614 27.614 50 0 50C27.614 50 50 72.386 50 100C50 72.386 72.386 50 100 50C72.386 50 50 27.614 50 0Z" />
+                    </svg>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 mb-6 relative z-10">
+                    <div className="w-10 h-10 rounded-full bg-[#1E2A4F]/5 flex items-center justify-center border border-[#1E2A4F]/10">
+                      <svg className="w-5 h-5 text-[#1E2A4F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-[#C4762A] font-bold">Action Required</p>
+                      <h3 className="text-xl font-serif font-bold text-[#1E2A4F]">Travel Readiness Checklist</h3>
+                    </div>
+                  </div>
+                  
+                  <ul className="space-y-4 relative z-10">
+                    {[
+                      "Print your official Electronic Travel Authorization (ETA). Digital copies or screenshots are not accepted at immigration.",
+                      "Carry the exact physical passport used in this application. If replaced, carry both the old and new passports.",
+                      "Verify your permitted entry ports and review any yellow-fever or restricted-area requirements prior to departure.",
+                      "Complete your mandatory Customs declaration and e-Arrival Card within 72 hours of your flight."
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex gap-4 items-start bg-white p-4 rounded-xl border border-[#D4AF37]/10 shadow-sm">
+                        <div className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-full bg-green-50 flex items-center justify-center border border-green-200">
+                          <svg className="w-3.5 h-3.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <p className="text-sm text-[#1E2A4F]/80 leading-relaxed">{item}</p>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )}
@@ -159,15 +201,6 @@ export default function Status() {
           )}
         </div>
       )}
-
-      <section className="mt-10 border-t border-border pt-7">
-        <h2 className="text-xl font-bold mb-3">Checking a real application?</h2>
-        <p className="text-sm text-text-secondary mb-4">Leave this demo and use the relevant Government of India portal. The standard status endpoint redirected during the audit, so the official landing pages are used as the stable handoff.</p>
-        <div className="flex flex-wrap gap-3">
-          <a href={EVISA_PORTAL} target="_blank" rel="noreferrer" className="btn-secondary">Official e-Visa portal ↗</a>
-          <a href={AFGHAN_PORTAL} target="_blank" rel="noreferrer" className="btn-secondary">Official Afghan portal ↗</a>
-        </div>
-      </section>
     </div>
   );
 }

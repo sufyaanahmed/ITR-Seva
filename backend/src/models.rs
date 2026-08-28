@@ -164,9 +164,9 @@ pub fn validate_application(application_type: &str, data: &Value) -> Result<(), 
             let value = value
                 .as_str()
                 .ok_or_else(|| format!("data.{key} must be a string"))?;
-            if value.len() > 80 || value.chars().any(char::is_control) {
+            if value.len() > 80 || value.chars().any(|c| c.is_control() || c == '<' || c == '>') {
                 return Err(format!(
-                    "data.{key} must contain at most 80 printable characters"
+                    "data.{key} must contain at most 80 printable characters (excluding < and >)"
                 ));
             }
         }

@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import ScrollToTop from './components/ScrollToTop';
 import Loader from './components/Loader';
+import { useStore, isMeaningfulDraft } from './store';
 
 const Wizard = lazy(() => import('./pages/Wizard'));
 const Status = lazy(() => import('./pages/Status'));
@@ -20,11 +21,40 @@ const Reviews = lazy(() => import('./pages/Reviews'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const Header = () => {
+  const { state } = useStore();
+  const hasDraft = isMeaningfulDraft(state);
+  
   const [menuOpen, setMenuOpen] = useState(false);
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
   const [textZoom, setTextZoom] = useState(100);
   const [highContrast, setHighContrast] = useState(false);
   const [highlightLinks, setHighlightLinks] = useState(false);
+  const [readAloud, setReadAloud] = useState(false);
+
+  useEffect(() => {
+    if (!readAloud) {
+      window.speechSynthesis?.cancel();
+      return;
+    }
+
+    const handleMouseOver = (e) => {
+      const target = e.target;
+      if (['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'A', 'BUTTON', 'SPAN', 'LABEL'].includes(target.tagName)) {
+        const text = target.innerText || target.textContent;
+        if (text && text.trim().length > 0) {
+          window.speechSynthesis?.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          window.speechSynthesis?.speak(utterance);
+        }
+      }
+    };
+
+    document.body.addEventListener('mouseover', handleMouseOver);
+    return () => {
+      document.body.removeEventListener('mouseover', handleMouseOver);
+      window.speechSynthesis?.cancel();
+    };
+  }, [readAloud]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -49,14 +79,13 @@ const Header = () => {
           </span>
           <span className="flex flex-col border-l border-border pl-3 leading-tight sm:pl-4">
             <span className="mb-1 font-sans text-[0.6rem] font-bold uppercase tracking-[0.2em] text-secondary-accent sm:text-[0.65rem]">Independent prototype</span>
-            <span className="font-bold text-primary-dark">India Visa Seva Demo</span>
+            <span className="font-bold text-primary-dark">India Visa Seva</span>
           </span>
         </Link>
 
         <nav aria-label="Primary navigation" className="hidden items-center gap-3 lg:flex xl:gap-6">
-          <Link to="/guide/visa-finder" className={navLinkClass}>Apply</Link>
-          <Link to="/dashboard" className={navLinkClass}>My Application</Link>
-          <Link to="/status" className={navLinkClass}>Before You Travel</Link>
+          <Link to={hasDraft ? "/dashboard" : "/guide/visa-finder"} className={navLinkClass}>Apply</Link>
+          <Link to="/status" className={navLinkClass}>Check Status</Link>
           <Link to="/tourism" className={navLinkClass}>Discover India</Link>
           <Link to="/help" className={navLinkClass}>Help</Link>
         </nav>
@@ -80,18 +109,21 @@ const Header = () => {
               <div id="accessibility-options" className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-xl border border-gray-100 bg-white py-2 text-gray-800 shadow-xl" aria-label="Accessibility options">
                 <div className="border-b border-gray-100 bg-gray-50 px-4 py-2 text-[0.65rem] font-bold uppercase tracking-widest text-gray-600">Display settings</div>
                 <div className="px-4 py-3">
-                  <p className="mb-2 text-xs font-bold">Text size: {textZoom}%</p>
-                  <div className="flex gap-2">
-                    {[100, 110, 125].map((size) => (
-                      <button key={size} type="button" aria-pressed={textZoom === size} onClick={() => setTextZoom(size)} className="rounded border border-gray-300 px-3 py-2 text-xs hover:bg-[#FAF7F0]">{size}%</button>
-                    ))}
+                  <p className="mb-2 text-xs font-bold text-gray-600">Text size</p>
+                  <div className="flex items-center justify-between border border-gray-200 rounded overflow-hidden shadow-sm">
+                    <button type="button" onClick={() => setTextZoom(Math.max(80, textZoom - 10))} className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold transition-colors focus:outline-none focus:bg-gray-200" aria-label="Decrease text size">−</button>
+                    <span className="text-xs font-bold w-12 text-center text-gray-800">{textZoom}%</span>
+                    <button type="button" onClick={() => setTextZoom(Math.min(150, textZoom + 10))} className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold transition-colors focus:outline-none focus:bg-gray-200" aria-label="Increase text size">+</button>
                   </div>
                 </div>
-                <button type="button" aria-pressed={highContrast} onClick={() => setHighContrast((value) => !value)} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-[#FAF7F0]">
+                <button type="button" aria-pressed={highContrast} onClick={() => setHighContrast((value) => !value)} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-[#FAF7F0] border-t border-gray-100">
                   High contrast {highContrast && <span className="font-bold text-[#00875f]">On</span>}
                 </button>
-                <button type="button" aria-pressed={highlightLinks} onClick={() => setHighlightLinks((value) => !value)} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-[#FAF7F0]">
+                <button type="button" aria-pressed={highlightLinks} onClick={() => setHighlightLinks((value) => !value)} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-[#FAF7F0] border-t border-gray-100">
                   Highlight links {highlightLinks && <span className="font-bold text-[#00875f]">On</span>}
+                </button>
+                <button type="button" aria-pressed={readAloud} onClick={() => setReadAloud((value) => !value)} className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-[#FAF7F0] border-t border-gray-100">
+                  Read aloud on hover {readAloud && <span className="font-bold text-[#00875f]">On</span>}
                 </button>
               </div>
             )}
@@ -107,9 +139,8 @@ const Header = () => {
 
       {menuOpen && (
         <nav id="mobile-navigation" aria-label="Mobile navigation" className="absolute left-0 z-40 flex w-full flex-col border-t border-gray-100 bg-white px-6 py-4 shadow-xl lg:hidden">
-          <Link to="/guide/visa-finder" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Apply</Link>
-          <Link to="/dashboard" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">My Application</Link>
-          <Link to="/status" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Before You Travel</Link>
+          <Link to={hasDraft ? "/dashboard" : "/guide/visa-finder"} onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Apply</Link>
+          <Link to="/status" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Check Status</Link>
           <Link to="/tourism" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Discover India</Link>
           <Link to="/help" onClick={closeMenu} className="py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Help</Link>
         </nav>
@@ -119,23 +150,51 @@ const Header = () => {
 };
 
 const Footer = () => (
-  <footer className="pattern-jali mt-12 border-t-[8px] border-secondary-accent bg-primary-dark py-16 text-white">
-    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-6 sm:grid-cols-2 md:grid-cols-4">
-      <div>
-        <h3 className="mb-4 font-serif text-2xl font-bold text-surface">India Visa Seva Demo</h3>
-        <p className="font-sans text-sm text-primary-light">Independent educational prototype—not affiliated with or endorsed by the Government of India.</p>
+  <footer className="relative bg-[#111A31] pt-20 pb-12 text-[#FAF7F0] overflow-hidden border-t-4 border-[#D4AF37]">
+    <div className="mx-auto max-w-6xl px-6 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 mb-16">
+        
+        {/* Brand Section */}
+        <div className="md:col-span-5 lg:col-span-4 flex flex-col items-start">
+          <div className="flex items-center gap-3 mb-6">
+            <img src="/emblem.svg" alt="" className="w-10 h-10 opacity-90 drop-shadow-[0_2px_8px_rgba(212,175,55,0.25)]" style={{ filter: 'brightness(0) saturate(100%) invert(88%) sepia(21%) saturate(1210%) hue-rotate(345deg) brightness(91%) contrast(85%)' }} />
+            <div className="flex flex-col">
+              <span className="text-[0.6rem] font-sans font-bold uppercase tracking-[0.2em] text-[#D4AF37] mb-0.5">Independent Prototype</span>
+              <span className="font-serif text-xl font-bold tracking-wide text-white">India Visa Seva</span>
+            </div>
+          </div>
+          <p className="font-sans text-sm text-white/60 leading-relaxed max-w-sm">
+            This is an independent educational prototype. It is not affiliated with, endorsed by, or connected to the Government of India.
+          </p>
+        </div>
+
+        {/* Links: Services */}
+        <div className="md:col-span-3 lg:col-span-2 lg:col-start-7">
+          <h3 className="mb-6 font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">Services</h3>
+          <ul className="flex flex-col gap-4 font-sans text-sm text-white/70">
+            <li><Link to="/guide/visa-finder" className="transition-all hover:text-white hover:translate-x-1 inline-block">Explore Route Demo</Link></li>
+            <li><Link to="/status" className="transition-all hover:text-white hover:translate-x-1 inline-block">Check Status</Link></li>
+            <li><Link to="/e-arrival" className="transition-all hover:text-white hover:translate-x-1 inline-block">e-Arrival Guidance</Link></li>
+          </ul>
+        </div>
+
+        {/* Links: Resources */}
+        <div className="md:col-span-4 lg:col-span-2 lg:col-start-10">
+          <h3 className="mb-6 font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">Resources</h3>
+          <ul className="flex flex-col gap-4 font-sans text-sm text-white/70">
+            <li><Link to="/tourism" className="transition-all hover:text-white hover:translate-x-1 inline-block">Discover India</Link></li>
+            <li><Link to="/help" className="transition-all hover:text-white hover:translate-x-1 inline-block">Help & FAQ</Link></li>
+            <li><Link to="/reviews" className="transition-all hover:text-white hover:translate-x-1 inline-block">Public Reviews</Link></li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <h3 className="mb-6 font-sans text-sm font-medium uppercase tracking-widest text-surface">Quick Links</h3>
-        <ul className="flex flex-col gap-3 font-sans text-sm text-primary-light">
-          <li><Link to="/guide/visa-finder" className="transition-colors hover:text-secondary-accent">Explore Route Demo</Link></li>
-          <li><Link to="/dashboard" className="transition-colors hover:text-secondary-accent">Local Draft Dashboard</Link></li>
-          <li><Link to="/status" className="transition-colors hover:text-secondary-accent">Synthetic Status Demo</Link></li>
-          <li><Link to="/e-arrival" className="transition-colors hover:text-secondary-accent">e-Arrival Guidance</Link></li>
-          <li><Link to="/tourism" className="transition-colors hover:text-secondary-accent">Discover India</Link></li>
-          <li><Link to="/help" className="transition-colors hover:text-secondary-accent">FAQ</Link></li>
-          <li><Link to="/reviews" className="transition-colors hover:text-secondary-accent">Public Reviews</Link></li>
-        </ul>
+
+      {/* Footer Bottom */}
+      <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-xs text-white/40">
+        <p>&copy; {new Date().getFullYear()} India Visa Seva Demo. All rights reserved.</p>
+        <p className="flex items-center gap-1.5 uppercase tracking-wider">
+          Made with <span className="text-[#D4AF37]">♥</span> for Hackathon
+        </p>
       </div>
     </div>
   </footer>
@@ -149,14 +208,26 @@ const RouteFallback = () => (
 
 
 export default function App() {
+  const [showBanner, setShowBanner] = useState(true);
+
   return (
     <div className="flex min-h-screen flex-col bg-background font-sans text-text">
       <Loader />
       <ScrollToTop />
       <Header />
-      <div className="bg-secondary-accent px-4 py-3 text-center text-sm font-medium tracking-wide text-white">
-        Travel-guidance snapshot: review the separate <Link to="/e-arrival" className="font-bold underline transition-colors hover:text-primary-dark">e-Arrival Card explainer</Link> and verify it on the official service before travel.
-      </div>
+      {showBanner && (
+        <div className="relative bg-secondary-accent px-10 py-3 text-center text-sm font-medium tracking-wide text-white flex flex-col sm:flex-row items-center justify-center gap-2">
+          <svg className="hidden sm:block w-4 h-4 text-white opacity-90 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+          </svg>
+          <span>Travel-guidance snapshot: review the separate <Link to="/e-arrival" className="font-bold underline transition-colors hover:text-primary-dark">e-Arrival Card explainer</Link> and verify it on the official service before travel.</span>
+          <button onClick={() => setShowBanner(false)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 hover:bg-white/20 rounded-full transition-colors focus:outline-none" aria-label="Dismiss announcement">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
       <main id="main-content" className="w-full flex-1">
         <Suspense fallback={<RouteFallback />}>
           <Routes>

@@ -147,10 +147,10 @@ function TempleGopuram({ className = '' }) {
 export default function Home() {
 
   return (
-    <div className="w-full bg-[#FAF7F0] overflow-hidden">
+    <div className="w-full bg-[#FAF7F0] overflow-x-hidden">
 
       {/* ── HERO: Royal Palace Doors ── */}
-      <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6">
 
         {/* Jali tiling background */}
         <JaliPattern />
@@ -161,7 +161,7 @@ export default function Home() {
         </div>
 
         {/* Mandala background — very faint, slow spin */}
-        <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center z-[25] pointer-events-none">
           <svg viewBox="0 0 400 400" className="w-[140vw] max-w-[900px] h-auto opacity-[0.08] animate-[spin_120s_linear_infinite] text-[#8B1C1C]">
             {/* Outer rings */}
             <circle cx="200" cy="200" r="185" fill="none" stroke="currentColor" strokeWidth="12" />
@@ -254,16 +254,33 @@ export default function Home() {
             </div>
 
             {/* ACTION BUTTONS (Inside the sticker) */}
-            <div className="relative z-10 flex flex-col sm:flex-row gap-3 p-4 sm:p-6 w-full justify-center border-t border-white/10 bg-gradient-to-r from-white/5 to-white/[0.03]">
-              <Link to="/guide/visa-finder"
-                className="relative bg-gradient-to-r from-[#D4AF37] to-[#C9933A] text-[#1E2A4F] px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs overflow-hidden group shadow-[0_8px_20px_rgba(212,175,55,0.25)] hover:shadow-[0_12px_28px_rgba(212,175,55,0.35)] transition-all duration-300 hover:-translate-y-0.5 text-center rounded-lg">
-                <span className="absolute inset-1 border border-[#1E2A4F]/15 pointer-events-none rounded transition-all duration-300" />
-                <span className="relative z-10 flex items-center justify-center gap-2">Find My Visa <span className="text-sm">→</span></span>
-              </Link>
-              <Link to="/status"
-                className="bg-white/[0.06] border border-white/20 text-white/80 px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white hover:border-white/30 transition-all duration-300 hover:-translate-y-0.5 text-center rounded-lg">
-                Check Status
-              </Link>
+            <div className="relative z-10 flex flex-col w-full border-t border-white/10 bg-gradient-to-r from-white/5 to-white/[0.03]">
+              <div className="flex flex-col sm:flex-row gap-3 p-4 sm:p-6 pb-3 justify-center">
+                <Link to="/guide/visa-finder"
+                  className="relative bg-gradient-to-r from-[#D4AF37] to-[#C9933A] text-[#1E2A4F] px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs overflow-hidden group shadow-[0_8px_20px_rgba(212,175,55,0.25)] hover:shadow-[0_12px_28px_rgba(212,175,55,0.35)] transition-all duration-300 hover:-translate-y-0.5 text-center rounded-lg">
+                  <span className="absolute inset-1 border border-[#1E2A4F]/15 pointer-events-none rounded transition-all duration-300" />
+                  <span className="relative z-10 flex items-center justify-center gap-2">Start Application <span className="text-sm">→</span></span>
+                </Link>
+                <Link to="/status"
+                  className="bg-white/[0.06] border border-white/20 text-white/80 px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white hover:border-white/30 transition-all duration-300 hover:-translate-y-0.5 text-center rounded-lg">
+                  Check Application Status
+                </Link>
+              </div>
+              
+              {/* Subtle direct links */}
+              <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 px-6 pb-5 text-[10px] sm:text-[11px] font-sans tracking-widest text-white/50 uppercase">
+                <span className="hidden sm:inline opacity-60 font-bold mr-1">Direct Routes:</span>
+                <Link to="/flow/voa" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
+                  <div className="flex gap-1">
+                    <img src="https://flagcdn.com/w40/jp.png" className="w-4 rounded-sm opacity-90" alt="Japan"/>
+                    <img src="https://flagcdn.com/w40/kr.png" className="w-4 rounded-sm opacity-90" alt="South Korea"/>
+                    <img src="https://flagcdn.com/w40/ae.png" className="w-4 rounded-sm opacity-90" alt="UAE"/>
+                  </div>
+                  On Arrival
+                </Link>
+                <span className="opacity-30">·</span>
+                <Link to="/flow/afghan" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"><img src="https://flagcdn.com/w40/af.png" className="w-4 rounded-sm opacity-90" alt=""/> Afghan</Link>
+              </div>
             </div>
           </div>
         </div>
@@ -274,6 +291,68 @@ export default function Home() {
 
 
 
+      {/* ── HOW IT WORKS: VISUAL FLOW ── */}
+      <section className="bg-white py-24 px-6 relative z-20 border-b border-[#EBE5D9]">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-xs font-sans font-bold uppercase tracking-[0.3em] text-[#C4762A] mb-3">Simple Process</p>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#1E2A4F]">How it works</h2>
+          </div>
+
+          <div className="relative flex flex-col md:flex-row items-center md:items-start justify-between gap-10 md:gap-4">
+            {/* Connecting Line (Desktop) */}
+            <div className="hidden md:block absolute top-10 left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
+            
+            {/* Steps */}
+            {[
+              {
+                step: '01',
+                title: 'Discover',
+                desc: 'Find the exact visa route for your nationality and purpose.',
+                icon: (
+                  <svg className="w-6 h-6 text-[#1E2A4F]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                )
+              },
+              {
+                step: '02',
+                title: 'Apply & Pay',
+                desc: 'Complete the secure online application and submit payment.',
+                icon: (
+                  <svg className="w-6 h-6 text-[#1E2A4F]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                )
+              },
+              {
+                step: '03',
+                title: 'Receive ETA',
+                desc: 'Get your Electronic Travel Authorization delivered via email.',
+                icon: (
+                  <svg className="w-6 h-6 text-[#1E2A4F]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                )
+              },
+              {
+                step: '04',
+                title: 'Travel',
+                desc: 'Arrive in India and present your ETA for entry.',
+                icon: (
+                  <svg className="w-6 h-6 text-[#1E2A4F]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                )
+              }
+            ].map((s, i) => (
+              <div key={s.step} className="relative z-10 flex flex-col items-center text-center flex-1 group">
+                <div className="w-20 h-20 rounded-full bg-white border border-[#D4AF37]/30 shadow-[0_8px_20px_rgba(0,0,0,0.04)] flex items-center justify-center mb-6 relative group-hover:scale-105 group-hover:border-[#D4AF37] transition-all duration-300">
+                  <div className="absolute -top-2 -right-2 w-7 h-7 bg-[#FAF7F0] text-[#D4AF37] text-[10px] font-bold rounded-full flex items-center justify-center border border-[#D4AF37]/20">
+                    {s.step}
+                  </div>
+                  {s.icon}
+                </div>
+                <h3 className="font-serif font-bold text-[#1E2A4F] text-lg mb-2">{s.title}</h3>
+                <p className="font-sans text-sm text-[#1E2A4F]/70 max-w-[200px]">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── DESTINATION CARDS ── */}
       <section className="bg-[#FAF7F0] py-24 px-6 relative z-20">
         <div className="max-w-6xl mx-auto">
@@ -283,10 +362,8 @@ export default function Home() {
             <div className="w-20 h-[2px] bg-[#D4AF37] mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-
-            {/* Kashmir — Tiger */}
-            <Link to="/guide/visa-finder" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">            {/* Kashmir — Tiger */}
+            <Link to="/tourism" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/tiger.jpg" alt="Kashmir Tiger" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
               </div>
@@ -298,13 +375,13 @@ export default function Home() {
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Snow leopards, Dal Lake shikaras, and Mughal gardens where saffron blooms each autumn.</p>
                 <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
-                  Check tourist visa route
+                  Explore Kashmir
                 </div>
               </div>
             </Link>
 
             {/* Rajasthan — Elephant */}
-            <Link to="/guide/visa-finder" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer md:mt-12">
+            <Link to="/tourism" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer md:mt-12">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/elephant.jpg" alt="Rajasthan Elephant" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
               </div>
@@ -316,13 +393,13 @@ export default function Home() {
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Royal elephants march towards Jaipur's Amber Fort as it rises above the plains in magnificent sandstone.</p>
                 <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
-                  Check business visa route
+                  Explore Rajasthan
                 </div>
               </div>
             </Link>
 
             {/* Kerala — Peacock */}
-            <Link to="/guide/visa-finder" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
+            <Link to="/tourism" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/peacock.jpg" alt="Kerala Peacock" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
               </div>
@@ -334,7 +411,7 @@ export default function Home() {
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">The peacock dances in Periyar's forests as houseboats drift through ancient lush waterways.</p>
                 <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
-                  Check medical visa route
+                  Explore Kerala
                 </div>
               </div>
             </Link>
@@ -342,111 +419,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* ── CINEMATIC TEMPLE DIVIDER ── */}
-      <div className="relative w-full h-[350px] md:h-[450px] bg-fixed bg-center bg-cover border-t border-[#1E2A4F]/20" style={{ backgroundImage: "url('/taj_mahal_divider.png')" }}>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c1222] via-[#0c1222]/30 to-transparent mix-blend-multiply" />
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <p className="text-[#D4AF37] font-sans font-bold uppercase tracking-[0.4em] text-xs mb-4 drop-shadow-md">
-            Discover
-          </p>
-          <h2 className="text-3xl md:text-5xl font-serif font-bold text-white tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
-            A Timeless Heritage
-          </h2>
-        </div>
-      </div>
-
-      {/* ── VISA PATHWAY SELECTOR ── */}
-      <section className="relative pt-28 pb-12 px-6 overflow-hidden bg-[#FAF7F0]">
-        {/* Light Texture Background */}
-        <div className="absolute inset-0 z-0">
-          <img src="/royal_indian_texture.jpg" alt="Royal Texture" className="w-full h-full object-cover opacity-[0.12] mix-blend-multiply grayscale" />
-        </div>
-
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C4762A] mb-3 font-sans">Choose Your Path</p>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#1E2A4F] mb-6">Which visa applies to you?</h2>
-            <div className="w-16 h-px bg-[#D4AF37] mx-auto" />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: 'e-Visa',
-                desc: 'Most nationalities — apply online in minutes',
-                link: '/guide/visa-finder',
-                flags: null
-              },
-              {
-                title: 'Visa on Arrival',
-                desc: 'Available at the airport for specific citizens',
-                link: '/flow/voa',
-                flags: ['jp', 'kr', 'ae']
-              },
-              {
-                title: 'Afghan Nationals',
-                desc: 'Dedicated portal — Business, Medical & Student visas',
-                link: '/flow/afghan',
-                flags: ['af']
-              },
-              {
-                title: 'Regular Visa',
-                desc: 'Long-stay, Employment, or embassy-preference applicants',
-                link: '/flow/regular',
-                flags: null
-              }
-            ].map(path => (
-              <Link
-                key={path.title}
-                to={path.link}
-                className="group relative flex flex-col items-center text-center hover:-translate-y-3 transition-all duration-500 overflow-hidden rounded-xl min-h-[320px] p-8"
-                style={{
-                  background: 'linear-gradient(160deg, #1E2A4F 0%, #162040 40%, #1E2A4F 70%, #243260 100%)',
-                  boxShadow: '0 20px 40px rgba(30,42,79,0.4), 0 0 0 1px rgba(212,175,55,0.2), inset 0 1px 0 rgba(255,255,255,0.08)',
-                }}
-              >
-                {/* Gold inner border */}
-                <div className="absolute inset-2 border border-[#D4AF37]/10 pointer-events-none group-hover:border-[#D4AF37]/40 transition-colors duration-500 rounded-lg" />
-
-                {/* Subtle watermark */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(212,175,55,1)_0%,transparent_70%)]" />
-
-                {/* Top Gold Accent */}
-                <div className="w-8 h-[2px] bg-[#D4AF37] mb-8 group-hover:w-16 transition-all duration-500" />
-
-                {path.flags && (
-                  <div className="flex gap-2 mb-4">
-                    {path.flags.map(code => (
-                      <img key={code} src={`https://flagcdn.com/w40/${code}.png`} alt={code} className="w-8 h-auto shadow-sm rounded-sm" />
-                    ))}
-                  </div>
-                )}
-
-                <h3 className="text-2xl font-serif font-bold text-[#D4AF37] mb-4 group-hover:text-white transition-colors duration-300">{path.title}</h3>
-
-                <p className="text-sm font-sans text-white/70 leading-relaxed flex-1 group-hover:text-white/90 transition-colors duration-300">{path.desc}</p>
-
-                <div className="mt-8 text-xs font-bold font-sans text-white uppercase tracking-widest group-hover:text-[#D4AF37] transition-colors relative inline-block">
-                  Select <span className="text-sm">→</span>
-                  <span className="block h-[2px] w-0 bg-[#D4AF37] absolute -bottom-2 left-0 group-hover:w-full transition-all duration-500" />
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-20 text-center">
-             <Link to="/guide/visa-finder" className="inline-flex items-center gap-3 text-[#1E2A4F]/70 hover:text-[#C4762A] transition-colors font-sans text-sm tracking-wider uppercase group">
-               Not sure? <span className="border-b border-[#1E2A4F]/20 group-hover:border-[#C4762A] transition-colors">Use the Visa Finder</span>
-               <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-             </Link>
-          </div>
-        </div>
-      </section>
-
-
-
     </div>
   );
 }

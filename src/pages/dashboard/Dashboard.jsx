@@ -3,41 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getRequiredDocuments } from '../../components/SmartDocuments';
 import { useStore } from '../../store';
 
-function DraftPrivacyControls({ persistence, onErase }) {
-  const [confirming, setConfirming] = useState(false);
-  const [busy, setBusy] = useState(false);
-
-  const erase = async () => {
-    setBusy(true);
-    const result = await onErase();
-    if (!result?.ok) setBusy(false);
-  };
-
-  return (
-    <section className="mt-8 border border-amber-300 bg-amber-50 p-5 rounded" aria-labelledby="dashboard-retention-title">
-      <h2 id="dashboard-retention-title" className="font-bold text-amber-950 mb-2">This-tab retention and erasure</h2>
-      <p className="text-sm text-amber-900 mb-2">Draft fields are kept only in this tab&apos;s session storage. Refreshing this tab can restore them; a separately opened tab or a browser restart will not. File contents are never retained.</p>
-      <p className="text-sm text-amber-900 mb-4">Older builds may have left a persistent browser copy. This version never reads that legacy data and removes it only when you explicitly erase it below.</p>
-      <p className={`text-sm mb-4 ${persistence?.status === 'error' ? 'font-bold text-red-800' : 'text-amber-950'}`} role={persistence?.status === 'error' ? 'alert' : 'status'}>
-        {persistence?.message || 'Session save status is unavailable.'}
-      </p>
-
-      {!confirming ? (
-        <button type="button" onClick={() => setConfirming(true)} className="px-4 py-2 border border-red-700 text-red-800 bg-white font-bold rounded hover:bg-red-50">Erase this draft and legacy browser data</button>
-      ) : (
-        <div role="alertdialog" aria-labelledby="dashboard-erase-title" aria-describedby="dashboard-erase-description" className="border border-red-300 bg-white p-4 rounded">
-          <h3 id="dashboard-erase-title" className="font-bold text-red-900 mb-2">Erase local demo data?</h3>
-          <p id="dashboard-erase-description" className="text-sm text-red-800 mb-4">This clears the visible draft, this tab&apos;s session copy, and any legacy localStorage or IndexedDB copy for this prototype. It cannot be undone.</p>
-          <div className="flex flex-wrap gap-3">
-            <button type="button" onClick={erase} disabled={busy} className="px-4 py-2 bg-red-700 text-white font-bold rounded disabled:opacity-60">{busy ? 'Erasing…' : 'Yes, erase local data'}</button>
-            <button type="button" onClick={() => setConfirming(false)} disabled={busy} className="btn-secondary">Cancel</button>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-}
-
+import { Navigate } from 'react-router-dom';
 const flowDetails = {
   evisa: {
     label: 'Standard e-Visa demo',
@@ -93,14 +59,7 @@ const flowDetails = {
   },
 };
 
-const isMeaningfulDraft = (state) => Boolean(
-  state?.submitted
-  || state?.step > 0
-  || state?.docs?.length
-  || state?.data?.visa_category
-  || state?.data?.nationality
-  || state?.data?.given_name
-);
+import { isMeaningfulDraft } from '../../store';
 
 export default function Dashboard() {
   const { state, clearLocalDraft, persistence } = useStore();
@@ -112,17 +71,7 @@ export default function Dashboard() {
   };
 
   if (!isMeaningfulDraft(state)) {
-    return (
-      <div className="max-w-4xl mx-auto py-12 px-6">
-        <div className="bg-white border border-border shadow-sm rounded p-8 text-center">
-          <h1 className="text-3xl font-serif font-bold mb-4">My local visa demo</h1>
-          <p className="text-text-secondary mb-3">No local preparation has been started in this tab session.</p>
-          <p className="text-sm text-text-secondary mb-8">This prototype does not connect to or retrieve applications from Government systems.</p>
-          <Link to="/guide/visa-finder" className="btn-primary">Find the appropriate route &rarr;</Link>
-        </div>
-        <DraftPrivacyControls persistence={persistence} onErase={eraseAndLeave} />
-      </div>
-    );
+    return <Navigate to="/guide/visa-finder" replace />;
   }
 
   const appType = flowDetails[state.data?.application_type] ? state.data.application_type : 'evisa';
@@ -199,16 +148,19 @@ export default function Dashboard() {
               })}
             </ol>
 
-            <div className="mt-auto pt-6 border-t border-border">
+            <div className="mt-auto pt-6 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
               {!state.submitted ? (
-                <div>
-                  <p className="text-sm text-text-secondary mb-3">Draft fields and file metadata are saved only for this tab session. A refresh may restore them; closing the tab or browser ends the session. Document contents are not retained.</p>
-                  <Link to="/apply" className="btn-primary inline-flex items-center gap-2">{missingDocuments.length && documentCheckReached ? 'Continue document checks' : 'Continue local preparation'} &rarr;</Link>
+                <div className="flex flex-col sm:flex-row items-center w-full gap-4">
+                  <Link to="/apply" className="btn-primary inline-flex items-center gap-2 mr-auto">{missingDocuments.length && documentCheckReached ? 'Continue document checks' : 'Continue application'} &rarr;</Link>
+                  <button type="button" onClick={eraseAndLeave} className="text-sm font-bold text-red-700 hover:text-red-900 transition-colors">Start Over (Discard Draft)</button>
                 </div>
               ) : (
-                <div>
-                  <p className="text-sm text-green-800 font-bold mb-3">{completionCopy}</p>
-                  <Link to="/apply" className="btn-secondary inline-block">View prepared result &rarr;</Link>
+                <div className="flex flex-col sm:flex-row items-center w-full gap-4">
+                  <div className="mr-auto">
+                    <p className="text-sm text-green-800 font-bold mb-3">{completionCopy}</p>
+                    <Link to="/apply" className="btn-secondary inline-block">View prepared result &rarr;</Link>
+                  </div>
+                  <button type="button" onClick={eraseAndLeave} className="text-sm font-bold text-red-700 hover:text-red-900 transition-colors">Start New Application</button>
                 </div>
               )}
             </div>
@@ -232,8 +184,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
-      <DraftPrivacyControls persistence={persistence} onErase={eraseAndLeave} />
     </div>
   );
 }

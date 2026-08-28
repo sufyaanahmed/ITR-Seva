@@ -205,10 +205,24 @@ async fn enforce_rate_limit(
     next: Next,
 ) -> Response {
     let peer = request
-        .extensions()
-        .get::<ConnectInfo<SocketAddr>>()
-        .map(|info| info.0.ip().to_string())
-        .unwrap_or_else(|| "unknown".into());
+        .headers()
+        .get("cf-connecting-ip")
+        .and_then(|v| v.to_str().ok())
+        .or_else(|| {
+            request
+                .headers()
+                .get("x-forwarded-for")
+                .and_then(|v| v.to_str().ok())
+                .map(|v| v.split(',').next().unwrap_or(v).trim())
+        })
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| {
+            request
+                .extensions()
+                .get::<ConnectInfo<SocketAddr>>()
+                .map(|info| info.0.ip().to_string())
+                .unwrap_or_else(|| "unknown".into())
+        });
     let path = request.uri().path();
     let (scope, limit) = if path == "/api/v1/sessions" {
         ("sessions", state.config.session_rate_limit_per_second)
