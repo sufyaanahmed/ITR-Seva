@@ -196,94 +196,24 @@ export default function Home() {
         <div
           className="absolute top-0 left-0 h-full z-40 pointer-events-none"
           style={{
-            width: '52%',
-            background: 'linear-gradient(to right, #6B1111 0%, #8B1C1C 100%)',
-            transition: 'transform 2s cubic-bezier(0.77,0,0.175,1)',
+            width: '51%',
+            transition: 'transform 2.5s cubic-bezier(0.77,0,0.175,1)',
             transform: doorsOpen ? 'translateX(-102%)' : 'translateX(0)',
-            boxShadow: doorsOpen ? 'none' : '12px 0 40px rgba(0,0,0,0.35)',
           }}
         >
-          {/* Gold inner frame */}
-          <div className="absolute inset-3 border border-[#D4AF37]/30" />
-          <div className="absolute inset-5 border border-[#D4AF37]/15" />
-          {/* Vertical ornament lines */}
-          <div className="absolute top-0 right-10 bottom-0 w-px bg-gradient-to-b from-transparent via-[#D4AF37]/40 to-transparent" />
-          <div className="absolute top-0 right-16 bottom-0 w-px bg-gradient-to-b from-transparent via-[#D4AF37]/20 to-transparent" />
-          {/* Jali overlay */}
-          <svg className="absolute inset-0 w-full h-full opacity-[0.08]">
-            <rect width="100%" height="100%" fill="url(#jali-hero)" />
-          </svg>
-          {/* Central medallion */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <svg viewBox="0 0 80 80" className="w-24 h-24 opacity-30">
-              <circle cx="40" cy="40" r="36" fill="none" stroke="#D4AF37" strokeWidth="1.5" />
-              <circle cx="40" cy="40" r="24" fill="none" stroke="#D4AF37" strokeWidth="1" />
-              <circle cx="40" cy="40" r="10" fill="#D4AF37" fillOpacity="0.4" />
-              {[...Array(8)].map((_, i) => {
-                const a = (i / 8) * Math.PI * 2;
-                return <line key={i} x1="40" y1="40" x2={40 + Math.sin(a) * 36} y2={40 - Math.cos(a) * 36} stroke="#D4AF37" strokeWidth="0.8" />;
-              })}
-            </svg>
-          </div>
-          {/* Scalloped right edge SVG */}
-          <svg className="absolute top-0 right-0 h-full" style={{ width: 40 }} preserveAspectRatio="none" viewBox="0 0 40 1000">
-            <path d="M0,0 L40,0 L40,1000 L0,1000
-              C15,950 15,900 0,850
-              C15,800 15,750 0,700
-              C15,650 15,600 0,550
-              C15,500 15,450 0,400
-              C15,350 15,300 0,250
-              C15,200 15,150 0,100
-              C15,50 15,25 0,0Z"
-              fill="#8B1C1C" />
-            <path d="M0,1000 C15,950 15,900 0,850 C15,800 15,750 0,700 C15,650 15,600 0,550 C15,500 15,450 0,400 C15,350 15,300 0,250 C15,200 15,150 0,100 C15,50 15,25 0,0"
-              fill="none" stroke="#D4AF37" strokeWidth="3" />
-          </svg>
+          <img src="/left_curtain.png" alt="Left Curtain" className="w-full h-full object-fill drop-shadow-[15px_0_35px_rgba(0,0,0,0.5)]" />
         </div>
 
         {/* ── Right Palace Door ── */}
         <div
           className="absolute top-0 right-0 h-full z-40 pointer-events-none"
           style={{
-            width: '52%',
-            background: 'linear-gradient(to left, #6B1111 0%, #8B1C1C 100%)',
-            transition: 'transform 2s cubic-bezier(0.77,0,0.175,1)',
+            width: '51%',
+            transition: 'transform 2.5s cubic-bezier(0.77,0,0.175,1)',
             transform: doorsOpen ? 'translateX(102%)' : 'translateX(0)',
-            boxShadow: doorsOpen ? 'none' : '-12px 0 40px rgba(0,0,0,0.35)',
           }}
         >
-          <div className="absolute inset-3 border border-[#D4AF37]/30" />
-          <div className="absolute inset-5 border border-[#D4AF37]/15" />
-          <div className="absolute top-0 left-10 bottom-0 w-px bg-gradient-to-b from-transparent via-[#D4AF37]/40 to-transparent" />
-          <div className="absolute top-0 left-16 bottom-0 w-px bg-gradient-to-b from-transparent via-[#D4AF37]/20 to-transparent" />
-          <svg className="absolute inset-0 w-full h-full opacity-[0.08]">
-            <rect width="100%" height="100%" fill="url(#jali-hero)" />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <svg viewBox="0 0 80 80" className="w-24 h-24 opacity-30">
-              <circle cx="40" cy="40" r="36" fill="none" stroke="#D4AF37" strokeWidth="1.5" />
-              <circle cx="40" cy="40" r="24" fill="none" stroke="#D4AF37" strokeWidth="1" />
-              <circle cx="40" cy="40" r="10" fill="#D4AF37" fillOpacity="0.4" />
-              {[...Array(8)].map((_, i) => {
-                const a = (i / 8) * Math.PI * 2;
-                return <line key={i} x1="40" y1="40" x2={40 + Math.sin(a) * 36} y2={40 - Math.cos(a) * 36} stroke="#D4AF37" strokeWidth="0.8" />;
-              })}
-            </svg>
-          </div>
-          {/* Scalloped left edge SVG */}
-          <svg className="absolute top-0 left-0 h-full" style={{ width: 40 }} preserveAspectRatio="none" viewBox="0 0 40 1000">
-            <path d="M40,0 L0,0 L0,1000 L40,1000
-              C25,950 25,900 40,850
-              C25,800 25,750 40,700
-              C25,650 25,600 40,550
-              C25,500 25,450 40,400
-              C25,350 25,300 40,250
-              C25,200 25,150 40,100
-              C25,50 25,25 40,0Z"
-              fill="#8B1C1C" />
-            <path d="M40,1000 C25,950 25,900 40,850 C25,800 25,750 40,700 C25,650 25,600 40,550 C25,500 25,450 40,400 C25,350 25,300 40,250 C25,200 25,150 40,100 C25,50 25,25 40,0"
-              fill="none" stroke="#D4AF37" strokeWidth="3" />
-          </svg>
+          <img src="/right_curtain.png" alt="Right Curtain" className="w-full h-full object-fill drop-shadow-[-15px_0_35px_rgba(0,0,0,0.5)]" />
         </div>
 
         {/* ── Hero Content (revealed behind the doors) ── */}
