@@ -354,7 +354,7 @@ export default function Home() {
                  <h2 className="text-4xl sm:text-5xl font-serif italic font-light text-[#D4AF37] leading-[1.15] mt-1">
                     to India
                  </h2>
-                 <p className="text-[11px] font-sans text-white/40 tracking-widest uppercase mt-4">Gateway of India · Discover · Experience</p>
+                 <p className="text-[11px] font-sans text-white/40 tracking-widest uppercase mt-4"> Discover · Experience · Flourish</p>
               </div>
             </div>
 

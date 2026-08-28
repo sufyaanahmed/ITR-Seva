@@ -40,35 +40,43 @@ const Header = ({ toggleHighContrast, toggleLargeText, isHighContrast, isLargeTe
           <Link to="/tourism" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Discover India</Link>
           <Link to="/help" className="text-text font-sans font-medium text-[0.9rem] uppercase tracking-wider hover:text-secondary-accent transition-colors">Help</Link>
         </nav>
-        <div className="flex items-center gap-3 row-start-1 col-start-2 md:col-start-3 justify-self-end">
-          <select className="bg-surface border border-border-dark text-text h-[44px] px-3 font-sans text-sm focus:outline-none focus:border-primary transition-colors cursor-pointer">
-            <option>English</option>
-            <option>हिन्दी</option>
-          </select>
-        </div>
-        <div className="flex items-center row-start-1 col-start-3 md:col-start-4 justify-self-end relative">
+        <div className="flex items-center row-start-1 col-start-2 md:col-start-3 justify-self-end relative">
           <button 
             onClick={() => setIsAccessOpen(!isAccessOpen)}
-            className="bg-transparent border border-border-dark text-text h-[44px] px-4 font-sans text-sm font-medium hover:bg-surface-dark transition-colors"
+            className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 h-[40px] px-4 rounded-full font-sans text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+            aria-label="Accessibility options"
+            aria-expanded={isAccessOpen}
           >
+            <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-600" fill="currentColor">
+              <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+            </svg>
             Accessibility
           </button>
           
           {isAccessOpen && (
-            <div className="absolute top-full right-0 mt-2 w-48 bg-white shadow-xl border border-gray-200 z-50 rounded-sm py-2">
+            <div className="absolute top-full right-0 mt-3 w-56 bg-white shadow-xl border border-gray-100 z-50 rounded-xl py-2 overflow-hidden transform origin-top-right transition-all">
+              <div className="px-4 py-2 border-b border-gray-50 bg-gray-50/50">
+                <span className="text-[0.65rem] font-bold text-gray-500 uppercase tracking-widest">Display Settings</span>
+              </div>
               <button 
                 onClick={toggleHighContrast}
-                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center justify-between text-black"
+                className="w-full text-left px-4 py-3 text-sm hover:bg-[#FAF7F0] flex items-center justify-between text-gray-800 font-medium transition-colors"
               >
-                High Contrast
-                {isHighContrast && <span className="text-green-600 font-bold">✓</span>}
+                <div className="flex items-center gap-3">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/></svg>
+                  High Contrast
+                </div>
+                {isHighContrast && <span className="text-[#00b67a] font-bold">✓</span>}
               </button>
               <button 
                 onClick={toggleLargeText}
-                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center justify-between text-black"
+                className="w-full text-left px-4 py-3 text-sm hover:bg-[#FAF7F0] flex items-center justify-between text-gray-800 font-medium transition-colors"
               >
-                Large Text
-                {isLargeText && <span className="text-green-600 font-bold">✓</span>}
+                <div className="flex items-center gap-3">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                  Large Text
+                </div>
+                {isLargeText && <span className="text-[#00b67a] font-bold">✓</span>}
               </button>
             </div>
           )}
