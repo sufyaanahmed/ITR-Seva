@@ -5,6 +5,7 @@ import SmartDocuments, { getRequiredDocuments } from '../components/SmartDocumen
 import { EVISA_CATEGORIES } from '../data/visaEligibilityRules';
 import { getEvisaWizardGate } from '../domain/visaEligibility';
 import { useStore } from '../store';
+import { syncSyntheticApplication } from '../api/showcaseBackend';
 
 const field = (name, label, type = 'text', options = null, extra = {}) => ({ name, label, type, options, required: true, ...extra });
 const yesNo = ['yes', 'no'];
@@ -238,9 +239,21 @@ const validateStep = (step, data, docs) => {
   (step.fields || []).filter((item) => isVisible(item, data)).forEach((item) => {
     const value = data[item.name];
     if (isRequired(item, data) && (item.type === 'checkbox' ? value !== true : String(value ?? '').trim() === '')) errors[item.name] = 'This field is required.';
+    if (item.type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value).trim())) errors[item.name] = 'Enter a complete email address.';
+    if (item.type === 'date' && value && !/^\d{4}-\d{2}-\d{2}$/.test(String(value))) errors[item.name] = 'Enter a valid calendar date.';
+    if (item.name.includes('phone') && value) {
+      const phone = String(value).trim();
+      const digitCount = phone.replace(/\D/g, '').length;
+      if (!/^\+?[0-9][0-9 ()-]*$/.test(phone) || digitCount < 7 || digitCount > 20) errors[item.name] = 'Enter a valid phone number using 7–20 digits and common separators.';
+    }
   });
 
-  if (data.email && data.confirm_email && data.email.trim().toLowerCase() !== data.confirm_email.trim().toLowerCase()) errors.confirm_email = 'Email addresses must match.';
+  if (data.email && data.confirm_email && String(data.email).trim().toLowerCase() !== String(data.confirm_email).trim().toLowerCase()) errors.confirm_email = 'Email addresses must match.';
+  const today = new Date().toISOString().slice(0, 10);
+  if (data.date_of_birth && data.date_of_birth >= today) errors.date_of_birth = 'Date of birth must be in the past.';
+  if (data.passport_issue_date && data.passport_issue_date > today) errors.passport_issue_date = 'Passport issue date cannot be in the future.';
+  if (data.passport_issue_date && data.passport_expiry_date && data.passport_expiry_date <= data.passport_issue_date) errors.passport_expiry_date = 'Passport expiry date must be after its issue date.';
+  if (data.expected_arrival_date && data.passport_expiry_date && data.passport_expiry_date <= data.expected_arrival_date) errors.passport_expiry_date = 'Passport must remain valid after the expected arrival date.';
   if (step.id === 'documents') {
     const missing = getRequiredDocuments(data).filter((requirement) => !docs.some((document) => document.type === requirement.type && document.status === 'selected-this-session'));
     if (missing.length) errors.documents = `Select every required item before continuing: ${missing.map((item) => item.title).join(', ')}.`;
@@ -350,6 +363,7 @@ export default function Wizard() {
   const { state, updateState, updateData, completeDemo } = useStore();
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
+  const [backendSync, setBackendSync] = useState({ status: 'idle', message: '' });
   const stepHeadingRef = useRef(null);
   const errorSummaryRef = useRef(null);
   const stepItemRefs = useRef([]);
@@ -403,7 +417,9 @@ export default function Wizard() {
         <h1 className="text-3xl font-bold mb-4">{isVoa ? 'Annexure I preparation summary ready' : 'Demo application preparation complete'}</h1>
         <p className="text-text-secondary mb-5">{isVoa
           ? 'This local reference confirms only that you prepared a printable summary. It is not a Government application, Visa on Arrival submission, or grant.'
-          : 'This is a locally generated demo reference. No information was sent to the Government of India, and this is not a visa application, payment, decision, ETA, or approval.'}</p>
+          : state.backend?.status === 'synced'
+            ? 'This synthetic record was committed to the self-hosted showcase backend. No information was sent to the Government of India, and this is not a visa application, payment, decision, ETA, or approval.'
+            : 'This is a locally generated demo reference. No information was sent to the Government of India, and this is not a visa application, payment, decision, ETA, or approval.'}</p>
         <div className="bg-background border border-border rounded p-5 mb-6">
           <span className="block text-xs uppercase text-text-secondary mb-1">{isVoa ? 'Local form-preparation reference' : 'Final local demo reference'}</span>
           <strong className="font-mono text-xl text-primary break-all">{reference}</strong>
@@ -438,7 +454,7 @@ export default function Wizard() {
     );
   }
 
-  const handleNext = (event) => {
+  const handleNext = async (event) => {
     event.preventDefault();
     const found = validateStep(step, state.data, state.docs);
     setErrors(found);
@@ -450,7 +466,21 @@ export default function Wizard() {
       updateState({ step: stepIndex + 1 });
       window.scrollTo(0, 0);
     } else {
-      completeDemo(appType === 'voa' ? 'voa-form' : 'application-preparation');
+      setBackendSync({ status: 'saving', message: 'Committing the synthetic record to the self-hosted backend…' });
+      try {
+        const backendRecord = await syncSyntheticApplication({
+          data: state.data,
+          documents: state.docs,
+          attemptId: state.identifiers?.temporaryDemoId,
+        });
+        completeDemo(appType === 'voa' ? 'voa-form' : 'application-preparation', backendRecord);
+        setBackendSync({ status: 'saved', message: backendRecord ? 'Synthetic record committed.' : 'Backend sync is disabled.' });
+      } catch (error) {
+        setBackendSync({
+          status: 'error',
+          message: `${error.message}${error.retryable ? ' Retry will reuse the same completion key.' : ''}`,
+        });
+      }
     }
   };
 
@@ -533,6 +563,12 @@ export default function Wizard() {
       {step.description && <p className="text-text-secondary mb-8 pb-4 border-b border-border">{step.description}</p>}
 
       <form onSubmit={handleNext} noValidate>
+        {backendSync.status === 'error' && (
+          <div role="alert" className="mb-8 border-l-4 border-red-600 bg-red-50 p-5 text-red-950">
+            <strong className="block mb-1">The self-hosted backend did not accept the demo record</strong>
+            <p className="text-sm">{backendSync.message}</p>
+          </div>
+        )}
         {Object.keys(errors).length > 0 && (
           <div ref={errorSummaryRef} tabIndex="-1" role="alert" aria-labelledby="wizard-error-heading" className="mb-8 border-l-4 border-red-600 bg-red-50 p-5 text-red-950 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-red-700">
             <h2 id="wizard-error-heading" className="font-bold text-lg mb-2">Check this step before continuing</h2>
@@ -564,7 +600,7 @@ export default function Wizard() {
             </div>
             <div className="space-y-4">
               {renderField(field('review_accuracy', 'I reviewed every prepared field and document status for accuracy', 'checkbox'))}
-              {appType !== 'voa' && renderField(field('finality_acknowledged', 'I understand that final official submission may prevent further form edits; this demo completion is still local only', 'checkbox'))}
+              {appType !== 'voa' && renderField(field('finality_acknowledged', 'I understand that official submission may prevent further edits; this prototype does not submit to the Government, and self-hosted mode stores only a non-sensitive demo summary', 'checkbox'))}
               {appType === 'voa' && renderField(field('arrival_checklist_acknowledged', 'I will use the official Annexure I, print/sign it, carry the airport evidence, and complete the separate e-Arrival Card', 'checkbox'))}
               {renderField(field('demo_boundary_acknowledged', 'I understand this site does not submit to, represent, or grant approval from the Government of India', 'checkbox'))}
             </div>
@@ -573,7 +609,7 @@ export default function Wizard() {
 
         <div className="mt-12 flex gap-4 pt-6 border-t border-border">
           {stepIndex > 0 && <button type="button" onClick={handleBack} className="btn-secondary">Back</button>}
-          <button type="submit" className="btn-primary ml-auto">{stepIndex === steps.length - 1 ? (appType === 'voa' ? 'Prepare printable summary' : 'Complete demo preparation') : 'Save and continue'}</button>
+          <button type="submit" disabled={backendSync.status === 'saving'} className="btn-primary ml-auto disabled:opacity-60">{backendSync.status === 'saving' ? 'Saving to self-hosted backend…' : stepIndex === steps.length - 1 ? (appType === 'voa' ? 'Prepare printable summary' : 'Complete demo preparation') : 'Save and continue'}</button>
         </div>
       </form>
     </div>

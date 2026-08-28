@@ -1,0 +1,9 @@
+.git
+.qa
+.env
+.env.*
+assets-archive
+backend/target
+dist
+node_modules
+test-results

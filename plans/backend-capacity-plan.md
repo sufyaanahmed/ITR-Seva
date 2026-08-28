@@ -1,5 +1,7 @@
 # Visa Seva Backend Capacity and Robustness Plan
 
+> Implementation status (28 August 2026): the initial Rust/PostgreSQL modular monolith, frontend submission integration, Docker stack, correctness/abuse smoke tests, and mixed k6 workload are implemented. See `backend/README.md` and `plans/backend-load-test-results.md` for operation and measured results. The one-hour, soak, recovery, backup/restore, and independent security-review stages remain future validation work.
+
 ## Objective
 
 Build a modern, self-hosted visa portal that:

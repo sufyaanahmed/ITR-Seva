@@ -10,7 +10,16 @@
     "test": "node --test tests/*.test.js",
     "test:eligibility": "node --test tests/visaEligibility.test.js",
     "test:documents": "node --test tests/documentRequirements.test.js",
-    "load:local": "node scripts/load-test.mjs"
+    "load:local": "node scripts/load-test.mjs",
+    "backend:up": "docker compose up -d --build",
+    "backend:down": "docker compose down",
+    "backend:smoke": "node scripts/backend-smoke.mjs",
+    "backend:abuse-smoke": "node scripts/backend-abuse-smoke.mjs",
+    "demo:up": "./scripts/demo-observability.sh up",
+    "demo:open": "./scripts/demo-observability.sh open",
+    "demo:load": "./scripts/run-demo-load.sh",
+    "demo:status": "./scripts/demo-observability.sh status",
+    "demo:down": "./scripts/demo-observability.sh down"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.5",
@@ -22,7 +31,6 @@
     "vite": "^8.2.1"
   },
   "dependencies": {
-    "animejs": "^4.5.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"

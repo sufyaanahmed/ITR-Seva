@@ -4,4 +4,7 @@ dist-ssr
 *.local
 .env
 .env.*
+!.env.example
+backend/target
+load-results
 .DS_Store

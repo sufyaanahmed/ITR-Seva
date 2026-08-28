@@ -6,7 +6,7 @@ const Reviews = () => {
 
   const getPlatformLogo = (source) => {
     const s = source.toLowerCase();
-    
+
     // Trustpilot - Official style green box with white star
     if (s.includes('trustpilot')) {
       return (
@@ -16,7 +16,7 @@ const Reviews = () => {
         </svg>
       );
     }
-    
+
     // X / Twitter
     if (s === 'x' || s.startsWith('x ') || s.includes('twitter')) {
       return (
@@ -25,7 +25,7 @@ const Reviews = () => {
         </svg>
       );
     }
-    
+
     // Reddit
     if (s.includes('reddit')) {
       return (
@@ -35,7 +35,7 @@ const Reviews = () => {
         </svg>
       );
     }
-    
+
     // Tripadvisor
     if (s.includes('tripadvisor')) {
       return (
@@ -54,7 +54,7 @@ const Reviews = () => {
         </div>
       );
     }
-    
+
     // Default fallback
     return (
       <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-500" fill="currentColor">
@@ -104,19 +104,19 @@ const Reviews = () => {
               )}
 
               <h4 className="font-bold text-[#1E2A4F] text-sm mb-3 font-serif leading-snug">{review.title}</h4>
-              
+
               <p className="text-sm text-gray-700 mb-6 flex-1 italic relative before:content-['\201C'] before:absolute before:-left-2 before:-top-1 before:text-gray-300 before:text-xl leading-relaxed break-words whitespace-pre-wrap">
                 {review.text || review.thread_full_text || "No content available"}
               </p>
 
               <div className="mt-auto pt-4 border-t border-gray-100">
-                <a 
-                  href={review.source_review_url || review.source_url || review.url} 
-                  target="_blank" 
+                <a
+                  href={review.source_review_url || review.source_url || review.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#C4762A] hover:text-[#1E2A4F] transition-colors group"
                 >
-                  View Original 
+                  View Original
                   <span className="text-sm transform group-hover:translate-x-1 transition-transform">→</span>
                 </a>
               </div>
