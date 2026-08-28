@@ -40,7 +40,7 @@ function GuillocheStar({ className }) {
           const starShape = 1 + 0.15 * Math.cos(5 * angle);
           // High-frequency wobble
           const wobble = 1.2 * Math.sin(100 * angle);
-          
+
           const r = (baseR * starShape) + wobble;
           const x = 50 + r * Math.sin(angle);
           const y = 50 - r * Math.cos(angle);
@@ -166,7 +166,7 @@ export default function Home() {
             {/* Outer rings */}
             <circle cx="200" cy="200" r="185" fill="none" stroke="currentColor" strokeWidth="12" />
             <circle cx="200" cy="200" r="172" fill="none" stroke="currentColor" strokeWidth="3" />
-            
+
             {/* 24 Spokes and Rim Dots */}
             {[...Array(24)].map((_, i) => {
               const rotation = (i * 360) / 24;
@@ -179,7 +179,7 @@ export default function Home() {
                 </g>
               );
             })}
-            
+
             {/* Inner Hub */}
             <circle cx="200" cy="200" r="32" fill="none" stroke="currentColor" strokeWidth="12" />
             <circle cx="200" cy="200" r="14" fill="currentColor" />
@@ -193,7 +193,7 @@ export default function Home() {
 
 
           {/* LUXURY PASSPORT CARD */}
-          <div 
+          <div
             className="relative flex flex-col justify-between w-full min-h-[400px] sm:min-h-[460px] rounded-2xl overflow-hidden border border-[#D4AF37]/25"
             style={{
               background: 'linear-gradient(160deg, #1E2A4F 0%, #162040 40%, #1E2A4F 70%, #243260 100%)',
@@ -208,9 +208,9 @@ export default function Home() {
             {/* Radial glow in center */}
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,175,55,0.08) 0%, transparent 70%)' }} />
 
-            {/* Central Emblem Watermark */}
+            {/* Decorative watermark */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
-              <img src="/emblem.svg" alt="Emblem Watermark" className="w-2/3 max-w-[260px] h-auto" style={{ filter: 'brightness(0) invert(1)' }} />
+              <img src="/emblem.svg" alt="" aria-hidden="true" className="w-2/3 max-w-[260px] h-auto" style={{ filter: 'brightness(0) invert(1)' }} />
             </div>
 
             {/* Guilloche Stars (Bottom Right) */}
@@ -222,19 +222,19 @@ export default function Home() {
 
             {/* Repeating text lines as subtle borders */}
             <div className="absolute left-0 w-full h-full pointer-events-none flex flex-col justify-between py-[20%] opacity-[0.07] text-[5px] leading-none overflow-hidden text-[#D4AF37] font-serif tracking-widest">
-               <div className="w-[200%] whitespace-nowrap">REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA</div>
-               <div className="w-[200%] whitespace-nowrap">REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA · REPUBLIC OF INDIA</div>
+               <div className="w-[200%] whitespace-nowrap">VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO</div>
+               <div className="w-[200%] whitespace-nowrap">VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO</div>
             </div>
 
             <div className="relative z-10 flex flex-col flex-1 p-5 sm:p-8 w-full text-[#FAF7F0]">
-              
+
               {/* Header Row */}
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.3em] uppercase">भारत गणराज्य</h2>
-                  <h2 className="text-sm font-bold font-serif text-[#D4AF37] tracking-[0.25em] uppercase mt-0.5">Republic of India</h2>
+                  <h2 className="text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.3em] uppercase">स्वतंत्र शैक्षिक नमूना</h2>
+                  <h2 className="text-sm font-bold font-serif text-[#D4AF37] tracking-[0.25em] uppercase mt-0.5">Independent Visa Demo</h2>
                 </div>
-                <span className="text-xs font-bold font-sans text-white/30 tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">e-VISA</span>
+                <span className="text-xs font-bold font-sans text-white/30 tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">Demo</span>
               </div>
 
               {/* Divider */}
@@ -286,55 +286,55 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 
             {/* Kashmir — Tiger */}
-            <Link to="/apply" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
+            <Link to="/guide/visa-finder" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/tiger.jpg" alt="Kashmir Tiger" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-              
+
               <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] font-sans mb-3 opacity-90">The North · Kashmir</span>
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Kashmir & the Himalayas</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Snow leopards, Dal Lake shikaras, and Mughal gardens where saffron blooms each autumn.</p>
                 <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
-                  Apply for e-Tourist Visa
+                  Check tourist visa route
                 </div>
               </div>
             </Link>
 
             {/* Rajasthan — Elephant */}
-            <Link to="/apply" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer md:mt-12">
+            <Link to="/guide/visa-finder" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer md:mt-12">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/elephant.jpg" alt="Rajasthan Elephant" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-              
+
               <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] font-sans mb-3 opacity-90">The Heartlands · Rajasthan</span>
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Palaces & Forts</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">Royal elephants march towards Jaipur's Amber Fort as it rises above the plains in magnificent sandstone.</p>
                 <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
-                  Apply for e-Business Visa
+                  Check business visa route
                 </div>
               </div>
             </Link>
 
             {/* Kerala — Peacock */}
-            <Link to="/apply" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
+            <Link to="/guide/visa-finder" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/peacock.jpg" alt="Kerala Peacock" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-              
+
               <div className="absolute inset-0 p-8 flex flex-col justify-end items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37] font-sans mb-3 opacity-90">The South · Kerala</span>
                 <h3 className="text-3xl font-serif font-bold text-white mb-2">Backwaters & Temples</h3>
                 <div className="w-12 h-px bg-[#D4AF37] mb-4 opacity-50" />
                 <p className="text-sm font-sans text-white/80 leading-relaxed mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">The peacock dances in Periyar's forests as houseboats drift through ancient lush waterways.</p>
                 <div className="px-6 sm:px-8 py-3 sm:py-4 border border-[#D4AF37]/50 bg-[#1E2A4F]/30 text-[#D4AF37] font-bold text-[10px] sm:text-xs uppercase tracking-widest group-hover:bg-[#D4AF37] group-hover:text-[#1E2A4F] group-hover:border-[#D4AF37] transition-all duration-500 backdrop-blur-md shadow-lg rounded-sm mt-2">
-                  Apply for e-Medical Visa
+                  Check medical visa route
                 </div>
               </div>
             </Link>
@@ -398,8 +398,8 @@ export default function Home() {
                 flags: null
               }
             ].map(path => (
-              <Link 
-                key={path.title} 
+              <Link
+                key={path.title}
                 to={path.link}
                 className="group relative flex flex-col items-center text-center hover:-translate-y-3 transition-all duration-500 overflow-hidden rounded-xl min-h-[320px] p-8"
                 style={{
@@ -409,13 +409,13 @@ export default function Home() {
               >
                 {/* Gold inner border */}
                 <div className="absolute inset-2 border border-[#D4AF37]/10 pointer-events-none group-hover:border-[#D4AF37]/40 transition-colors duration-500 rounded-lg" />
-                
+
                 {/* Subtle watermark */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(212,175,55,1)_0%,transparent_70%)]" />
-                
+
                 {/* Top Gold Accent */}
                 <div className="w-8 h-[2px] bg-[#D4AF37] mb-8 group-hover:w-16 transition-all duration-500" />
-                
+
                 {path.flags && (
                   <div className="flex gap-2 mb-4">
                     {path.flags.map(code => (
@@ -423,11 +423,11 @@ export default function Home() {
                     ))}
                   </div>
                 )}
-                
+
                 <h3 className="text-2xl font-serif font-bold text-[#D4AF37] mb-4 group-hover:text-white transition-colors duration-300">{path.title}</h3>
-                
+
                 <p className="text-sm font-sans text-white/70 leading-relaxed flex-1 group-hover:text-white/90 transition-colors duration-300">{path.desc}</p>
-                
+
                 <div className="mt-8 text-xs font-bold font-sans text-white uppercase tracking-widest group-hover:text-[#D4AF37] transition-colors relative inline-block">
                   Select <span className="text-sm">→</span>
                   <span className="block h-[2px] w-0 bg-[#D4AF37] absolute -bottom-2 left-0 group-hover:w-full transition-all duration-500" />

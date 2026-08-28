@@ -4,8 +4,9 @@
 	admin off
 }
 
-:8080 {
-	root * ./dist
+http://:8080 {
+	bind {$BIND_ADDRESS:127.0.0.1}
+	root * {$WEB_ROOT:./dist}
 	encode zstd gzip
 
 	# Defense in depth: these operational paths must never fall through to the SPA
@@ -36,6 +37,18 @@
 	# file server; every other public route is the SPA entry point.
 	route {
 		respond @privatePaths 404
+
+		# The public tunnel reaches only Caddy. Dynamic traffic is proxied to the
+		# loopback-bound Rust API; operator endpoints live on a separate port.
+		@api path /api/*
+		handle @api {
+			reverse_proxy {$API_UPSTREAM:127.0.0.1:3000} {
+				health_uri /internal/ready
+				health_port 9090
+				health_interval 10s
+				health_timeout 2s
+			}
+		}
 
 		@immutableAssets path /assets/*
 		handle @immutableAssets {
