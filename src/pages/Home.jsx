@@ -145,12 +145,6 @@ function TempleGopuram({ className = '' }) {
 ───────────────────────────────────────────────────────────────────────────── */
 
 export default function Home() {
-  const [doorsOpen, setDoorsOpen] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setDoorsOpen(true), 600);
-    return () => clearTimeout(t);
-  }, []);
 
   return (
     <div className="w-full bg-[#FAF7F0] overflow-hidden">
@@ -192,38 +186,9 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* ── Left Palace Door ── */}
+        {/* ── Hero Content ── */}
         <div
-          className="absolute top-0 left-0 h-full z-40 pointer-events-none"
-          style={{
-            width: '51%',
-            transition: 'transform 2.5s cubic-bezier(0.77,0,0.175,1)',
-            transform: doorsOpen ? 'translateX(-102%)' : 'translateX(0)',
-          }}
-        >
-          <img src="/left_curtain.png" alt="Left Curtain" className="w-full h-full object-fill drop-shadow-[15px_0_35px_rgba(0,0,0,0.5)]" />
-        </div>
-
-        {/* ── Right Palace Door ── */}
-        <div
-          className="absolute top-0 right-0 h-full z-40 pointer-events-none"
-          style={{
-            width: '51%',
-            transition: 'transform 2.5s cubic-bezier(0.77,0,0.175,1)',
-            transform: doorsOpen ? 'translateX(102%)' : 'translateX(0)',
-          }}
-        >
-          <img src="/right_curtain.png" alt="Right Curtain" className="w-full h-full object-fill drop-shadow-[-15px_0_35px_rgba(0,0,0,0.5)]" />
-        </div>
-
-        {/* ── Hero Content (revealed behind the doors) ── */}
-        <div
-          className="relative z-30 flex flex-col items-center gap-6 w-full max-w-3xl px-4 mb-20 sm:mb-32"
-          style={{
-            transition: 'opacity 1.8s ease 0.8s, transform 1.8s ease 0.8s',
-            opacity: doorsOpen ? 1 : 0,
-            transform: doorsOpen ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.97)',
-          }}
+          className="relative z-30 flex flex-col items-center gap-6 w-full max-w-3xl px-4 mb-20 sm:mb-32 animate-[fadeIn_1.5s_ease-out]"
         >
 
 
