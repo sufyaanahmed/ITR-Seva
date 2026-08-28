@@ -5,8 +5,8 @@
 }
 
 http://:8080 {
-	bind 127.0.0.1
-	root * ./dist
+	bind {$BIND_ADDRESS:127.0.0.1}
+	root * {$WEB_ROOT:./dist}
 	encode zstd gzip
 
 	# Defense in depth: these operational paths must never fall through to the SPA
@@ -42,7 +42,7 @@ http://:8080 {
 		# loopback-bound Rust API; operator endpoints live on a separate port.
 		@api path /api/*
 		handle @api {
-			reverse_proxy 127.0.0.1:3000 {
+			reverse_proxy {$API_UPSTREAM:127.0.0.1:3000} {
 				health_uri /internal/ready
 				health_port 9090
 				health_interval 10s

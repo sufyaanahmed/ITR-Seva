@@ -14,7 +14,12 @@
     "backend:up": "docker compose up -d --build",
     "backend:down": "docker compose down",
     "backend:smoke": "node scripts/backend-smoke.mjs",
-    "backend:abuse-smoke": "node scripts/backend-abuse-smoke.mjs"
+    "backend:abuse-smoke": "node scripts/backend-abuse-smoke.mjs",
+    "demo:up": "./scripts/demo-observability.sh up",
+    "demo:open": "./scripts/demo-observability.sh open",
+    "demo:load": "./scripts/run-demo-load.sh",
+    "demo:status": "./scripts/demo-observability.sh status",
+    "demo:down": "./scripts/demo-observability.sh down"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.5",

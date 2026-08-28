@@ -72,6 +72,8 @@ Use `docker compose down -v` only when intentionally deleting all local showcase
 
 ## Load testing
 
+For the provisioned local Grafana/Prometheus demonstration, see [`DEMO.md`](../DEMO.md). The one-command load runner sends k6 metrics to the local Prometheus instance as well as scraping API and PostgreSQL metrics.
+
 The mixed scenario uses approximately 50% reference reads, 25% status reads, 15% draft updates, 5% draft reads, and 5% atomic submissions. Every successful submission creates a replacement draft so writes continue throughout the run.
 
 ```sh

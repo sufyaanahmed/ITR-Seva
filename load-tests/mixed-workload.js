@@ -1,12 +1,13 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { Counter } from 'k6/metrics';
+import { Counter, Trend } from 'k6/metrics';
 
 const apiUrl = String(__ENV.API_URL || 'http://127.0.0.1:3000/api/v1').replace(/\/$/, '');
 const targetRate = Number(__ENV.RPS || 500);
 const duration = __ENV.DURATION || '2m';
 const preAllocatedVUs = Number(__ENV.PRE_ALLOCATED_VUS || Math.max(200, targetRate));
 const operationFailures = new Counter('operation_failures');
+const endToEndLatency = new Trend('end_to_end_latency', true);
 
 export const options = {
   scenarios: {
@@ -32,11 +33,13 @@ export const options = {
 let actor;
 
 function jsonRequest(method, path, body, headers = {}, tags = {}) {
-  return http.request(method, `${apiUrl}${path}`, body === null ? null : JSON.stringify(body), {
+  const response = http.request(method, `${apiUrl}${path}`, body === null ? null : JSON.stringify(body), {
     headers: { Accept: 'application/json', ...(body === null ? {} : { 'Content-Type': 'application/json' }), ...headers },
     tags,
     timeout: '3s',
   });
+  endToEndLatency.add(response.timings.duration);
+  return response;
 }
 
 function createActor() {
@@ -46,7 +49,7 @@ function createActor() {
   const headers = { Authorization: `Bearer ${token}` };
   const draft = createDraft(headers);
   if (!draft) return null;
-  return { headers, application: draft };
+  return { headers, application: draft, draftsCreated: 1 };
 }
 
 function createDraft(headers) {
@@ -69,6 +72,7 @@ export default function () {
   let response;
   if (roll < 0.50) {
     response = http.get(`${apiUrl}/reference/visa-categories`, { tags: { operation: 'reference' } });
+    endToEndLatency.add(response.timings.duration);
   } else if (roll < 0.75) {
     response = jsonRequest('GET', `/applications/${actor.application.id}/status`, null, actor.headers, { operation: 'status' });
   } else if (roll < 0.90) {
@@ -84,7 +88,21 @@ export default function () {
       ...actor.headers,
       'Idempotency-Key': `k6-load-${__VU}-${__ITER}`,
     }, { operation: 'submit' });
-    if (response.status === 200) actor.application = createDraft(actor.headers);
+    if (response.status === 200) {
+      // Rotate before the per-session application quota. This keeps the long
+      // workload realistic without weakening the backend's checked-in quota.
+      if (actor.draftsCreated >= 80) {
+        actor = createActor();
+      } else {
+        const nextDraft = createDraft(actor.headers);
+        if (nextDraft) {
+          actor.application = nextDraft;
+          actor.draftsCreated += 1;
+        } else {
+          actor = null;
+        }
+      }
+    }
   }
 
   const accepted = check(response, {
