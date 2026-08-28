@@ -1,0 +1,2093 @@
+{
+  "meta": {
+    "subject": "Visa Seva / Indian Visa Online portal",
+    "official_urls": [
+      "https://indianvisaonline.gov.in/",
+      "https://indianvisaonline.gov.in/evisa/tvoa.html",
+      "https://indianvisaonline.gov.in/visa"
+    ],
+    "note_on_naming": "There is no official product branded 'Visa Seva'. Public complaints refer to indianvisaonline.gov.in (e-Visa and regular visa). A separate MEA system called SEWA (indianconsularservices.mea.gov.in) is for consular services for Indians abroad and is not the same portal.",
+    "compiled_on": "2026-08-27",
+    "limitation": "All 37 unique supplied review URLs were checked in an interactive browser. Thirty-one were accessible, four regional Trustpilot URLs showed connection verification, Tripadvisor returned no usable page content, and the VisaHQ link returned a not-found page. Matching Trustpilot review cards on accessible listings were used to verify reviewer names and dates. Existing captured text is preserved where the original page could not be re-verified.",
+    "updated_on": "2026-08-27T13:44:51.373Z",
+    "how_to_read_text": "Each record has a 'text' field with the complete captured body. Viral X threads also have 'thread_full_text' and 'thread_posts'. Trustpilot bodies are the complete sentences returned by public indexes; Trustpilot blocked live HTML (HTTP 403), so a few reviews may still be shorter than the live page if Trustpilot truncated the snippet.",
+    "refinement": {
+      "browser_checked_unique_urls": 37,
+      "accessible_urls": 31,
+      "blocked_verification_urls": 4,
+      "empty_or_minimal_urls": 1,
+      "not_found_urls": 1,
+      "trustpilot_records_with_verified_reviewer_and_date": 29,
+      "content_policy": "Existing captured text was preserved. Additional long verbatim third-party review text was not republished; browser verification was used to add metadata, provenance, accessibility status, and duplicate relationships."
+    },
+    "data_quality_notes": [
+      "Records 2 and 3 are excerpts from the same Trustpilot review.",
+      "Records 10 and 16 are excerpts from the same Trustpilot review.",
+      "Record 18 duplicates record 9 through a regional Trustpilot listing.",
+      "Trustpilot reviewer names and publication dates were corrected from visible review cards.",
+      "Month-only dates were retained where the source did not establish a precise day."
+    ]
+  },
+  "summary": {
+    "overall_sentiment": "Strongly negative on the application experience; more mixed after submission.",
+    "headline": "Applicants and X users describe indianvisaonline.gov.in as crashing, not saving form data, rejecting uploads, and taking hours or days. Viral posts (Raymond Russell, The Economist) amplified the same complaints. After submit, approvals are often fast.",
+    "aggregate_ratings": [
+      {
+        "source": "Trustpilot",
+        "domain": "indianvisaonline.gov.in",
+        "score": 1.4,
+        "trustscore": 1.5,
+        "scale": "1-5",
+        "review_count_reported": 53,
+        "label": "Bad",
+        "url": "https://www.trustpilot.com/review/indianvisaonline.gov.in"
+      },
+      {
+        "source": "Trustpilot UK/IE mirrors",
+        "domain": "indianvisaonline.gov.in",
+        "score_range": "1.4-1.5",
+        "review_count_reported": "32-53 depending on regional listing",
+        "url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in"
+      }
+    ],
+    "dominant_complaint_themes": [
+      "Form crashes or times out after clicking Next",
+      "Data not saved; users re-enter the same pages multiple times",
+      "Photo/passport upload rules are strict and error messages are unclear (JPEG vs PDF, file size)",
+      "Session timeouts and ERR_CONNECTION_TIMED_OUT",
+      "Dated, desktop-first UI that is hard on mobile",
+      "Helpdesk replies described as generic or unhelpful",
+      "Workarounds: DuckDuckGo, Edge IE mode, off-peak hours, multiple devices"
+    ],
+    "ux_vs_backend_vs_load": {
+      "ux": "Primary visible problem: multi-page forms, poor save/resume, picky uploads, confusing navigation.",
+      "backend": "Crashes, timeouts, session drops, and payment retries indicate unstable session/server handling.",
+      "load": "Steady international applicant stream rather than GST/ITR-style domestic peak; still enough concurrency that the stack appears fragile."
+    },
+    "traffic_context": "Public search-traffic snapshots put official-site visits in the low-to-mid hundreds of thousands per month, not in India's top government-site tier (UIDAI/ECI/ITR). e-Visas are the majority of Indian visas issued.",
+    "collection_stats": {
+      "total_records": 60,
+      "official_site_records": 52,
+      "third_party_lookalike_records": 6,
+      "x_posts": 23,
+      "other_review_or_news_records": 37,
+      "newly_added_this_update": 21
+    }
+  },
+  "reviews": [
+    {
+      "id": 1,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot",
+      "source_url": "https://www.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2025-12-08",
+      "rating": 1,
+      "title": "Would give it zero if I could",
+      "text": "Would give it zero if I could. I need to make 4 tourist visas, the site keeps crashing after inputting data on a page without even giving me the chance to save. It will probably take 2 days to complete the 4 applications.",
+      "reviewer": "Seb Baker",
+      "citation_web_id": 96,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/616d70e15daa410012a7a327",
+      "source_review_url": "https://www.trustpilot.com/reviews/6936e978cbdfaf11b55e7460",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 2,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot",
+      "source_url": "https://www.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2025-09-04",
+      "rating": 1,
+      "title": "This site can’t be reached",
+      "text": "indianvisaonline.gov.in took too long to respond. Try: Checking the connection. Checking the proxy and the firewall. Running Windows Network Diagnostics. ERR_CONNECTION_TIMED_OUT",
+      "reviewer": "Gaurav Patel",
+      "citation_web_id": 96,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/62eb1ddde01167001389966d",
+      "source_review_url": "https://www.trustpilot.com/reviews/68b9ebfa4739896559f8467a",
+      "same_source_review_group": "trustpilot-68b9ebfa4739896559f8467a",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 3,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot",
+      "source_url": "https://www.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2025-09-04",
+      "rating": 1,
+      "title": "Error on every page and had to fill…",
+      "text": "Error opn every page and had to fill all information 2-3 times. Shame on Govt of india for having this kind of website. It shows the standard of Govt work.",
+      "reviewer": "Gaurav Patel",
+      "citation_web_id": 169,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/62eb1ddde01167001389966d",
+      "source_review_url": "https://www.trustpilot.com/reviews/68b9ebfa4739896559f8467a",
+      "same_source_review_group": "trustpilot-68b9ebfa4739896559f8467a",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 4,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot",
+      "source_url": "https://www.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2025-08-06",
+      "rating": 1,
+      "title": "Horrible experience",
+      "text": "Horrible experience. The website is pathetic. Seems such cheap hosting. This is not supposed to happen from a country that pioneers IT. It keeps disconnecting frequently and we cannot resume immediately. Photo and passport uploading feature is worse.",
+      "reviewer": "Dennize Menence",
+      "citation_web_id": 169,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/6892a36364d5cf2b2d885cad",
+      "source_review_url": "https://www.trustpilot.com/reviews/6892a385e34217327bd2dcce",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 5,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot",
+      "source_url": "http://trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2025-11-21",
+      "rating": 1,
+      "title": "sorry for one Star",
+      "text": "sorry for one Star, not deserved !!!! its a piece of shit !! crashes , takes your money then reject , then you have to do it again, complete process takes several hours.",
+      "reviewer": "mike tyson",
+      "citation_web_id": 176,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/69200c0734d80c03f3804b3e",
+      "source_review_url": "https://www.trustpilot.com/reviews/69200c19e73837683759ce53",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 6,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot",
+      "source_url": "http://trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2025-05-02",
+      "rating": 1,
+      "title": "If I could give no stars I would",
+      "text": "If I could give no stars I would. 4 times today, I've attempted to get an Indian visa, website has timed out every time, regardless of how fast I type. The save and continue function doesn't work. The number to continue partially completed applications, sent to email just plain doesn't work and just makes you start the entire application again.",
+      "reviewer": "Kyle Bastin",
+      "citation_web_id": 176,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/66a37725228d941ad393bb98",
+      "source_review_url": "https://www.trustpilot.com/reviews/681491e25150cd56cfd0cd5e",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 7,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot IE",
+      "source_url": "https://ie.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-03-03",
+      "rating": 1,
+      "title": "Indian eVisa website is so USELESS",
+      "text": "The Indian eVisa website is honestly one of the worst government portals I have ever used.\n\nIt feels like a third-rate, outdated system that has not been properly updated or tested in years.\nThe layout is confusing, instructions are unclear, and the entire process is unnecessarily complicated.",
+      "reviewer": "fpl guru",
+      "citation_web_id": 98,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/67ab1036dc0b8675790640e0",
+      "source_review_url": "https://www.trustpilot.com/reviews/69a712f3c6a18e0d328388a0",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 8,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot IE",
+      "source_url": "https://ie.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-02-20",
+      "rating": 1,
+      "title": "Crashed for 2 days then approved",
+      "text": "After crashing repeatedly on my wife for named and un-named errors over the course of 2 days (sending you back to the beginning each time), she finally got our visas in. Like, they kept on rejecting the pictures, but not saying why. To be clear, my wife is native Indian, has two law degrees, and is highly computer-literate.",
+      "reviewer": "Adam",
+      "citation_web_id": 170,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/663a25b6c6ef9c0012891857",
+      "source_review_url": "https://www.trustpilot.com/reviews/699811c0a12123cf0ed1a503",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 9,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot IE",
+      "source_url": "https://ie.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-01-06",
+      "rating": 1,
+      "title": "Worst website for applications in 20 years",
+      "text": "This is by far the worst web site for applications I have used in 20 years, keeps crashing , does not save data, I followed the instructions about clearing casche, browsing history etc., made zero difference even used different browsers.. took me 4 hours to finally complete my applicaion, now i need to do my wife's, time I will never get back",
+      "reviewer": "Dipak Mistry",
+      "citation_web_id": 170,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/52c2aa1000006400015c536e",
+      "same_source_review_group": "trustpilot-dipak-mistry-2026-01-06",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 10,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot IE",
+      "source_url": "https://ie.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-02-07",
+      "rating": 1,
+      "title": "Unable to submit in 48 hours",
+      "text": "In the last 48 hours I have been unable to submit all details for a visa using multiple devices and browsers (after clearing cache)",
+      "reviewer": "Maverick",
+      "citation_web_id": 178,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/69868ecab51c70c439991a0e",
+      "source_review_url": "https://www.trustpilot.com/reviews/69868f0d7af01fc166d9562a",
+      "same_source_review_group": "trustpilot-69868f0d7af01fc166d9562a",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 11,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot IE",
+      "source_url": "https://ie.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-02-03",
+      "rating": 1,
+      "title": "Absolutely pathetic",
+      "text": "Absolutely pathetic. Just slow and always crashing.",
+      "reviewer": "rock p",
+      "citation_web_id": 178,
+      "text_status": "original_was_short",
+      "text_note": "The source post/review itself was only one or two sentences. Nothing was cut from a longer body.",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/6981d674e90c6e44db2ab535",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 12,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot UK page 3",
+      "source_url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in?page=3",
+      "date": "2025-03-26",
+      "rating": 1,
+      "title": "Awful website and service",
+      "text": "I completely agree with all the other negative reviews. This website is horrid, slow, confusing, and makes you change your PDF document 20 times until you finally fulfill their miniscule file size requirements.",
+      "reviewer": "Da Thomas",
+      "citation_web_id": 100,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/676554d3ee9117d3f310ae6a",
+      "source_review_url": "https://www.trustpilot.com/reviews/67e4155ed70bc9034c6ff7ef",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 13,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot UK page 3",
+      "source_url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in?page=3",
+      "date": "2025-03-17",
+      "rating": 1,
+      "title": "The most horrible visa process ever",
+      "text": "Omg, I cannot believe how shit this website is.\nFirst of all it's a hassle to fill in the form; page keeps closing, saying there's an error and not letting me upload my files even though they meet the criteria.",
+      "reviewer": "MARIE GROES-PETERSEN",
+      "citation_web_id": 100,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/57150c5b0000ff000a1878e3",
+      "source_review_url": "https://www.trustpilot.com/reviews/67d860e11aa13717821eaf39",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 14,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot UK page 3",
+      "source_url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in?page=3",
+      "date": "2024-12-02",
+      "rating": 1,
+      "title": "Please, don’t bother",
+      "text": "This review is regarding the official Indian Goverment eVisa website, not a third party site.\nThis government site is absolutely appalling.\nDoes not save application progress correctly, cuts you off, will not accept some pdf and jpeg attachments and some punctuation without any explanation.",
+      "reviewer": "Paul Sharples",
+      "citation_web_id": 100,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/54fea3ef0000ff0001b03e57",
+      "source_review_url": "https://www.trustpilot.com/reviews/674d8d93d4fd013687fa5ec8",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 15,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot UK page 3",
+      "source_url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in?page=3",
+      "date": "2024-02-11",
+      "rating": 1,
+      "title": "A BIG L for this!",
+      "text": "the webside has the worst user interface I have ever encountert. load time is insumontable long, link 20 min, had to restart the process probably 10 time. It did't save the progress correctly.",
+      "reviewer": "Sarah",
+      "citation_web_id": 180,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/65c8fc4f330a16001222d4ff",
+      "source_review_url": "https://www.trustpilot.com/reviews/65c8fc5849ea2078c73492ed",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 16,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot Sweden",
+      "source_url": "https://se.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-02-07",
+      "rating": 1,
+      "title": "Terrible Customer Experience in 2026",
+      "text": "For a country with millions of software developers, for this to be the experience of foreign nationals highlights is a discredit to all Indians.\nThe site was always poorly structured, the form (unnecessarily) difficult to complete but in the recent few months it is crashing on a regular basis.",
+      "reviewer": "Maverick",
+      "citation_web_id": 104,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/69868ecab51c70c439991a0e",
+      "source_review_url": "https://www.trustpilot.com/reviews/69868f0d7af01fc166d9562a",
+      "same_source_review_group": "trustpilot-69868f0d7af01fc166d9562a",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 17,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot Sweden",
+      "source_url": "https://se.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-02-02",
+      "rating": 1,
+      "title": "Applying for an evisa is a punishment for wanting to visit India",
+      "text": "If I could give less than 1 star I would.\nThe whole application process feels like a punishment for wanting to visit India.\nI can concur with everything everyone else has said.\nI have been trying for days to get a simple tourist evisa but I am going to have to use a ripoff agency.\nThe application form will not allow me to fill in details and today, the final straw...the drop-down \"visa service\" menu does not drop down so I cannot proceed from Page 1.",
+      "reviewer": "Colette Dickens",
+      "citation_web_id": 104,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/6353a893284a1600129ea782",
+      "source_review_url": "https://www.trustpilot.com/reviews/698089e9160f87a0490fedc3",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 18,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot Sweden",
+      "source_url": "https://se.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-01-06",
+      "rating": 1,
+      "title": "4 hours for one application",
+      "text": "This is by far the worst web site for applications I have used in 20 years, keeps crashing , does not save data, I followed the instructions about clearing casche, browsing history etc.. , made zero difference even used different browsers.. took me 4 hours to finally complete my applicaion, now i need to do my wife's, time I will never get back",
+      "reviewer": "Dipak Mistry",
+      "citation_web_id": 104,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/52c2aa1000006400015c536e",
+      "same_source_review_group": "trustpilot-dipak-mistry-2026-01-06",
+      "duplicate_of": 9,
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 19,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot Sweden",
+      "source_url": "https://se.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2025-12-28",
+      "rating": 1,
+      "title": "Worst site in 30 years of browsing",
+      "text": "Now you'd think that India would make this website for visa applications really slick, smooth and smart.\nBut sadly (and ironically, considering that India boasts the biggest programmer industry on the planet) it is the opposite case.\nThis website is 100% without a doubt the very worst made site I've encountered in 30 years of browsing.",
+      "reviewer": "seth judd",
+      "citation_web_id": 104,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/5e510e26878fee562dc61764",
+      "source_review_url": "https://www.trustpilot.com/reviews/69516cf2270afcb5ccacd481",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 20,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Times of India / social post quoted in article",
+      "source_url": "https://timesofindia.indiatimes.com/life-style/travel/things-to-do/im-now-on-my-familys-details-but-when-i-click-woman-shared-her-e-visa-woes-and-the-only-thing-that-solved-her-problem-was/articleshow/127837881.cms",
+      "date": "2026-01",
+      "rating": null,
+      "title": "Pressed refresh more than 300 times",
+      "text": "Is it just me? Or the Indian visa online keeps crashing every time? I think I have pressed refresh more than 300x… The times I get through will be around less than 10x and I’m now on my family’s details but when I click next, it crashes again. I am so tired already!!!!! Any tips.",
+      "reviewer": "unnamed woman quoted by TOI",
+      "citation_web_id": 97,
+      "text_status": "full_available_excerpt",
+      "date_precision": "month",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "source_page_accessible"
+      }
+    },
+    {
+      "id": 21,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Times of India comments",
+      "source_url": "https://timesofindia.indiatimes.com/life-style/travel/things-to-do/im-now-on-my-familys-details-but-when-i-click-woman-shared-her-e-visa-woes-and-the-only-thing-that-solved-her-problem-was/articleshow/127837881.cms",
+      "date": "2026-01",
+      "rating": null,
+      "title": "Three days for two applications",
+      "text": "Jan 2026: Absolute terrible experience applying for e-visa. It almost took us three days to lodge two applications. Tried different timings, different browsers, IE mode in Internet Explorer, several different devices.",
+      "reviewer": "commenter quoted by TOI",
+      "citation_web_id": 97,
+      "text_status": "full_available_excerpt",
+      "date_precision": "month",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "source_page_accessible"
+      }
+    },
+    {
+      "id": 22,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Times of India comments",
+      "source_url": "https://timesofindia.indiatimes.com/life-style/travel/things-to-do/im-now-on-my-familys-details-but-when-i-click-woman-shared-her-e-visa-woes-and-the-only-thing-that-solved-her-problem-was/articleshow/127837881.cms",
+      "date": "2026-01",
+      "rating": null,
+      "title": "DuckDuckGo workaround",
+      "text": "The only thing that worked for us was the DuckDuckGo browser (freshly installed). First application went smoothly with no crashing. The second application still took an entire night to complete.",
+      "reviewer": "commenter quoted by TOI",
+      "citation_web_id": 97,
+      "text_status": "full_available_excerpt",
+      "date_precision": "month",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "source_page_accessible"
+      }
+    },
+    {
+      "id": 23,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Times of India",
+      "source_url": "https://timesofindia.indiatimes.com/world/us/us-investor-slams-comically-broken-e-visa-application-process-in-india-if-you-can-survive-it-/articleshow/125613765.cms",
+      "date": "2025-11-28",
+      "rating": null,
+      "title": "Comically, profoundly, embarrassingly broken",
+      "text": "Anybody who applies for an e-visa to India knows the website is always comically, profoundly, embarrassingly broken. It looks like it was written in 2003, kicks you out randomly without saving your work, won't charge your credit card until your nineteenth attempt. But this is a new one—halfway through the business visa application, it displays a list of the tallest peaks in each Indian state?? Come on folks, I'm just trying to invest in your country! I've always thought of the Indian e-visa website as a filtering test: if you can survive it, you'll be fine in India.",
+      "reviewer": "Raymond Russell, US investor",
+      "citation_web_id": 173,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "source_page_accessible"
+      }
+    },
+    {
+      "id": 24,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Tripadvisor India forum",
+      "source_url": "https://www.tripadvisor.com/ShowTopic-g293860-i511-k15461369-EVisa_Nightmare-India.html",
+      "date": "2025-11-22",
+      "rating": null,
+      "title": "EVisa Nightmare",
+      "text": "I am having an absolutely torrid time trying to apply for my Evisa. It's just a 30 days tourist visa. The website keeps crashing, timing out and/or refreshing back to the same page. I have tried on mac, PC, mobile, and 3 different browsers - safari, chrome, firefox. Cleared cache, purged history, updated everything. Fast internet. I haven't gotten past Family Details. The website simply will not save any of the information I have put in.",
+      "reviewer": "henrystephensnz",
+      "citation_web_id": 105,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "empty_or_minimal_response",
+        "content_check": "existing_text_preserved_source_not_verifiable"
+      }
+    },
+    {
+      "id": 25,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Tripadvisor India forum",
+      "source_url": "https://www.tripadvisor.com/ShowTopic-g293860-i511-k15461369-EVisa_Nightmare-India.html",
+      "date": "2025-12-16",
+      "rating": null,
+      "title": "Granted quickly after submission",
+      "text": "I applied online at the Indian Government website for my visa on 02 December 2025. The visa was granted on 04 December 2025. However, the Electronic Travel Authorization (ETA) states that my first entry must be on or before 04 January 2026.",
+      "reviewer": "rdccomments",
+      "citation_web_id": 105,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "empty_or_minimal_response",
+        "content_check": "existing_text_preserved_source_not_verifiable"
+      }
+    },
+    {
+      "id": 26,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X / quoted in Business Today",
+      "source_url": "https://www.businesstoday.in/nri/visa/story/indias-e-visa-portal-tests-travellers-before-their-journey-has-even-begun-539733-2026-06-29",
+      "date": "2026-06",
+      "rating": null,
+      "title": "Need tourist-friendly UI",
+      "text": "We need to build tourist-friendly UI. [User argued India should be drawing many times its current visitors given tourism potential. Other users joked the site was deliberately slowed so only serious visitors got through, or compared it to the patience needed for Indian roads and trains.]",
+      "reviewer": "unnamed X users quoted by Business Today",
+      "citation_web_id": 95,
+      "text_status": "full_available_excerpt",
+      "date_precision": "month",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "source_page_accessible"
+      }
+    },
+    {
+      "id": 27,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/rohanroy/status/2071821307445211418",
+      "date": "2026-06-30",
+      "rating": null,
+      "title": "Prank-level official site",
+      "text": "That’s not a government website. The US government websites are actually pretty awesome. The Indian e-visa site has to be a fucking prank. If India doesn’t want visitors they can just reject the visa. No need to crash when you upload a pdf with two dots in the file name.",
+      "reviewer": "@rohanroy",
+      "citation_post_id": 160,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 28,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot UK",
+      "source_url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-08-05",
+      "rating": 1,
+      "title": "Terrible Visa form",
+      "text": "What I find so amazing is that in a country of 1 billion computer programmers, they can't build a better visa application form than this.",
+      "reviewer": "Colin Thornton",
+      "citation_web_id": 98,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/6822f013b83f2cdaae7b35bd",
+      "source_review_url": "https://www.trustpilot.com/reviews/6a731c22f04bd99bc9803d64",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 29,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot UK",
+      "source_url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-08-03",
+      "rating": 1,
+      "title": "Aauugghhh It took me 5+ hrs to fill out…",
+      "text": "Aauugghhh It took me 5+ hrs to fill out the application for my trip in Oct.\nWhen I saved and continued it would bring the page back empty where I just filled out - several times!\nThen I finally got to the where- have you traveled in India part which was 6 years ago.",
+      "reviewer": "Nancy Sloan",
+      "citation_web_id": 98,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/6a70add3a938fe1076e366c8",
+      "source_review_url": "https://www.trustpilot.com/reviews/6a70ade0d5a85f8dd7ab089f",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 30,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot UK",
+      "source_url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in",
+      "date": "2026-03-11",
+      "rating": 1,
+      "title": "Absolute disaster!",
+      "text": "Absolute disaster! Completed data are not saved, tried 7 times and had to give up for today... have no time for sitting on this site the whole day.",
+      "reviewer": "EK",
+      "citation_web_id": 98,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/69b152b6e100ee7aa35d165d",
+      "source_review_url": "https://www.trustpilot.com/reviews/69b152bc48e528cf2f69d305",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 31,
+      "site_type": "third_party_lookalike",
+      "domain": "indianvisa.online",
+      "warning": "NOT the official government site. Included only because many travellers confuse it with Visa Seva / official e-Visa and leave similar crash complaints plus extra fee/scam complaints.",
+      "source": "Trustpilot",
+      "source_url": "https://www.trustpilot.com/review/indianvisa.online",
+      "date": "2026-08-20",
+      "rating": 1,
+      "title": "The website is awful",
+      "text": "The website is awful.\nI was told to upload a JPEG but then had an error message saying it must be a PDF.\nThe reply from the 'helpdesk' via email was totally unhelpful.\nIt requires an address and telephone number for the place you're staying but I'm on a tour and this hasn't yet been confirmed.",
+      "reviewer": "Jude Willetts",
+      "citation_web_id": 99,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/545b6859000064000194be25",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 32,
+      "site_type": "third_party_lookalike",
+      "domain": "indianvisa.online",
+      "warning": "NOT the official government site.",
+      "source": "Trustpilot",
+      "source_url": "https://www.trustpilot.com/review/indianvisa.online",
+      "date": "2026-03-08",
+      "rating": 1,
+      "title": "Crash bang wallop, what a hopeless website",
+      "text": "Contantly failing whenever we log in to try and compete our evisa application.",
+      "reviewer": "Customer",
+      "citation_web_id": 167,
+      "text_status": "original_was_short",
+      "text_note": "The source post/review itself was only one or two sentences. Nothing was cut from a longer body.",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/5e8f279a94af7e3aa2becb7c",
+      "source_review_url": "https://www.trustpilot.com/reviews/69ad9fc6e954ed24b8f5000e",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 33,
+      "site_type": "third_party_lookalike",
+      "domain": "indianvisa.online",
+      "warning": "NOT the official government site.",
+      "source": "Trustpilot",
+      "source_url": "https://www.trustpilot.com/review/indianvisa.online",
+      "date": "2026-02-02",
+      "rating": 1,
+      "title": "Complete nightmare",
+      "text": "The whole visa application process was hugely time consuming and frustrating, from trying to resize the portrait photo (which took half an hour and still didn’t look right, fingers crossed it’s ok) to having to enter information multiple times because the site kept crashing.\nThe site crashes whilst completing the application so you start all over again each time.\nThe uploading of photos is problematic as well, only takes small files therefore the quality of the photo is reduced, this causes the bot to reject the whole application.",
+      "reviewer": "FeeT",
+      "citation_web_id": 167,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/63a5cd9db3944a0013b384ce",
+      "source_review_url": "https://www.trustpilot.com/reviews/697fe6f7ccaa16df86e119c5",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 34,
+      "site_type": "third_party_lookalike",
+      "domain": "indianvisa.online",
+      "warning": "NOT the official government site.",
+      "source": "Trustpilot page 2",
+      "source_url": "https://www.trustpilot.com/review/indianvisa.online?page=2",
+      "date": "2025-10-22",
+      "rating": 1,
+      "title": "The website kept crashing while saving…",
+      "text": "The website kept crashing while saving the forms. Applicant has to fill up the details again and again. I have spent more than 1 hour applying visa for two person. Process is still not over. Trying again and again.",
+      "reviewer": "Jason Che",
+      "citation_web_id": 174,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/68f912dd519d8fcf15e51137",
+      "source_review_url": "https://www.trustpilot.com/reviews/68f912e358688fdbdf520616",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 35,
+      "site_type": "third_party_lookalike",
+      "domain": "indianvisa.online",
+      "warning": "NOT the official government site.",
+      "source": "Trustpilot page 2",
+      "source_url": "https://www.trustpilot.com/review/indianvisa.online?page=2",
+      "date": "2025-10-18",
+      "rating": 1,
+      "title": "Worst visa application process",
+      "text": "Worst visa application process and website I've ever come across.\nWebsite crashes all the time, and doesn't give option to go back a step to make changes.\nYou have to go all the way to the end then click on \"modify\" but it crashes many times before you could go to the end.\nIt's been a frustrating and exhausting experience.",
+      "reviewer": "Tracy Yu",
+      "citation_web_id": 174,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/68f32df687e69428172d5c3b",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 36,
+      "site_type": "third_party_lookalike",
+      "domain": "indianvisa.online",
+      "warning": "NOT the official government site. Reviewer says they tried the official site.",
+      "source": "Trustpilot page 2",
+      "source_url": "https://www.trustpilot.com/review/indianvisa.online?page=2",
+      "date": "2025-09-30",
+      "rating": 1,
+      "title": "Indian Visa Application using official site",
+      "text": "I have attempted to use the official Indian Visa application website on line over 20 times now with no success.\nAs others have done too, I tried multiple browsers on various devices, and servers.",
+      "reviewer": "Susan B Smith",
+      "citation_web_id": 174,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/51df42de00006400014378e8",
+      "source_review_url": "https://www.trustpilot.com/reviews/68dbdb55a5defcecdd860d76",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 37,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "Trustpilot Portugal mirror of official domain",
+      "source_url": "https://pt.trustpilot.com/review/indianvisaonline.gov.in?page=3",
+      "date": "2023-08-03",
+      "rating": 5,
+      "title": "Official Indian Govt. eVisa portal worked next day",
+      "text": "I used the official Indian Government website and paid a total of £67 and a few pennies for a 5 year tourist eVisa. I completed my application at 19:41 on a Tuesday evening and received notification that my eVisa was granted at 15:42 the following day.",
+      "reviewer": "Ray Welsby",
+      "citation_web_id": 106,
+      "text_status": "full_available_excerpt",
+      "reviewer_profile_url": "https://www.trustpilot.com/users/58fb38f70000ff000a8fef2a",
+      "source_review_url": "https://www.trustpilot.com/reviews/64cae2a9282f3e44f9a1c160",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "blocked_verification",
+        "content_check": "exact_text_match_on_accessible_trustpilot_listing"
+      }
+    },
+    {
+      "id": 38,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/raymondopolis/status/1993378856200290392",
+      "date": "2025-11-25",
+      "rating": null,
+      "title": "Comically broken e-visa site (viral post)",
+      "text": "(1) I love India\n\n(2) Anybody who applies for an e-visa to India knows the website is always comically, profoundly, embarrassingly broken\n\nIt looks like it was written in 2003, kicks you out randomly without saving your work, won't charge your credit card until your nineteenth attempt\n\nBut this is a new one—halfway through the business visa application, it displays a list of the tallest peaks in each Indian state??\n\nCome on folks, I'm just trying to invest in your country!",
+      "reviewer": "@raymondopolis (Raymond Russell)",
+      "engagement": {
+        "likes": 7186,
+        "reposts": 748,
+        "quotes": 379,
+        "replies": 655,
+        "views": 1729592
+      },
+      "citation_post_id": 208,
+      "thread_full_text": "THREAD by @raymondopolis (Raymond Russell), 25 Nov 2025\n\nPOST 1 (https://x.com/raymondopolis/status/1993378856200290392) [7,186 likes, 1,729,592 views]:\n(1) I love India\n\n(2) Anybody who applies for an e-visa to India knows the website is always comically, profoundly, embarrassingly broken\n\nIt looks like it was written in 2003, kicks you out randomly without saving your work, won't charge your credit card until your nineteenth attempt\n\nBut this is a new one—halfway through the business visa application, it displays a list of the tallest peaks in each Indian state??\n\nCome on folks, I'm just trying to invest in your country!\n\nPOST 2 (https://x.com/raymondopolis/status/1993387795403133331) [1,643 likes, 107,270 views]:\nYou must tell us all countries you've visited in the last 10 years\n\nOr we may refuse you entry\n\nBut you can only tell us max 20 countries\n\nPOST 3 (https://x.com/raymondopolis/status/1993389014846771243) [1,043 likes, 100,749 views]:\nHere is a list of payment options, but they don't really work that well for foreigners\n\nPOST 4 (https://x.com/raymondopolis/status/1993389316471767307) [2,488 likes, 102,428 views]:\nI've always thought of the Indian e-visa website as a filtering test: if you can survive it, you'll be fine in India\n",
+      "thread_posts": [
+        {
+          "post_id": "1993378856200290392",
+          "text": "(1) I love India\n\n(2) Anybody who applies for an e-visa to India knows the website is always comically, profoundly, embarrassingly broken\n\nIt looks like it was written in 2003, kicks you out randomly without saving your work, won't charge your credit card until your nineteenth attempt\n\nBut this is a new one—halfway through the business visa application, it displays a list of the tallest peaks in each Indian state??\n\nCome on folks, I'm just trying to invest in your country!",
+          "likes": 7186,
+          "views": 1729592
+        },
+        {
+          "post_id": "1993387795403133331",
+          "text": "You must tell us all countries you've visited in the last 10 years\n\nOr we may refuse you entry\n\nBut you can only tell us max 20 countries",
+          "likes": 1643,
+          "views": 107270
+        },
+        {
+          "post_id": "1993389014846771243",
+          "text": "Here is a list of payment options, but they don't really work that well for foreigners",
+          "likes": 1043,
+          "views": 100749
+        },
+        {
+          "post_id": "1993389316471767307",
+          "text": "I've always thought of the Indian e-visa website as a filtering test: if you can survive it, you'll be fine in India",
+          "likes": 2488,
+          "views": 102428
+        }
+      ],
+      "text_status": "full_post_plus_thread",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 39,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/raymondopolis/status/1993389316471767307",
+      "date": "2025-11-25",
+      "rating": null,
+      "title": "Filtering test",
+      "text": "I've always thought of the Indian e-visa website as a filtering test: if you can survive it, you'll be fine in India",
+      "reviewer": "@raymondopolis (Raymond Russell)",
+      "engagement": {
+        "likes": 2488,
+        "reposts": 100,
+        "quotes": 19,
+        "replies": 55,
+        "views": 102428
+      },
+      "citation_post_id": 209,
+      "thread_full_text": "Follow-up in the same Raymond Russell thread. See record id 38 for the full 4-post thread text.",
+      "text_status": "full_post_plus_thread",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 41,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/TheEconomist/status/2071373108213174531",
+      "date": "2026-06-28",
+      "rating": null,
+      "title": "Economist: grab paracetamol before applying",
+      "text": "Before you read this article, grab a glass of water and a paracetamol. Walk over to your laptop—the supercomputer in your hand is not up to the task—and see if you can figure out how to apply online for an Indian visa. We’ll wait\n\nhttps://www.economist.com/asia/2026/06/28/why-cant-indias-government-build-a-decent-website",
+      "reviewer": "@TheEconomist",
+      "engagement": {
+        "likes": 2886,
+        "reposts": 437,
+        "quotes": 194,
+        "replies": 196,
+        "views": 1512306
+      },
+      "citation_post_id": 190,
+      "thread_full_text": "POST by @TheEconomist, 28 Jun 2026 (https://x.com/TheEconomist/status/2071373108213174531) [2,886 likes, 1,512,306 views]:\nBefore you read this article, grab a glass of water and a paracetamol. Walk over to your laptop—the supercomputer in your hand is not up to the task—and see if you can figure out how to apply online for an Indian visa. We’ll wait\nhttps://www.economist.com/asia/2026/06/28/why-cant-indias-government-build-a-decent-website\n\nREPLY by @roviojha:\nThe author deserves a Pulitzer for this masterpiece. Using government websites is literally a pain in the ass. Next time, please do a story on Indian government offices, 95% of them seem designed to push Indians toward suicide just to reduce the population.\n\nREPLY by @ProtestingHuman:\nThe only online portal in India which works flawlessly 24x7 for obvious reasons\n\nREPLY by @SanjayDani, 29 Jun 2026 [83 likes, 15,304 views]:\nUsed it two weeks ago.\n\n(Airlines have stopped honoring valid PIO cards despite the PM’s assurance they’d be forever — and some of us don’t want dual citizenship for legal reasons, even if they claim it’s in name only. Story for another time.)\n\nFour tries.\n\n•Everything you type — and there’s a ton of it — randomly disappears.\n•Cryptic red errors flag the wrong fields.\n•It trips you on whether you were born in Pakistan.\n•If I wasn’t a web hosting professional since the mid-90s I wouldn’t have cracked it in one sitting. This was designed by the dumbest primates to ever walk upright. Same degenerate soya-chunk brains you see on X daily. Not isolated.\n•SBI payment is a masterclass in insularity. The rest of the world doesn’t use your in-country jugaad. No thank you.\n•PayPal selection gets silently ignored, forcing you into SBI.\n•If it wasn’t my 90-year-old mother waiting for me, I’d have turned back from Europe.\n\nThe designers, middlemen, and babus overseeing this website deserve physical torture. I’d plead guilty and sleep fine.\n\nMay you sadistic dumbasses burn in hell.\n",
+      "text_status": "full_post_plus_thread",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 42,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/indiaemerges/status/2071517826704138577",
+      "date": "2026-06-29",
+      "rating": null,
+      "title": "Not just e-visa; process is broken",
+      "text": "It's not just the evisa website, several govt websites are clunky and feel like they are from 20 years ago. At the same time, MoSPI for example, has built a more than decent website. So it is possible. Just the process is broken.",
+      "reviewer": "@indiaemerges",
+      "engagement": {
+        "likes": 96,
+        "reposts": 10,
+        "views": 4607
+      },
+      "citation_post_id": 190,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 43,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/zombiespirits/status/2038349168284966922",
+      "date": "2026-03-29",
+      "rating": null,
+      "title": "Website keeps crashing; missing option for former citizen",
+      "text": "applying for evisa to india is such a pain, the website keeps crashing over and over; if it’s my first application but I’ve been to india as citizen the option doesn’t have a value ; extremely poor exp",
+      "reviewer": "@zombiespirits",
+      "engagement": {
+        "likes": 1,
+        "views": 95
+      },
+      "citation_post_id": 191,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 44,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/eshpvt/status/2025981030549934408",
+      "date": "2026-02-23",
+      "rating": null,
+      "title": "Friends cannot apply for wedding visit",
+      "text": "i have friends trying to apply for an indian e-visa to attend my wedding & the website is so broken that they’re simply unable to. illogical errors on every page\n\nthis is the first touchpoint many have with this country. a person wishes to visit india for the first time and is greeted with subpar technology by a country that is supposed to boast excellent technical prowess.\n\nsimply embarrassing.\n\n@DrSJaishankar @MEAIndia",
+      "reviewer": "@eshpvt",
+      "engagement": {
+        "likes": 3,
+        "views": 317
+      },
+      "citation_post_id": 192,
+      "thread_full_text": "POST by @eshpvt, 23 Feb 2026 (https://x.com/eshpvt/status/2025981030549934408):\ni have friends trying to apply for an indian e-visa to attend my wedding & the website is so broken that they’re simply unable to. illogical errors on every page\n\nthis is the first touchpoint many have with this country. a person wishes to visit india for the first time and is greeted with subpar technology by a country that is supposed to boast excellent technical prowess.\n\nsimply embarrassing.\n\n@DrSJaishankar @MEAIndia\n\nREPLY by @NickKedrov, 24 Feb 2026:\nI had a similar issue applying for the Greece digital nomad visa After my friend called them, they said it would be fixed the next day.\n\nguess what?\n\nthe next day, nothing had changed lol\n\nI feel like this might be a common issue\n",
+      "text_status": "full_post_plus_thread",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 45,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/SanUvacha/status/2024109585255317561",
+      "date": "2026-02-18",
+      "rating": null,
+      "title": "Fix the e-visa portal",
+      "text": "The Indian visa system is broken, from the e-visa application website to tracking criminals and anti-India foreigners seeking to enter India.\n\nIndia should learn from the USA: if someone expresses hate toward your country, deny them a visa and deport them if they are already in. If someone overstays or enters illegally, arrest and deport them.\n\nAnd fix the e-visa portal, for God’s sake—it is excruciatingly painful to use. @MEAIndia @DrSJaishankar",
+      "reviewer": "@SanUvacha",
+      "engagement": {
+        "likes": 235,
+        "reposts": 87,
+        "views": 4500
+      },
+      "citation_post_id": 193,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 46,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/cryptoady/status/2013155873430909161",
+      "date": "2026-01-19",
+      "rating": null,
+      "title": "IT country, crashing e-visa site",
+      "text": "India is known for IT but Indian E-Visa gov website is such an embarrassment. Few of my friends are trying to apply for E-Visa and but website just keeps on Crashing all the time.",
+      "reviewer": "@cryptoady",
+      "engagement": {
+        "likes": 46,
+        "reposts": 2,
+        "views": 3150
+      },
+      "citation_post_id": 194,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 47,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/singhsonu63/status/2005103765100392952",
+      "date": "2025-12-28",
+      "rating": null,
+      "title": "4 hours and keep crashing",
+      "text": "please fix ur website for e visa . if any one wants to visit india and applying for evisa and website keep crashing. how can u expect more vistors to india ? takes almost 4 hours to fill visa and keep crashing",
+      "reviewer": "@singhsonu63",
+      "engagement": {
+        "likes": 0,
+        "views": 43
+      },
+      "citation_post_id": 195,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 48,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/Gurwind44001219/status/2002215294580695397",
+      "date": "2025-12-20",
+      "rating": null,
+      "title": "Crashing for five days",
+      "text": "i am trying to apply for e- visa from last five days, ever-time website is crashing. Please look into this matter as soon as possible.",
+      "reviewer": "@Gurwind44001219",
+      "engagement": {
+        "likes": 0,
+        "views": 8
+      },
+      "citation_post_id": 196,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 49,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/Afinetheorem/status/1999314370074235359",
+      "date": "2025-12-12",
+      "rating": null,
+      "title": "Barely better than half-broken Geocities",
+      "text": "Surprised how little many govts care about common websites: highly visible for citizens, investors, foreigners. India, great software devs & technical schools, has an e-visa site that's barely better than a half-broken Geocities. Compare to, e.g., Liberia or Papua New Guinea. 1/2",
+      "reviewer": "@Afinetheorem (Kevin A. Bryan)",
+      "engagement": {
+        "likes": 9,
+        "views": 1647
+      },
+      "citation_post_id": 197,
+      "thread_full_text": "THREAD by @Afinetheorem (Kevin A. Bryan), 12 Dec 2025\n\nPOST 1 (https://x.com/Afinetheorem/status/1999314370074235359):\nSurprised how little many govts care about common websites: highly visible for citizens, investors, foreigners. India, great software devs & technical schools, has an e-visa site that's barely better than a half-broken Geocities. Compare to, e.g., Liberia or Papua New Guinea. 1/2\n\nPOST 2:\nI asked Claude to spent two minutes fixing this up. This really isn't hard! (As for the backend, it's also not hard. I still wish we had the centralized US govt website I mocked up for a talk once - Click \"Jane Doe\" and File Taxes to see what could be... https://kevinbryanecon.com/usgovdemo.html)\n\nPOST 3:\n(PS: yes, of course, as anyone who has read @pahlkadot will know, the actual US site is just as bad. Seriously, everything about this, from the list of \"what browsers you can use\" to the pixelated logo, to the odd left-justify, is a total joke. @jgebbia - get on this!)\n\nPOST 4:\nWhy would you write stupidity like this? Oh really, you won't accept my application if I don't physically click the mouse? HOW WOULD ANYONE KNOW. Working in government and knowing someone who was your boss wrote something this stupid must be mind-numbing.\n\nREPLY by @cliffjpereira:\n16 attempts in 3 days and I cannot get beyond the first page of the Indian e-visa. Absolutely rubbish.\n",
+      "text_status": "full_post_plus_thread",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 50,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/IndiaAbroad_/status/1994169412601942273",
+      "date": "2025-11-27",
+      "rating": null,
+      "title": "US investor flags glitch-ridden portal",
+      "text": "An American investor called out India’s e-visa portal, describing the application system as glitch-ridden and prone to crashing mid-process.",
+      "reviewer": "@IndiaAbroad_",
+      "engagement": {
+        "likes": 0,
+        "views": 182
+      },
+      "citation_post_id": 198,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 51,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/deviprsd/status/1977955219083571227",
+      "date": "2025-10-14",
+      "rating": null,
+      "title": "Website won’t load for days",
+      "text": "can you please provide adequate services to everyone? It is highly disappointing trying to walk my friends to do their visa on https://indianvisaonline.gov.in/ but the website won’t load and has been broken for days.",
+      "reviewer": "@deviprsd",
+      "engagement": {
+        "likes": 0,
+        "views": 19
+      },
+      "citation_post_id": 181,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 52,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/sathyaazhagar/status/1939970107389673507",
+      "date": "2025-07-01",
+      "rating": null,
+      "title": "Save and continue does not save",
+      "text": "Do you know why [indianvisaonline] is broken? I’m trying for the past 2 days to apply for a visa. When i click “ save and continue “ it refreshes the page without saving it. Sometimes i get this server not found or 404 error.",
+      "reviewer": "@sathyaazhagar",
+      "engagement": {
+        "likes": 0,
+        "views": 23
+      },
+      "citation_post_id": 182,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 53,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/avalongonly/status/2031260711549337785",
+      "date": "2026-03-10",
+      "rating": null,
+      "title": "Worst homepage ever encountered",
+      "text": "Indian e-visa website - by far the worst homepage I have ever encountered. You suck.",
+      "reviewer": "@avalongonly",
+      "engagement": {
+        "likes": 0,
+        "views": 85
+      },
+      "citation_post_id": 212,
+      "text_status": "original_was_short",
+      "text_note": "The source post/review itself was only one or two sentences. Nothing was cut from a longer body.",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 54,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/6EQUJ5_72/status/2020512833339814293",
+      "date": "2026-02-08",
+      "rating": null,
+      "title": "Landing page keeps crashing after 20+ attempts",
+      "text": "Why is Indian e-visa website is so terrible?Giving my family and friends a nightmare as they have attempted to book 20+ times and the landing page keeps crashing! Please look into this as this has been going on for months!",
+      "reviewer": "@6EQUJ5_72",
+      "engagement": {
+        "likes": 0,
+        "views": 64
+      },
+      "citation_post_id": 214,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 55,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/PradeepSane1707/status/2016862283159523645",
+      "date": "2026-01-29",
+      "rating": null,
+      "title": "Payment crashing from Paris",
+      "text": "In Paris evisa web site keeps crashing and our customer not been able to process the payment for his Indian evisa application. He called the Indian embassy in Paris for help, they said that visa applications were not their problem.",
+      "reviewer": "@PradeepSane1707",
+      "engagement": {
+        "likes": 1,
+        "views": 260
+      },
+      "citation_post_id": 215,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 56,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/ruparel_amit/status/2008458175281066181",
+      "date": "2026-01-06",
+      "rating": null,
+      "title": "Constantly broken; bad look",
+      "text": "It's so disappointing to see the Indian e-visa website constantly broken. A couple of undergrad students could do better than this, this is such a bad look! A quick Twitter search about this and you'll see numerous posts about this. Please prioritize an upgrade!",
+      "reviewer": "@ruparel_amit",
+      "engagement": {
+        "likes": 9,
+        "reposts": 5,
+        "views": 4710
+      },
+      "citation_post_id": 217,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 57,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/raajuprince/status/1997171141186920936",
+      "date": "2025-12-06",
+      "rating": null,
+      "title": "Waited 8 days, cancelled flights",
+      "text": "Indian E-Visa system broken. Had to cancel flights after waiting for 8 days for child's E-Visa. No response and help from support team. It costed me 2L INR.",
+      "reviewer": "@raajuprince",
+      "engagement": {
+        "likes": 2,
+        "views": 110
+      },
+      "citation_post_id": 218,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 58,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/BadriSridharan/status/2091891773417414725",
+      "date": "2026-08-24",
+      "rating": null,
+      "title": "Garbage and flaky",
+      "text": "The e-visa website is garbage. All they should need is to scan your passport and issue the visa. Instead they want to know a bunch of unnecessary details and the website is flaky.",
+      "reviewer": "@BadriSridharan",
+      "engagement": {
+        "likes": 0,
+        "views": 109
+      },
+      "citation_post_id": 203,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 59,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "VisaHQ news summary of social + TOI",
+      "source_url": "https://www.visahq.com/news/2026-02-01/in/persistent-glitches-on-indias-e-visa-portal-frustrate-applicants-spark-work-arounds/",
+      "date": "2026-02-01",
+      "rating": null,
+      "title": "Persistent glitches; BOI cites traffic surge",
+      "text": "What should be a five-minute online form is taking hours—or days. Flood of complaints about pages freezing, sudden log-outs and repeated CAPTCHA failures on indianvisaonline.gov.in. Some applicants report pressing refresh hundreds of times. VisaHQ said Bureau of Immigration attributed hiccups to a surge in traffic after programme widening and peak travel, with a server upgrade scheduled mid-February, and advised keeping image files under 200 kB.",
+      "reviewer": "VisaHQ citing Times of India / social media / BOI",
+      "citation_web_id": 223,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "not_found",
+        "content_check": "existing_text_preserved_source_not_verifiable"
+      }
+    },
+    {
+      "id": 60,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/SanjayDani/status/2071499045135438105",
+      "date": "2026-06-29",
+      "rating": null,
+      "title": "Four tries: text disappears, wrong-field errors, SBI payment",
+      "text": "Used it two weeks ago.\n\n(Airlines have stopped honoring valid PIO cards despite the PM’s assurance they’d be forever — and some of us don’t want dual citizenship for legal reasons, even if they claim it’s in name only. Story for another time.)\n\nFour tries.\n\n•Everything you type — and there’s a ton of it — randomly disappears.\n•Cryptic red errors flag the wrong fields.\n•It trips you on whether you were born in Pakistan.\n•If I wasn’t a web hosting professional since the mid-90s I wouldn’t have cracked it in one sitting. This was designed by the dumbest primates to ever walk upright. Same degenerate soya-chunk brains you see on X daily. Not isolated.\n•SBI payment is a masterclass in insularity. The rest of the world doesn’t use your in-country jugaad. No thank you.\n•PayPal selection gets silently ignored, forcing you into SBI.\n•If it wasn’t my 90-year-old mother waiting for me, I’d have turned back from Europe.\n\nThe designers, middlemen, and babus overseeing this website deserve physical torture. I’d plead guilty and sleep fine.\n\nMay you sadistic dumbasses burn in hell.",
+      "reviewer": "@SanjayDani",
+      "engagement": {
+        "likes": 83,
+        "reposts": 13,
+        "quotes": 2,
+        "replies": 6,
+        "views": 15304
+      },
+      "citation_post_id": 230,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    },
+    {
+      "id": 61,
+      "site_type": "official",
+      "domain": "indianvisaonline.gov.in",
+      "source": "X",
+      "source_url": "https://x.com/cliffjpereira/status/1999359535669268532",
+      "date": "2025-12-12",
+      "rating": null,
+      "title": "16 attempts in 3 days, cannot get past page 1",
+      "text": "16 attempts in 3 days and I cannot get beyond the first page of the Indian e-visa. Absolutely rubbish.",
+      "reviewer": "@cliffjpereira",
+      "engagement": {
+        "likes": 0,
+        "views": 42
+      },
+      "citation_post_id": 227,
+      "text_status": "full_available_excerpt",
+      "date_precision": "day",
+      "verification": {
+        "checked_on": "2026-08-27",
+        "method": "interactive_browser",
+        "page_access": "accessible",
+        "content_check": "visible_post_match"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "citation_web_id": 95,
+      "title": "India’s e visa portal tests travellers before their journey has even begun",
+      "publisher": "Business Today",
+      "url": "https://www.businesstoday.in/nri/visa/story/indias-e-visa-portal-tests-travellers-before-their-journey-has-even-begun-539733-2026-06-29",
+      "date": "2026-06-29"
+    },
+    {
+      "citation_web_id": 96,
+      "title": "Indianvisaonline Reviews",
+      "publisher": "Trustpilot",
+      "url": "https://www.trustpilot.com/review/indianvisaonline.gov.in"
+    },
+    {
+      "citation_web_id": 97,
+      "title": "Woman shared her e-visa woes",
+      "publisher": "Times of India",
+      "url": "https://timesofindia.indiatimes.com/life-style/travel/things-to-do/im-now-on-my-familys-details-but-when-i-click-woman-shared-her-e-visa-woes-and-the-only-thing-that-solved-her-problem-was/articleshow/127837881.cms",
+      "date": "2026-02-02"
+    },
+    {
+      "citation_web_id": 98,
+      "title": "Indianvisaonline Reviews UK",
+      "publisher": "Trustpilot UK",
+      "url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in"
+    },
+    {
+      "citation_web_id": 100,
+      "title": "Indianvisaonline Reviews UK page 3",
+      "publisher": "Trustpilot UK",
+      "url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in?page=3"
+    },
+    {
+      "citation_web_id": 104,
+      "title": "Omdömen om Indianvisaonline",
+      "publisher": "Trustpilot Sweden",
+      "url": "https://se.trustpilot.com/review/indianvisaonline.gov.in"
+    },
+    {
+      "citation_web_id": 105,
+      "title": "EVisa Nightmare - India Forum",
+      "publisher": "Tripadvisor",
+      "url": "https://www.tripadvisor.com/ShowTopic-g293860-i511-k15461369-EVisa_Nightmare-India.html",
+      "date": "2025-11-22"
+    },
+    {
+      "citation_web_id": 106,
+      "title": "Opiniões sobre Indianvisaonline",
+      "publisher": "Trustpilot Portugal",
+      "url": "https://pt.trustpilot.com/review/indianvisaonline.gov.in?page=3"
+    },
+    {
+      "citation_web_id": 169,
+      "title": "Indianvisaonline Reviews",
+      "publisher": "Trustpilot",
+      "url": "http://trustpilot.com/review/indianvisaonline.gov.in"
+    },
+    {
+      "citation_web_id": 170,
+      "title": "Indianvisaonline Reviews IE",
+      "publisher": "Trustpilot Ireland",
+      "url": "https://ie.trustpilot.com/review/indianvisaonline.gov.in"
+    },
+    {
+      "citation_web_id": 173,
+      "title": "US investor slams 'comically broken' e-visa application process",
+      "publisher": "Times of India",
+      "url": "https://timesofindia.indiatimes.com/world/us/us-investor-slams-comically-broken-e-visa-application-process-in-india-if-you-can-survive-it-/articleshow/125613765.cms",
+      "date": "2025-11-28"
+    },
+    {
+      "citation_web_id": 174,
+      "title": "India e Visa Application Reviews page 2",
+      "publisher": "Trustpilot",
+      "url": "https://www.trustpilot.com/review/indianvisa.online?page=2"
+    },
+    {
+      "citation_post_id": 160,
+      "title": "X post on Indian e-visa site",
+      "publisher": "X",
+      "url": "https://x.com/rohanroy/status/2071821307445211418",
+      "date": "2026-06-30"
+    },
+    {
+      "citation_post_id": 208,
+      "title": "Raymond Russell viral e-visa rant",
+      "publisher": "X",
+      "url": "https://x.com/raymondopolis/status/1993378856200290392",
+      "date": "2025-11-25"
+    },
+    {
+      "citation_post_id": 209,
+      "title": "Filtering test follow-up",
+      "publisher": "X",
+      "url": "https://x.com/raymondopolis/status/1993389316471767307",
+      "date": "2025-11-25"
+    },
+    {
+      "citation_post_id": 190,
+      "title": "Economist visa article promo + comment",
+      "publisher": "X",
+      "url": "https://x.com/TheEconomist/status/2071373108213174531",
+      "date": "2026-06-28"
+    },
+    {
+      "citation_post_id": 192,
+      "title": "Wedding guests cannot apply",
+      "publisher": "X",
+      "url": "https://x.com/eshpvt/status/2025981030549934408",
+      "date": "2026-02-23"
+    },
+    {
+      "citation_post_id": 194,
+      "title": "IT country embarrassment",
+      "publisher": "X",
+      "url": "https://x.com/cryptoady/status/2013155873430909161",
+      "date": "2026-01-19"
+    },
+    {
+      "citation_post_id": 197,
+      "title": "Half-broken Geocities comparison",
+      "publisher": "X",
+      "url": "https://x.com/Afinetheorem/status/1999314370074235359",
+      "date": "2025-12-12"
+    },
+    {
+      "citation_web_id": 223,
+      "title": "Persistent glitches on India’s e-Visa portal",
+      "publisher": "VisaHQ",
+      "url": "https://www.visahq.com/news/2026-02-01/in/persistent-glitches-on-indias-e-visa-portal-frustrate-applicants-spark-work-arounds/",
+      "date": "2026-02-01"
+    }
+  ],
+  "source_audit": [
+    {
+      "url": "http://trustpilot.com/review/indianvisaonline.gov.in",
+      "publisher": "Trustpilot",
+      "record_ids": [
+        5,
+        6
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Indianvisaonline Reviews",
+      "citation_web_id": 169
+    },
+    {
+      "url": "https://ie.trustpilot.com/review/indianvisaonline.gov.in",
+      "publisher": "Trustpilot IE",
+      "record_ids": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "access_status": "blocked_verification",
+      "checked_on": "2026-08-27",
+      "title": "Indianvisaonline Reviews IE",
+      "citation_web_id": 170,
+      "note": "Regional Trustpilot URL showed connection verification; matching review metadata was verified on the accessible global Trustpilot listing."
+    },
+    {
+      "url": "https://pt.trustpilot.com/review/indianvisaonline.gov.in?page=3",
+      "publisher": "Trustpilot Portugal mirror of official domain",
+      "record_ids": [
+        37
+      ],
+      "access_status": "blocked_verification",
+      "checked_on": "2026-08-27",
+      "title": "Opiniões sobre Indianvisaonline",
+      "citation_web_id": 106,
+      "note": "Regional Trustpilot URL showed connection verification; matching review metadata was verified on the accessible global Trustpilot listing."
+    },
+    {
+      "url": "https://se.trustpilot.com/review/indianvisaonline.gov.in",
+      "publisher": "Trustpilot Sweden",
+      "record_ids": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "access_status": "blocked_verification",
+      "checked_on": "2026-08-27",
+      "title": "Omdömen om Indianvisaonline",
+      "citation_web_id": 104,
+      "note": "Regional Trustpilot URL showed connection verification; matching review metadata was verified on the accessible global Trustpilot listing."
+    },
+    {
+      "url": "https://timesofindia.indiatimes.com/life-style/travel/things-to-do/im-now-on-my-familys-details-but-when-i-click-woman-shared-her-e-visa-woes-and-the-only-thing-that-solved-her-problem-was/articleshow/127837881.cms",
+      "publisher": "Times of India / social post quoted in article",
+      "record_ids": [
+        20,
+        21,
+        22
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Woman shared her e-visa woes",
+      "source_date": "2026-02-02",
+      "citation_web_id": 97
+    },
+    {
+      "url": "https://timesofindia.indiatimes.com/world/us/us-investor-slams-comically-broken-e-visa-application-process-in-india-if-you-can-survive-it-/articleshow/125613765.cms",
+      "publisher": "Times of India",
+      "record_ids": [
+        23
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "US investor slams 'comically broken' e-visa application process",
+      "source_date": "2025-11-28",
+      "citation_web_id": 173
+    },
+    {
+      "url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in",
+      "publisher": "Trustpilot UK",
+      "record_ids": [
+        28,
+        29,
+        30
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Indianvisaonline Reviews UK",
+      "citation_web_id": 98
+    },
+    {
+      "url": "https://uk.trustpilot.com/review/indianvisaonline.gov.in?page=3",
+      "publisher": "Trustpilot UK page 3",
+      "record_ids": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "access_status": "blocked_verification",
+      "checked_on": "2026-08-27",
+      "title": "Indianvisaonline Reviews UK page 3",
+      "citation_web_id": 100,
+      "note": "Regional Trustpilot URL showed connection verification; matching review metadata was verified on the accessible global Trustpilot listing."
+    },
+    {
+      "url": "https://www.businesstoday.in/nri/visa/story/indias-e-visa-portal-tests-travellers-before-their-journey-has-even-begun-539733-2026-06-29",
+      "publisher": "X / quoted in Business Today",
+      "record_ids": [
+        26
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "India’s e visa portal tests travellers before their journey has even begun",
+      "source_date": "2026-06-29",
+      "citation_web_id": 95
+    },
+    {
+      "url": "https://www.tripadvisor.com/ShowTopic-g293860-i511-k15461369-EVisa_Nightmare-India.html",
+      "publisher": "Tripadvisor India forum",
+      "record_ids": [
+        24,
+        25
+      ],
+      "access_status": "empty_or_minimal_response",
+      "checked_on": "2026-08-27",
+      "title": "EVisa Nightmare - India Forum",
+      "source_date": "2025-11-22",
+      "citation_web_id": 105,
+      "note": "The browser returned no usable forum content; the existing captured text is preserved but was not independently re-verified."
+    },
+    {
+      "url": "https://www.trustpilot.com/review/indianvisa.online",
+      "publisher": "Trustpilot",
+      "record_ids": [
+        31,
+        32,
+        33
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://www.trustpilot.com/review/indianvisa.online?page=2",
+      "publisher": "Trustpilot page 2",
+      "record_ids": [
+        34,
+        35,
+        36
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "India e Visa Application Reviews page 2",
+      "citation_web_id": 174
+    },
+    {
+      "url": "https://www.trustpilot.com/review/indianvisaonline.gov.in",
+      "publisher": "Trustpilot",
+      "record_ids": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Indianvisaonline Reviews",
+      "citation_web_id": 96
+    },
+    {
+      "url": "https://www.visahq.com/news/2026-02-01/in/persistent-glitches-on-indias-e-visa-portal-frustrate-applicants-spark-work-arounds/",
+      "publisher": "VisaHQ news summary of social + TOI",
+      "record_ids": [
+        59
+      ],
+      "access_status": "not_found",
+      "checked_on": "2026-08-27",
+      "title": "Persistent glitches on India’s e-Visa portal",
+      "source_date": "2026-02-01",
+      "citation_web_id": 223,
+      "note": "The linked page currently renders a not-found response; the existing captured text is preserved for provenance."
+    },
+    {
+      "url": "https://x.com/6EQUJ5_72/status/2020512833339814293",
+      "publisher": "X",
+      "record_ids": [
+        54
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/Afinetheorem/status/1999314370074235359",
+      "publisher": "X",
+      "record_ids": [
+        49
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Half-broken Geocities comparison",
+      "source_date": "2025-12-12",
+      "citation_post_id": 197
+    },
+    {
+      "url": "https://x.com/avalongonly/status/2031260711549337785",
+      "publisher": "X",
+      "record_ids": [
+        53
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/BadriSridharan/status/2091891773417414725",
+      "publisher": "X",
+      "record_ids": [
+        58
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/cliffjpereira/status/1999359535669268532",
+      "publisher": "X",
+      "record_ids": [
+        61
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/cryptoady/status/2013155873430909161",
+      "publisher": "X",
+      "record_ids": [
+        46
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "IT country embarrassment",
+      "source_date": "2026-01-19",
+      "citation_post_id": 194
+    },
+    {
+      "url": "https://x.com/deviprsd/status/1977955219083571227",
+      "publisher": "X",
+      "record_ids": [
+        51
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/eshpvt/status/2025981030549934408",
+      "publisher": "X",
+      "record_ids": [
+        44
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Wedding guests cannot apply",
+      "source_date": "2026-02-23",
+      "citation_post_id": 192
+    },
+    {
+      "url": "https://x.com/Gurwind44001219/status/2002215294580695397",
+      "publisher": "X",
+      "record_ids": [
+        48
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/IndiaAbroad_/status/1994169412601942273",
+      "publisher": "X",
+      "record_ids": [
+        50
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/indiaemerges/status/2071517826704138577",
+      "publisher": "X",
+      "record_ids": [
+        42
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/PradeepSane1707/status/2016862283159523645",
+      "publisher": "X",
+      "record_ids": [
+        55
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/raajuprince/status/1997171141186920936",
+      "publisher": "X",
+      "record_ids": [
+        57
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/raymondopolis/status/1993378856200290392",
+      "publisher": "X",
+      "record_ids": [
+        38
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Raymond Russell viral e-visa rant",
+      "source_date": "2025-11-25",
+      "citation_post_id": 208
+    },
+    {
+      "url": "https://x.com/raymondopolis/status/1993389316471767307",
+      "publisher": "X",
+      "record_ids": [
+        39
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Filtering test follow-up",
+      "source_date": "2025-11-25",
+      "citation_post_id": 209
+    },
+    {
+      "url": "https://x.com/rohanroy/status/2071821307445211418",
+      "publisher": "X",
+      "record_ids": [
+        27
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "X post on Indian e-visa site",
+      "source_date": "2026-06-30",
+      "citation_post_id": 160
+    },
+    {
+      "url": "https://x.com/ruparel_amit/status/2008458175281066181",
+      "publisher": "X",
+      "record_ids": [
+        56
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/SanjayDani/status/2071499045135438105",
+      "publisher": "X",
+      "record_ids": [
+        60
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/SanUvacha/status/2024109585255317561",
+      "publisher": "X",
+      "record_ids": [
+        45
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/sathyaazhagar/status/1939970107389673507",
+      "publisher": "X",
+      "record_ids": [
+        52
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/singhsonu63/status/2005103765100392952",
+      "publisher": "X",
+      "record_ids": [
+        47
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    },
+    {
+      "url": "https://x.com/TheEconomist/status/2071373108213174531",
+      "publisher": "X",
+      "record_ids": [
+        41
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27",
+      "title": "Economist visa article promo + comment",
+      "source_date": "2026-06-28",
+      "citation_post_id": 190
+    },
+    {
+      "url": "https://x.com/zombiespirits/status/2038349168284966922",
+      "publisher": "X",
+      "record_ids": [
+        43
+      ],
+      "access_status": "accessible",
+      "checked_on": "2026-08-27"
+    }
+  ]
+}
