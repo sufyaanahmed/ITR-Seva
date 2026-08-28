@@ -1,326 +1,581 @@
-import React, { useState } from 'react';
-import { useStore } from '../store';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ContextHelp from '../components/ContextHelp';
-import SmartDocuments from '../components/SmartDocuments';
+import SmartDocuments, { getRequiredDocuments } from '../components/SmartDocuments';
+import { EVISA_CATEGORIES } from '../data/visaEligibilityRules';
+import { getEvisaWizardGate } from '../domain/visaEligibility';
+import { useStore } from '../store';
 
-// Generate dynamic steps based on the application type (evisa, afghan, voa, regular)
-const getDynamicSteps = (appType) => {
-  const isVoa = appType === 'voa';
-  const isAfghan = appType === 'afghan'; // Only Afghan nationals get the Tazkira field
+const field = (name, label, type = 'text', options = null, extra = {}) => ({ name, label, type, options, required: true, ...extra });
+const yesNo = ['yes', 'no'];
+const passportTypes = ['ordinary', 'diplomatic', 'official', 'service', 'other'];
+const voaAirports = ['Bangalore', 'Chennai', 'Delhi', 'Hyderabad', 'Kolkata', 'Mumbai'];
 
-  const baseSteps = [
-    { id: 'applicant', title: 'Personal details', fields: [
-      ['country_of_application', 'Country where you are applying', 'text', true, null, 'The country where you currently reside and are applying from.'], 
-      ['given_name', 'Given name', 'text', true], 
-      ['surname', 'Family name / surname', 'text', true, null, 'Enter your name exactly as it appears in the Machine Readable Zone of your passport.'], 
-      ['date_of_birth', 'Date of birth', 'date', true], 
-      ...(isAfghan ? [['tazkira_number', 'National ID (Tazkira) Number', 'text', true]] : []),
-      ['marital_status', 'Marital status', 'select', true, ['single', 'married', 'other']]
-    ] },
-    { id: 'passport', title: 'Passport details', fields: [
-      ['passport_number', 'Passport number', 'text', true, null, 'Usually a 9-character alphanumeric string on the top right of your passport data page.'], 
-      ['date_of_issue', 'Date of issue', 'date', true], 
-      ['date_of_expiry', 'Date of expiry', 'date', true]
-    ] }
-  ];
+const securityFields = [
+  field('security_arrested', 'Have you ever been arrested, prosecuted, or convicted by a court?', 'select', yesNo),
+  field('security_refused', 'Have you ever been refused entry, deported, or ordered to leave any country?', 'select', yesNo),
+  field('security_offences', 'Have you been involved in trafficking, drugs, child abuse, or economic/financial offences?', 'select', yesNo),
+  field('security_national_security', 'Have you been involved in cybercrime, terrorism, sabotage, espionage, genocide, political killing, or violence?', 'select', yesNo),
+  field('security_advocacy', 'Have you advocated or supported terrorist violence?', 'select', yesNo),
+  field('security_asylum', 'Have you sought asylum in any country?', 'select', yesNo),
+  field('security_details', 'Details for every “Yes” answer', 'textarea', null, {
+    required: (data) => Object.entries(data).some(([key, value]) => key.startsWith('security_') && key !== 'security_details' && value === 'yes'),
+    visible: (data) => Object.entries(data).some(([key, value]) => key.startsWith('security_') && key !== 'security_details' && value === 'yes'),
+  }),
+];
 
-  // If VoA, we dramatically cut down the required steps
-  if (isVoa) {
-    baseSteps.push(
-      { id: 'travel', title: 'Arrival Details', fields: [
-        ['expected_arrival_date', 'Expected arrival date', 'date', true], 
-        ['port_of_arrival', 'Designated Port of arrival', 'select', true, ['Bangalore', 'Chennai', 'Delhi', 'Hyderabad', 'Kolkata', 'Mumbai'], 'You must arrive at one of the 6 designated airports for Visa on Arrival.'], 
-        ['address_in_india', 'Hotel / Address in India', 'text', true]
-      ] },
-      { id: 'review', title: 'Generate VoA Form' }
-    );
-    return baseSteps; // Stop here, no docs needed for VoA online
+const identityFields = [
+  field('surname', 'Surname / family name exactly as in passport'),
+  field('given_name', 'Given name(s) exactly as in passport'),
+  field('previous_name_used', 'Have you used another name?', 'select', yesNo),
+  field('previous_name', 'Previous name(s)', 'text', null, { visible: (data) => data.previous_name_used === 'yes' }),
+  field('gender', 'Gender', 'select', ['female', 'male', 'non-binary', 'unspecified']),
+  field('date_of_birth', 'Date of birth', 'date'),
+  field('place_of_birth', 'Place of birth'),
+  field('country_of_birth', 'Country of birth'),
+  field('national_id', 'National identity number (enter NA only where the official form permits)'),
+  field('religion', 'Religion'),
+  field('visible_mark', 'Visible identification mark (or NA)'),
+  field('education', 'Educational qualification'),
+  field('nationality_acquisition', 'Nationality acquired by', 'select', ['birth', 'naturalisation']),
+];
+
+const passportFields = [
+  field('passport_number', 'Passport number'),
+  field('passport_issue_place', 'Place of issue'),
+  field('passport_issue_date', 'Date of issue', 'date'),
+  field('passport_expiry_date', 'Date of expiry', 'date'),
+  field('other_passport', 'Do you hold another passport or identity certificate?', 'select', yesNo),
+  field('other_passport_details', 'Other passport: country, number, issue place/date, nationality and status', 'textarea', null, { visible: (data) => data.other_passport === 'yes' }),
+];
+
+const addressFamilyFields = [
+  field('present_address', 'Present residential address', 'textarea'),
+  field('postal_code', 'Postal code'),
+  field('phone_abroad', 'Contact number'),
+  field('permanent_same', 'Permanent address is the same', 'select', yesNo),
+  field('permanent_address', 'Permanent address', 'textarea', null, { visible: (data) => data.permanent_same === 'no' }),
+  field('father_details', 'Father: name, current/previous nationality, place and country of birth', 'textarea'),
+  field('mother_details', 'Mother: name, current/previous nationality, place and country of birth', 'textarea'),
+  field('marital_status', 'Marital status', 'select', ['single', 'married', 'divorced', 'widowed', 'other']),
+  field('spouse_details', 'Spouse: name, current/previous nationality, place and country of birth', 'textarea', null, { visible: (data) => data.marital_status === 'married' }),
+  field('pakistan_origin', 'Were you, a parent, or grandparent born in or permanently resident in Pakistan / Pakistan-held territory?', 'select', yesNo),
+  field('pakistan_origin_details', 'Pakistan-origin details', 'textarea', null, { visible: (data) => data.pakistan_origin === 'yes' }),
+];
+
+const employmentFields = [
+  field('occupation', 'Present occupation'),
+  field('designation', 'Designation / position'),
+  field('employer_name', 'Employer or institution name'),
+  field('employer_address', 'Employer or institution address', 'textarea'),
+  field('employer_phone', 'Employer phone'),
+  field('security_service_employment', 'Have you served in military, police, or a security organisation?', 'select', yesNo),
+  field('security_service_details', 'Organisation, designation, rank, place, and service dates', 'textarea', null, { visible: (data) => data.security_service_employment === 'yes' }),
+];
+
+const historyReferenceFields = [
+  field('places_to_visit', 'Places to visit in India'),
+  field('places_to_visit_second', 'Additional places to visit', 'text', null, { required: false }),
+  field('tour_operator_used', 'Is this arranged through a hotel or tour operator?', 'select', yesNo),
+  field('tour_operator_details', 'Hotel / tour operator name, address and contact', 'textarea', null, { visible: (data) => data.tour_operator_used === 'yes' }),
+  field('intended_exit_port', 'Intended exit port'),
+  field('visited_india_before', 'Have you visited India before?', 'select', yesNo),
+  field('previous_india_details', 'Previous India address, cities, visa number/type, issue place/date', 'textarea', null, { visible: (data) => data.visited_india_before === 'yes' }),
+  field('india_refused_before', 'Have you been refused permission to visit India or extend a stay?', 'select', yesNo),
+  field('india_refusal_details', 'Refusal / extension-denial details', 'textarea', null, { visible: (data) => data.india_refused_before === 'yes' }),
+  field('countries_visited_10y', 'Countries visited in the last 10 years (or None)'),
+  field('visited_saarc', 'Visited another SAARC country in the last 3 years?', 'select', yesNo),
+  field('saarc_details', 'SAARC country, year, and number of visits', 'textarea', null, { visible: (data) => data.visited_saarc === 'yes' }),
+  field('india_reference', 'Reference in India: name, address, and phone', 'textarea'),
+  field('home_reference', 'Reference in home country: name, address, and phone', 'textarea'),
+];
+
+const afghanPurposes = {
+  business: ['business-venture-investor', 'other-business', 'sports', 'business-dependant'],
+  student: ['iccr-scholarship', 'new-structured-study', 'returning-student', 'student-dependant'],
+  medical: ['patient'],
+  'medical-attendant': ['accompanying-patient'],
+  entry: ['cultural-visit', 'minor-with-patient', 'indian-pio-oci-family', 'property-owner', 'official-dependant', 'student-guardian', 'dependent-parent-of-student', 'seaman', 'pio-without-oci-family', 'minority-community-visit'],
+  'un-diplomat': ['assigned-to-india', 'visiting-india', 'dependant-of-assigned-diplomat', 'dependant-of-visiting-diplomat'],
+};
+
+const makeEvisaSteps = () => [
+  { id: 'registration', title: 'Registration & route', description: 'This creates a local temporary demo reference. It is not a Government application ID.', fields: [
+    field('nationality', 'Passport nationality (from reviewed Finder result)', 'text', null, { readOnly: true }),
+    field('passport_type', 'Passport type', 'select', passportTypes),
+    field('arrival_port', 'Designated arrival checkpoint (reviewed reference selection needed)', 'text', null, { help: 'The official portal published inconsistent checkpoint counts during review. Verify the current live list; this demo does not assert that arbitrary text is eligible.' }),
+    field('email', 'Email address', 'email'),
+    field('confirm_email', 'Re-enter email address', 'email'),
+    field('expected_arrival_date', 'Expected arrival date', 'date'),
+    field('visa_category', 'e-Visa service / purpose (from reviewed Finder result)', 'select', EVISA_CATEGORIES, { readOnly: true }),
+    field('student_course_type', 'e-Student course type', 'select', ['general-course', 'medical-paramedical'], { visible: (data) => data.visa_category === 'student', help: 'Medical and paramedical courses can require an additional Ministry approval or NOC.' }),
+    field('instructions_ready', 'I have reviewed current official eligibility and have the required documents', 'checkbox'),
+  ] },
+  { id: 'identity', title: 'Identity', fields: [...identityFields, field('resident_two_years', 'Have you lived in the application country for at least two years?', 'select', yesNo)] },
+  { id: 'passport', title: 'Passport', fields: passportFields },
+  { id: 'family', title: 'Address & family', fields: addressFamilyFields },
+  { id: 'employment', title: 'Employment', fields: employmentFields },
+  { id: 'travel', title: 'Travel, history & references', fields: historyReferenceFields },
+  { id: 'security', title: 'Security questions', fields: securityFields },
+  { id: 'documents', title: 'Photo & documents' },
+  { id: 'review', title: 'Review & demo finality' },
+];
+
+const makeAfghanSteps = (data) => [
+  { id: 'afghan-route', title: 'Afghan category & purpose', description: 'Dedicated Afghan online visa/ETA route. The live form was unavailable during audit, so unpublished fields and file limits are not invented.', fields: [
+    field('nationality', 'Nationality', 'text', null, { readOnly: true }),
+    field('passport_type', 'Passport type', 'select', passportTypes, { help: 'Diplomatic-passport edge cases need verification; UN Diplomat is a visa category, not a passport type.' }),
+    field('visa_category', 'Afghan visa category', 'select', ['business', 'student', 'medical', 'medical-attendant', 'entry', 'un-diplomat']),
+    field('afghan_purpose', 'Official category purpose / subtype', 'select', afghanPurposes[data.visa_category] || []),
+    field('email', 'Email address', 'email'),
+  ] },
+  { id: 'identity', title: 'Applicant identity', fields: [...identityFields, field('tazkira_number', 'Tazkira number')] },
+  { id: 'passport', title: 'Passport', fields: passportFields },
+  { id: 'family', title: 'Address & family', fields: addressFamilyFields },
+  { id: 'employment', title: 'Employment / study context', fields: employmentFields },
+  { id: 'travel', title: 'Travel & references', fields: [
+    field('expected_arrival_date', 'Expected arrival date', 'date'),
+    field('places_to_visit', 'Places to visit in India'),
+    field('address_in_india', 'Address in India', 'textarea'),
+    field('india_reference', 'Reference in India: name, address and phone', 'textarea'),
+    field('home_reference', 'Reference in Afghanistan / residence country: name, address and phone', 'textarea'),
+    field('principal_applicant_id', 'Principal patient/student/business applicant reference', 'text', null, {
+      required: (values) => values.visa_category === 'medical-attendant' || ['business-dependant', 'student-dependant'].includes(values.afghan_purpose),
+      visible: (values) => values.visa_category === 'medical-attendant' || ['business-dependant', 'student-dependant'].includes(values.afghan_purpose),
+    }),
+    field('is_minor', 'Is the applicant a minor?', 'select', yesNo),
+  ] },
+  { id: 'security', title: 'Security declarations', fields: securityFields },
+  { id: 'documents', title: 'Required evidence' },
+  { id: 'review', title: 'Final review' },
+];
+
+const makeVoaSteps = () => [
+  { id: 'voa-eligibility', title: 'VoA eligibility', description: 'Visa on Arrival is limited to qualifying nationals, purposes, stays, passports, and arrival airports.', fields: [
+    field('nationality', 'Passport nationality', 'select', ['Japan', 'South Korea', 'United Arab Emirates']),
+    field('uae_previous_indian_visa', 'Have you previously obtained an Indian e-Visa or regular/paper visa?', 'select', yesNo, { visible: (data) => data.nationality === 'United Arab Emirates' }),
+    field('visa_category', 'Purpose', 'select', ['tourism', 'business', 'conference', 'medical']),
+    field('intended_stay_days', 'Intended stay in days (maximum 60)', 'number'),
+    field('passport_type', 'Passport type', 'select', passportTypes),
+    field('no_india_residence_occupation', 'I have no residence or occupation in India', 'checkbox'),
+    field('onward_ticket_confirmed', 'I hold a return or onward ticket', 'checkbox'),
+    field('sufficient_funds_confirmed', 'I have sufficient funds for the stay', 'checkbox'),
+    field('pakistan_origin', 'Were you, a parent, or grandparent born in or permanently resident in Pakistan?', 'select', yesNo),
+    field('persona_non_grata', 'Have you been declared persona non grata?', 'select', yesNo),
+    field('undesirable_person', 'Have Indian authorities considered you an undesirable person?', 'select', yesNo),
+  ] },
+  { id: 'voa-applicant', title: 'Annexure I — applicant', fields: [
+    field('surname', 'Surname / family name'),
+    field('given_name', 'Given name(s)'),
+    field('date_of_birth', 'Date of birth', 'date'),
+    field('previous_nationality', 'Previous nationality (or NA)'),
+    field('dual_nationality', 'Do you hold another nationality?', 'select', yesNo),
+    field('dual_nationality_details', 'Other / dual nationality details', 'textarea', null, { visible: (data) => data.dual_nationality === 'yes' }),
+    field('marital_status', 'Marital status', 'select', ['single', 'married', 'divorced', 'widowed', 'other']),
+    field('father_details', 'Father name and nationality', 'textarea'),
+    field('mother_details', 'Mother name and nationality', 'textarea'),
+    field('spouse_details', 'Spouse name and nationality', 'textarea', null, { visible: (data) => data.marital_status === 'married' }),
+    field('occupation', 'Occupation'),
+  ] },
+  { id: 'voa-passport', title: 'Annexure I — passport & contacts', fields: [
+    field('passport_number', 'Passport number'),
+    field('passport_expiry_date', 'Passport expiry date', 'date'),
+    field('permanent_address', 'Permanent address abroad', 'textarea'),
+    field('email', 'Email address', 'email'),
+    field('phone_abroad', 'Contact number abroad'),
+    field('address_in_india', 'Address in India', 'textarea'),
+    field('phone_india', 'Contact number in India'),
+    field('india_reference', 'Reference in India: name, address and phone', 'textarea'),
+  ] },
+  { id: 'voa-travel', title: 'Annexure I — travel', fields: [
+    field('arrival_date', 'Arrival date', 'date'),
+    field('arrival_flight', 'Arrival flight number'),
+    field('arrival_port', 'Designated arrival airport', 'select', voaAirports),
+    field('onward_date', 'Return / onward date', 'date'),
+    field('onward_flight', 'Return / onward flight number'),
+    field('final_destination', 'Final destination'),
+  ] },
+  { id: 'voa-declaration', title: 'Annexure I — declaration', description: 'The generated copy must still be printed and signed for presentation to the Visa Officer.', fields: [
+    field('declaration_place', 'Place of declaration'),
+    field('declaration_date', 'Date of declaration', 'date'),
+    field('typed_name', 'Applicant name for the prepared form'),
+    field('voa_truthful', 'I declare that these details are true and complete', 'checkbox'),
+    field('voa_airport_process', 'I understand this prepares a form only; a Visa Officer assesses the request at the airport', 'checkbox'),
+    field('voa_nonextendable', 'I understand a granted VoA is non-extendable and non-convertible', 'checkbox'),
+  ] },
+  { id: 'review', title: 'Review & print preparation' },
+];
+
+const makeRegularSteps = () => [
+  { id: 'regular-route', title: 'Paper visa route', description: 'This prepares a local checklist. Category, appointment, documents, biometrics, fees, and physical filing depend on the responsible Indian Mission/Post.', fields: [
+    field('nationality', 'Passport nationality'),
+    field('country_of_application', 'Country / mission where applying'),
+    field('passport_type', 'Passport type', 'select', passportTypes),
+    field('visa_category', 'Paper visa category', 'select', ['tourist', 'business', 'employment', 'student', 'medical', 'conference', 'entry', 'transit', 'research', 'other']),
+    field('email', 'Email address', 'email'),
+  ] },
+  { id: 'identity', title: 'Identity', fields: identityFields },
+  { id: 'passport', title: 'Passport', fields: passportFields },
+  { id: 'family', title: 'Address, family & employment', fields: [...addressFamilyFields, ...employmentFields] },
+  { id: 'travel', title: 'Travel & references', fields: [field('expected_arrival_date', 'Expected arrival date', 'date'), ...historyReferenceFields] },
+  { id: 'security', title: 'Security declarations', fields: securityFields },
+  { id: 'documents', title: 'Demo document readiness' },
+  { id: 'review', title: 'Review & print handoff' },
+];
+
+const getSteps = (type, data) => {
+  if (type === 'afghan') return makeAfghanSteps(data);
+  if (type === 'voa') return makeVoaSteps();
+  if (type === 'regular') return makeRegularSteps();
+  return makeEvisaSteps();
+};
+
+const isVisible = (item, data) => !item.visible || item.visible(data);
+const isRequired = (item, data) => isVisible(item, data) && (typeof item.required === 'function' ? item.required(data) : item.required !== false);
+
+const validateStep = (step, data, docs) => {
+  const errors = {};
+  (step.fields || []).filter((item) => isVisible(item, data)).forEach((item) => {
+    const value = data[item.name];
+    if (isRequired(item, data) && (item.type === 'checkbox' ? value !== true : String(value ?? '').trim() === '')) errors[item.name] = 'This field is required.';
+  });
+
+  if (data.email && data.confirm_email && data.email.trim().toLowerCase() !== data.confirm_email.trim().toLowerCase()) errors.confirm_email = 'Email addresses must match.';
+  if (step.id === 'documents') {
+    const missing = getRequiredDocuments(data).filter((requirement) => !docs.some((document) => document.type === requirement.type && document.status === 'selected-this-session'));
+    if (missing.length) errors.documents = `Select every required item before continuing: ${missing.map((item) => item.title).join(', ')}.`;
   }
+  if (step.id === 'registration') {
+    if (data.passport_type && data.passport_type !== 'ordinary') errors.passport_type = 'The published e-Visa route excludes Diplomatic, Official, Service, and other non-ordinary travel documents.';
+    if (['afghanistan', 'pakistan'].includes(String(data.nationality || '').trim().toLowerCase())) errors.nationality = 'This nationality must use a different official route.';
+    if (data.expected_arrival_date) {
+      const arrival = new Date(`${data.expected_arrival_date}T00:00:00`);
+      const earliest = new Date();
+      earliest.setHours(0, 0, 0, 0);
+      earliest.setDate(earliest.getDate() + 4);
+      const latest = new Date();
+      latest.setHours(0, 0, 0, 0);
+      latest.setDate(latest.getDate() + 120);
+      if (arrival < earliest || arrival > latest) errors.expected_arrival_date = 'Choose a date within the published e-Visa application window (at least 4 days and no more than 120 days ahead).';
+    }
+  }
+  if (step.id === 'family' && data.application_type === 'evisa' && data.pakistan_origin === 'yes') errors.pakistan_origin = 'Pakistani-origin cases require the appropriate regular/paper visa route.';
+  if (step.id === 'afghan-route' && data.passport_type && data.passport_type !== 'ordinary') errors.passport_type = 'This passport-type edge case requires confirmation with the official portal or Indian authority before using this demo path.';
+  if (step.id === 'voa-eligibility') {
+    if (data.nationality === 'United Arab Emirates' && data.uae_previous_indian_visa !== 'yes') errors.uae_previous_indian_visa = 'A UAE national needs a previous Indian e-Visa or regular/paper visa for this route.';
+    if (Number(data.intended_stay_days) < 1 || Number(data.intended_stay_days) > 60) errors.intended_stay_days = 'Visa on Arrival is limited to a stay of no more than 60 days.';
+    if (data.passport_type && data.passport_type !== 'ordinary') errors.passport_type = 'Diplomatic, Official, Service, and other non-ordinary passports are not eligible for this route.';
+    if (data.pakistan_origin === 'yes') errors.pakistan_origin = 'This published exclusion means Visa on Arrival is not available.';
+    if (data.persona_non_grata === 'yes') errors.persona_non_grata = 'Visa on Arrival is not available under the published conditions.';
+    if (data.undesirable_person === 'yes') errors.undesirable_person = 'Visa on Arrival is not available under the published conditions.';
+  }
+  if (step.id === 'voa-travel' && data.passport_expiry_date && data.arrival_date) {
+    const expiry = new Date(`${data.passport_expiry_date}T00:00:00`);
+    const arrival = new Date(`${data.arrival_date}T00:00:00`);
+    arrival.setMonth(arrival.getMonth() + 6);
+    if (expiry < arrival) errors.arrival_date = 'The passport must remain valid for at least six months after arrival for the Visa on Arrival route.';
+    if (data.onward_date && data.onward_date < data.arrival_date) errors.onward_date = 'Onward date cannot be before arrival.';
+  }
+  if (step.id === 'review') {
+    const missing = getRequiredDocuments(data).filter((requirement) => !docs.some((document) => document.type === requirement.type && document.status === 'selected-this-session'));
+    if (missing.length) errors.review_accuracy = `Required document selections changed or are missing: ${missing.map((item) => item.title).join(', ')}.`;
+    if (!data.review_accuracy) errors.review_accuracy = 'Confirm that you reviewed the prepared details.';
+    if (!data.demo_boundary_acknowledged) errors.demo_boundary_acknowledged = 'Confirm that this is not an official submission or approval.';
+    if (data.application_type !== 'voa' && !data.finality_acknowledged) errors.finality_acknowledged = 'Confirm the final-review warning.';
+    if (data.application_type === 'voa' && !data.arrival_checklist_acknowledged) errors.arrival_checklist_acknowledged = 'Confirm the airport and e-Arrival checklist.';
+  }
+  return errors;
+};
 
-  // For e-Visa and Regular, we need the exhaustive fields
-  baseSteps.push(
-    { id: 'family_employment', title: 'Family & Employment', fields: [
-      ['parents_nationality', 'Parents\' Nationality', 'text', true],
-      ['pakistani_descent', 'Are your parents/grandparents of Pakistani descent?', 'select', true, ['yes', 'no']],
-      ['occupation', 'Current Occupation', 'text', true],
-      ['employer_name', 'Employer Name', 'text', true]
-    ] },
-    { id: 'travel', title: 'Travel History', fields: [
-      ['expected_arrival_date', 'Expected arrival date', 'date', true], 
-      ['expected_departure_date', 'Expected departure date', 'date', true], 
-      ['port_of_arrival', 'Port of arrival', 'text', true, null, 'The first airport or seaport you will arrive at in India.'], 
-      ['places_to_visit', 'Places you plan to visit', 'text', true], 
-      ['address_in_india', 'Address in India', 'text', true],
-      ['visited_saarc', 'Have you visited any SAARC countries in the last 3 years?', 'select', true, ['yes', 'no'], 'SAARC includes Afghanistan, Bangladesh, Bhutan, Maldives, Nepal, Pakistan, Sri Lanka']
-    ] },
-    { id: 'documents', title: 'Documents' },
-    { id: 'review', title: 'Review' }
-  );
-
-  return baseSteps;
+const demoFixture = (type, current) => {
+  const futureDate = (days) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toISOString().slice(0, 10);
+  };
+  const common = {
+    surname: 'EXAMPLE', given_name: 'DEMO APPLICANT', date_of_birth: '1992-05-14', previous_name_used: 'no', gender: 'unspecified',
+    place_of_birth: 'Example City', country_of_birth: type === 'afghan' ? 'Afghanistan' : 'Canada', national_id: 'DEMO-ONLY', religion: 'Not specified', visible_mark: 'NA', education: 'Graduate', nationality_acquisition: 'birth',
+    passport_number: 'DEMO-P000001', passport_issue_place: 'Example City', passport_issue_date: '2024-01-15', passport_expiry_date: '2034-01-14', other_passport: 'no',
+    present_address: '100 Example Street, Demo City', postal_code: '000000', phone_abroad: '+10000000000', permanent_same: 'yes',
+    father_details: 'Demo Parent One; Example nationality; Example City', mother_details: 'Demo Parent Two; Example nationality; Example City', marital_status: 'single', pakistan_origin: 'no',
+    occupation: 'Software tester', designation: 'Test analyst', employer_name: 'Example Demonstration Organisation', employer_address: '200 Sample Road, Demo City', employer_phone: '+10000000001', security_service_employment: 'no',
+    places_to_visit: 'Delhi and Agra', tour_operator_used: 'no', intended_exit_port: 'Delhi', visited_india_before: 'no', india_refused_before: 'no', countries_visited_10y: 'None', visited_saarc: 'no',
+    india_reference: 'Demo Hotel, Example Road, Delhi; +910000000000', home_reference: 'Demo Contact, 100 Example Street; +10000000002',
+    security_arrested: 'no', security_refused: 'no', security_offences: 'no', security_national_security: 'no', security_advocacy: 'no', security_asylum: 'no',
+    email: 'demo.applicant@example.invalid', confirm_email: 'demo.applicant@example.invalid', expected_arrival_date: futureDate(45), instructions_ready: true, resident_two_years: 'yes',
+  };
+  if (type === 'voa') return {
+    application_type: 'voa', nationality: current.nationality || 'Japan', visa_category: current.visa_category || 'tourism', intended_stay_days: current.intended_stay_days || '14', passport_type: current.passport_type || 'ordinary', no_india_residence_occupation: true, onward_ticket_confirmed: true, sufficient_funds_confirmed: true,
+    uae_previous_indian_visa: current.uae_previous_indian_visa || (current.nationality === 'United Arab Emirates' ? 'yes' : 'not_applicable'),
+    pakistan_origin: 'no', persona_non_grata: 'no', undesirable_person: 'no', surname: 'EXAMPLE', given_name: 'DEMO TRAVELLER', date_of_birth: '1992-05-14', previous_nationality: 'NA', dual_nationality: 'no', marital_status: 'single',
+    father_details: 'DEMO PARENT ONE; JAPAN', mother_details: 'DEMO PARENT TWO; JAPAN', occupation: 'Designer', passport_number: 'DEMO-JP0001', passport_expiry_date: '2034-01-14', permanent_address: '100 Example Street, Tokyo',
+    email: 'demo.traveller@example.invalid', phone_abroad: '+81000000000', address_in_india: 'Demo Hotel, Delhi', phone_india: '+910000000000', india_reference: 'Demo Hotel, Example Road, Delhi; +910000000000',
+    arrival_date: futureDate(45), arrival_flight: 'DEMO101', arrival_port: 'Delhi', onward_date: futureDate(59), onward_flight: 'DEMO102', final_destination: 'Tokyo', declaration_place: 'Tokyo', declaration_date: futureDate(1), typed_name: 'DEMO TRAVELLER', voa_truthful: true, voa_airport_process: true, voa_nonextendable: true,
+  };
+  if (type === 'afghan') {
+    const category = current.visa_category || 'medical';
+    const purpose = current.afghan_purpose || afghanPurposes[category]?.[0] || '';
+    return {
+      ...common,
+      application_type: 'afghan',
+      nationality: 'Afghanistan',
+      passport_type: current.passport_type || 'ordinary',
+      visa_category: category,
+      afghan_purpose: purpose,
+      tazkira_number: 'DEMO-TAZKIRA-001',
+      address_in_india: 'Demo Hospital Guest House, Delhi',
+      principal_applicant_id: category === 'medical-attendant' || ['business-dependant', 'student-dependant'].includes(purpose) ? 'DEMO-PRINCIPAL-001' : current.principal_applicant_id,
+      is_minor: 'no',
+    };
+  }
+  if (type === 'regular') return { ...common, application_type: 'regular', nationality: 'Canada', country_of_application: 'Canada', passport_type: 'ordinary', visa_category: 'employment' };
+  return {
+    ...common,
+    application_type: 'evisa',
+    nationality: current.nationality || 'Canada',
+    passport_type: current.passport_type || 'ordinary',
+    arrival_port: current.arrival_port || 'Delhi Airport',
+    visa_category: current.visa_category || 'tourist',
+    student_course_type: current.visa_category === 'student' ? (current.student_course_type || 'general-course') : current.student_course_type,
+    eligibility_ruleset_id: current.eligibility_ruleset_id,
+    eligibility_reviewed_date: current.eligibility_reviewed_date,
+    purpose_intent: current.purpose_intent,
+    intended_stay_days: current.intended_stay_days,
+    study_in_india_institution: current.study_in_india_institution,
+  };
 };
 
 export default function Wizard() {
-  const { state, updateState, updateData, addDocument } = useStore();
+  const { state, updateState, updateData, completeDemo } = useStore();
   const navigate = useNavigate();
-  const [submitting, setSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
-  
-  if (state.submitted) {
+  const [errors, setErrors] = useState({});
+  const stepHeadingRef = useRef(null);
+  const errorSummaryRef = useRef(null);
+  const stepItemRefs = useRef([]);
+  const previousStepRef = useRef(state.step);
+  const appType = ['evisa', 'afghan', 'voa', 'regular'].includes(state.data.application_type) ? state.data.application_type : 'evisa';
+  const steps = getSteps(appType, state.data);
+  const stepIndex = Math.min(state.step, steps.length - 1);
+  const step = steps[stepIndex];
+
+  useEffect(() => {
+    if (state.step !== stepIndex) updateState({ step: stepIndex });
+  }, [state.step, stepIndex]);
+
+  useEffect(() => {
+    if (previousStepRef.current === stepIndex) return;
+    previousStepRef.current = stepIndex;
+    stepHeadingRef.current?.focus({ preventScroll: true });
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    stepItemRefs.current[stepIndex]?.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    });
+  }, [stepIndex]);
+
+  const evisaGate = appType === 'evisa' ? getEvisaWizardGate(state.data) : { allowed: true, reason: null };
+  const evisaRouteBlocked = !evisaGate.allowed;
+
+  if (evisaRouteBlocked) {
+    const studyGateMissing = evisaGate.reason === 'study-in-india-required';
     return (
-      <div className="max-w-2xl mx-auto p-8 text-center bg-white border border-border shadow-sm rounded mt-12">
-        <h1 className="text-3xl font-bold mb-4">Application Submitted (Demo)</h1>
-        <p className="text-xl mb-6">Your demo application ID is <strong className="font-mono text-primary text-2xl tracking-wider block mt-2">DEMO{Math.floor(Math.random()*1000000)}</strong></p>
-        <p className="text-text-secondary mb-8">Save this ID to check your status later.</p>
-        <button onClick={() => navigate('/')} className="btn-primary">Return to Home</button>
+      <div className="max-w-2xl mx-auto p-8 bg-white border border-amber-300 shadow-sm rounded mt-12">
+        <p className="text-sm font-bold uppercase tracking-widest text-amber-700 mb-3">Eligibility check required</p>
+        <h1 className="text-3xl font-bold mb-4">Return to the Visa Finder</h1>
+        <p className="text-text-secondary mb-6">{studyGateMissing
+          ? 'The e-Student journey requires confirmation that the admitting institution is registered on the Government Study in India programme.'
+          : evisaGate.reason === 'unsupported-category'
+            ? 'The saved category is not supported by the current reviewed ruleset. Run the Finder again instead of continuing with stale or invented category data.'
+            : 'A current reviewed route-finder result is required before the standard e-Visa demo can start. Opening /apply directly cannot establish eligibility.'}</p>
+        <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-primary">Check preliminary eligibility</button>
       </div>
     );
   }
 
-  const steps = getDynamicSteps(state.data.application_type);
-  const step = steps[state.step];
-  
-  const fillDemoData = () => {
-    const appType = state.data.application_type || 'evisa';
-    
-    let basePayload = {
-      date_of_birth: '1990-06-15',
-      marital_status: 'single',
-      passport_number: 'A12345678',
-      date_of_issue: '2021-03-10',
-      date_of_expiry: '2031-03-09',
-      expected_arrival_date: '2026-11-15',
-      expected_departure_date: '2026-11-30',
-      port_of_arrival: 'Delhi',
-      places_to_visit: 'Delhi, Agra, Jaipur',
-      address_in_india: 'The Leela Palace, New Delhi',
-      pakistani_descent: 'no',
-      occupation: 'Software Engineer',
-      employer_name: 'Acme Technologies',
-      visited_saarc: 'no',
-    };
-
-    if (appType === 'afghan') {
-      basePayload = {
-        ...basePayload,
-        country_of_application: 'Afghanistan',
-        given_name: 'Ahmad',
-        surname: 'Shah',
-        parents_nationality: 'Afghanistan',
-        tazkira_number: 'TK-123-456-789',
-      };
-    } else if (appType === 'voa') {
-      basePayload = {
-        ...basePayload,
-        country_of_application: 'Japan',
-        given_name: 'Kenji',
-        surname: 'Sato',
-        parents_nationality: 'Japan',
-      };
-    } else {
-      basePayload = {
-        ...basePayload,
-        country_of_application: 'Canada',
-        given_name: 'Alex',
-        surname: 'Kumar',
-        parents_nationality: 'Canada',
-      };
-    }
-
-    const demoPayload = {
-      ...basePayload,
-      ...state.data
-    };
-    
-    Object.entries(demoPayload).forEach(([k, v]) => updateData(k, v));
-  };
-  
-  const handleNext = (e) => {
-    e.preventDefault();
-    if (state.step < steps.length - 1) {
-      updateState({ step: state.step + 1 });
-      window.scrollTo(0, 0);
-    } else {
-      handleFinalSubmit(true); // Default to success if enter is pressed
-    }
-  };
-
-  const handleFinalSubmit = (isSuccess) => {
-    setSubmitting(true);
-    setSubmitStatus(null);
-    
-    // Simulate network delay
-    setTimeout(() => {
-      setSubmitStatus(isSuccess ? 'success' : 'error');
-      
-      if (isSuccess) {
-        setTimeout(() => updateState({ submitted: true }), 2000);
-      } else {
-        setTimeout(() => {
-          setSubmitting(false);
-          setSubmitStatus(null);
-        }, 3000);
-      }
-    }, 1500);
-  };
-  
-  const handleBack = () => {
-    if (state.step > 0) {
-      updateState({ step: state.step - 1 });
-      window.scrollTo(0, 0);
-    }
-  };
-
-  const handleDocUpload = (e, type) => {
-    if (e.target.files[0]) {
-      addDocument(type, e.target.files[0].name);
-    }
-  };
-
-  const Progress = () => (
-    <div className="mb-10 border-b border-border pb-6">
-      <div className="flex justify-between items-end mb-4">
-        <h2 className="text-2xl font-serif font-bold text-gray-900">{step?.title}</h2>
-        <div className="flex items-center gap-4">
-          <button type="button" onClick={fillDemoData} className="text-xs bg-amber-100 text-amber-800 px-3 py-1 font-bold rounded-full hover:bg-amber-200 transition">
-            Fill Demo Data
-          </button>
-          <span className="text-sm font-bold text-text-secondary uppercase tracking-widest">Step {state.step + 1} of {steps.length}</span>
+  if (state.submitted) {
+    const isVoa = state.outcome === 'form-prepared';
+    const reference = isVoa ? state.identifiers?.formPreparationId : state.identifiers?.finalDemoId;
+    return (
+      <div className="max-w-3xl mx-auto p-8 bg-white border border-border shadow-sm rounded mt-12">
+        <p className="text-sm font-bold uppercase tracking-widest text-amber-700 mb-3">Local demonstration only</p>
+        <h1 className="text-3xl font-bold mb-4">{isVoa ? 'Annexure I preparation summary ready' : 'Demo application preparation complete'}</h1>
+        <p className="text-text-secondary mb-5">{isVoa
+          ? 'This local reference confirms only that you prepared a printable summary. It is not a Government application, Visa on Arrival submission, or grant.'
+          : 'This is a locally generated demo reference. No information was sent to the Government of India, and this is not a visa application, payment, decision, ETA, or approval.'}</p>
+        <div className="bg-background border border-border rounded p-5 mb-6">
+          <span className="block text-xs uppercase text-text-secondary mb-1">{isVoa ? 'Local form-preparation reference' : 'Final local demo reference'}</span>
+          <strong className="font-mono text-xl text-primary break-all">{reference}</strong>
+          {!isVoa && <p className="text-sm mt-3 text-text-secondary">Temporary local reference: <span className="font-mono">{state.identifiers?.temporaryDemoId}</span></p>}
         </div>
-      </div>
-      <div className="flex text-sm overflow-x-auto gap-6 pb-4">
-        {steps.map((s, i) => (
-          <div key={s.id} className="min-w-fit">
-            <div className={`h-1.5 w-full rounded-full mb-2 transition-colors ${i === state.step ? 'bg-[#0b2540]' : i < state.step ? 'bg-green-500' : 'bg-gray-200'}`}></div>
-            <div className={`text-xs whitespace-nowrap px-1 ${i === state.step ? 'text-[#0b2540] font-bold' : i < state.step ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
-              {i < state.step ? <span className="text-green-600 mr-1">✓</span> : ''}{s.title}
+        {isVoa && (
+          <div className="space-y-3 text-sm mb-7">
+            <p><strong>Next:</strong> print the official Annexure I form, complete/sign it, carry the disembarkation card, passport, onward/return ticket and sufficient-funds evidence, and present them at a designated airport. A Visa Officer makes the decision on arrival.</p>
+            <p>Complete the separate Government e-Arrival Card within its published pre-arrival window; it is arrival information, not a visa.</p>
+            <a className="text-primary underline font-bold" href="https://indianvisaonline.gov.in/visa/image/VOA_FORM.pdf" target="_blank" rel="noreferrer">Open official blank Annexure I (Government website)</a>
+            <div className="mt-6 border border-border rounded overflow-hidden">
+              <h2 className="font-bold text-lg bg-slate-100 px-4 py-3">Prepared Annexure I field summary</h2>
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {Object.entries(state.data)
+                  .filter(([key]) => !['application_type', 'demo_only', 'voa_truthful', 'voa_airport_process', 'voa_nonextendable', 'review_accuracy', 'demo_boundary_acknowledged', 'arrival_checklist_acknowledged'].includes(key))
+                  .map(([key, value]) => (
+                    <div key={key} className="border-b border-border pb-2">
+                      <span className="block text-xs uppercase text-text-secondary">{key.replace(/_/g, ' ')}</span>
+                      <strong className="break-words">{typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value || '—'}</strong>
+                    </div>
+                  ))}
+              </div>
+              <p className="px-4 pb-4 text-xs text-text-secondary">Preparation aid only. Transfer the reviewed details to the current official Annexure I and add the required handwritten signature.</p>
             </div>
           </div>
-        ))}
+        )}
+        <div className="flex flex-wrap gap-3">
+          <button type="button" onClick={() => window.print()} className="btn-primary">Print / save this summary as PDF</button>
+          <button type="button" onClick={() => navigate('/')} className="btn-secondary">Return home</button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  const handleNext = (event) => {
+    event.preventDefault();
+    const found = validateStep(step, state.data, state.docs);
+    setErrors(found);
+    if (Object.keys(found).length) {
+      window.requestAnimationFrame(() => errorSummaryRef.current?.focus());
+      return;
+    }
+    if (stepIndex < steps.length - 1) {
+      updateState({ step: stepIndex + 1 });
+      window.scrollTo(0, 0);
+    } else {
+      completeDemo(appType === 'voa' ? 'voa-form' : 'application-preparation');
+    }
+  };
+
+  const handleBack = () => {
+    if (stepIndex > 0) {
+      setErrors({});
+      updateState({ step: stepIndex - 1 });
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const fillDemoData = () => {
+    const fixture = demoFixture(appType, state.data);
+    Object.entries(fixture).forEach(([name, value]) => updateData(name, value));
+    setErrors({});
+  };
+
+  const renderField = (item) => {
+    if (!isVisible(item, state.data)) return null;
+    const required = isRequired(item, state.data);
+    const value = state.data[item.name] ?? (item.type === 'checkbox' ? false : '');
+    const classes = `input-field w-full ${errors[item.name] ? 'border-red-500' : ''}`;
+    const errorId = `${item.name}-error`;
+    return (
+      <div key={item.name} className={item.type === 'checkbox' ? 'max-w-2xl' : 'max-w-xl'}>
+        {item.type === 'checkbox' ? (
+          <label htmlFor={item.name} className="flex gap-3 items-start font-medium text-gray-900">
+            <input id={item.name} type="checkbox" className="mt-1 h-4 w-4" checked={value === true} aria-invalid={Boolean(errors[item.name])} aria-describedby={errors[item.name] ? errorId : undefined} onChange={(event) => updateData(item.name, event.target.checked)} />
+            <span>{item.label}{required && <span className="text-red-600 ml-1">*</span>}</span>
+          </label>
+        ) : (
+          <>
+            <label htmlFor={item.name} className="block font-bold mb-1 text-gray-900">{item.label}{required && <span className="text-red-600 ml-1">*</span>}{item.help && <ContextHelp text={item.help} />}</label>
+            {item.type === 'select' ? (
+              <select id={item.name} required={required} className={classes} value={value} aria-invalid={Boolean(errors[item.name])} aria-describedby={errors[item.name] ? errorId : undefined} onChange={(event) => updateData(item.name, event.target.value)} disabled={item.readOnly}>
+                <option value="">Choose an option</option>
+                {(item.options || []).map((option) => <option key={option} value={option}>{String(option).replace(/-/g, ' ')}</option>)}
+              </select>
+            ) : item.type === 'textarea' ? (
+              <textarea id={item.name} required={required} className={classes} rows="3" value={value} aria-invalid={Boolean(errors[item.name])} aria-describedby={errors[item.name] ? errorId : undefined} onChange={(event) => updateData(item.name, event.target.value)} readOnly={item.readOnly} />
+            ) : (
+              <input id={item.name} type={item.type} required={required} className={classes} value={value} aria-invalid={Boolean(errors[item.name])} aria-describedby={errors[item.name] ? errorId : undefined} onChange={(event) => updateData(item.name, event.target.value)} readOnly={item.readOnly} min={item.type === 'number' ? 1 : undefined} />
+            )}
+          </>
+        )}
+        {errors[item.name] && <p id={errorId} className="text-sm text-red-700 font-bold mt-1">{errors[item.name]}</p>}
+      </div>
+    );
+  };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 md:p-12 border border-border rounded-lg shadow-sm mb-12">
-      <Progress />
-      <p className="text-text-secondary mb-8 pb-4 border-b border-border">Your changes are saved automatically on this device.</p>
-      
-      <form onSubmit={handleNext}>
-        {step && step.id !== 'documents' && step.id !== 'review' && (
-          <div className="space-y-6">
-            {step.fields.map(([name, label, type, required, options, helpText]) => (
-              <div key={name} className="max-w-xl">
-                <label htmlFor={name} className="block font-bold mb-1 text-gray-900">
-                  {label} 
-                  {required && <span className="text-red-600 ml-1 text-sm font-normal">*</span>}
-                  {helpText && <ContextHelp text={helpText} />}
-                </label>
-                {type === 'select' ? (
-                  <select 
-                    id={name} 
-                    required={required} 
-                    className="input-field w-full"
-                    value={state.data[name] || ''}
-                    onChange={(e) => updateData(name, e.target.value)}
-                  >
-                    <option value="">Choose an option</option>
-                    {options.map(o => <option key={o} value={o}>{o.replace('-', ' ')}</option>)}
-                  </select>
-                ) : (
-                  <input 
-                    id={name} 
-                    type={type} 
-                    required={required} 
-                    className="input-field w-full"
-                    value={state.data[name] || ''}
-                    onChange={(e) => updateData(name, e.target.value)}
-                  />
-                )}
-              </div>
+    <div className="max-w-4xl mx-auto bg-white p-6 md:p-12 border border-border rounded-lg shadow-sm mb-12">
+      <div className="mb-8 border-b border-border pb-6">
+        <div className="flex flex-wrap justify-between items-end gap-4 mb-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-700 mb-2">Demo · not an official portal</p>
+            <h1 ref={stepHeadingRef} tabIndex="-1" className="text-2xl font-serif font-bold text-gray-900 focus:outline-none">{step.title}</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <button type="button" onClick={fillDemoData} className="text-xs bg-amber-100 text-amber-900 px-3 py-1 font-bold rounded-full">Fill synthetic demo data</button>
+            <span className="text-sm font-bold text-text-secondary uppercase tracking-widest">Step {stepIndex + 1} of {steps.length}</span>
+          </div>
+        </div>
+        <nav aria-label="Application preparation steps" className="overflow-x-auto pb-3">
+          <ol className="flex text-sm gap-4">
+            {steps.map((item, index) => (
+              <li key={item.id} ref={(node) => { stepItemRefs.current[index] = node; }} aria-current={index === stepIndex ? 'step' : undefined} className="min-w-[8rem]">
+                <div className={`h-1.5 rounded-full mb-2 transition-colors motion-reduce:transition-none ${index === stepIndex ? 'bg-[#0b2540]' : index < stepIndex ? 'bg-green-500' : 'bg-gray-200'}`} />
+                <span className={`text-xs ${index === stepIndex ? 'font-bold text-[#0b2540]' : 'text-gray-500'}`}>{index < stepIndex ? '✓ ' : ''}{item.title}</span>
+              </li>
             ))}
+          </ol>
+        </nav>
+        <div className="mt-4 bg-slate-50 border border-slate-200 p-3 rounded text-sm text-slate-700">
+          <strong>Temporary local demo reference:</strong> <span className="font-mono">{state.identifiers?.temporaryDemoId}</span>
+          <span className="block mt-1">Saved only for this browser-tab session. It cannot be used on a Government website.</span>
+        </div>
+      </div>
+
+      {step.description && <p className="text-text-secondary mb-8 pb-4 border-b border-border">{step.description}</p>}
+
+      <form onSubmit={handleNext} noValidate>
+        {Object.keys(errors).length > 0 && (
+          <div ref={errorSummaryRef} tabIndex="-1" role="alert" aria-labelledby="wizard-error-heading" className="mb-8 border-l-4 border-red-600 bg-red-50 p-5 text-red-950 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-red-700">
+            <h2 id="wizard-error-heading" className="font-bold text-lg mb-2">Check this step before continuing</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm">
+              {Object.entries(errors).map(([name, message]) => {
+                const label = (step.fields || []).find((item) => item.name === name)?.label
+                  || ({ documents: 'Required documents', review_accuracy: 'Review confirmation', finality_acknowledged: 'Finality acknowledgement', arrival_checklist_acknowledged: 'Arrival checklist acknowledgement', demo_boundary_acknowledged: 'Demo boundary acknowledgement' })[name]
+                  || name.replace(/_/g, ' ');
+                return <li key={name}><a href={`#${name}`} className="font-bold underline">{label}: {message}</a></li>;
+              })}
+            </ul>
           </div>
         )}
-        
-        {step && step.id === 'documents' && (
-          <div className="mb-8">
-            <SmartDocuments />
-          </div>
-        )}
-        
-        {step && step.id === 'review' && (
+        {step.fields && <div className="space-y-6">{step.fields.map(renderField)}</div>}
+        {step.id === 'documents' && <div id="documents" tabIndex="-1" aria-invalid={Boolean(errors.documents)} aria-describedby={errors.documents ? 'documents-error' : undefined} className="mb-8"><SmartDocuments />{errors.documents && <p id="documents-error" className="mt-4 text-sm font-bold text-red-700">{errors.documents}</p>}</div>}
+        {step.id === 'review' && (
           <div className="space-y-6">
-            <p className="font-bold">Please review your information carefully before generating the application.</p>
+            <div className="border border-amber-300 bg-amber-50 p-4 rounded text-sm text-amber-950">
+              <strong className="block mb-1">Review before completing this demo</strong>
+              {appType === 'voa'
+                ? 'This prepares a printable local summary only. Visa on Arrival is assessed by a Visa Officer at a designated airport.'
+                : 'Official portals may make a final application immutable. This demo does not submit, pay, grant, or create an official application.'}
+            </div>
             <div className="bg-background p-6 rounded text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Object.entries(state.data).map(([k, v]) => (
-                <div key={k} className="border-b border-border pb-2">
-                  <span className="block text-text-secondary text-xs uppercase mb-1">{k.replace(/_/g, ' ')}</span>
-                  <strong className="break-words">{v || '-'}</strong>
-                </div>
+              {Object.entries(state.data).filter(([key]) => !['demo_only'].includes(key)).map(([key, value]) => (
+                <div key={key} className="border-b border-border pb-2"><span className="block text-text-secondary text-xs uppercase mb-1">{key.replace(/_/g, ' ')}</span><strong className="break-words">{typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value || '-'}</strong></div>
               ))}
+              {state.docs.map((document) => <div key={document.type} className="border-b border-border pb-2"><span className="block text-text-secondary text-xs uppercase mb-1">Document: {document.type.replace(/_/g, ' ')}</span><strong>{document.extension?.toUpperCase()} · {document.status === 'selected-this-session' ? 'validated this session' : 'reselection required'}</strong></div>)}
+            </div>
+            <div className="space-y-4">
+              {renderField(field('review_accuracy', 'I reviewed every prepared field and document status for accuracy', 'checkbox'))}
+              {appType !== 'voa' && renderField(field('finality_acknowledged', 'I understand that final official submission may prevent further form edits; this demo completion is still local only', 'checkbox'))}
+              {appType === 'voa' && renderField(field('arrival_checklist_acknowledged', 'I will use the official Annexure I, print/sign it, carry the airport evidence, and complete the separate e-Arrival Card', 'checkbox'))}
+              {renderField(field('demo_boundary_acknowledged', 'I understand this site does not submit to, represent, or grant approval from the Government of India', 'checkbox'))}
             </div>
           </div>
         )}
-        
+
         <div className="mt-12 flex gap-4 pt-6 border-t border-border">
-          {state.step > 0 && <button type="button" onClick={handleBack} className="btn-secondary">Back</button>}
-          
-          {state.step === steps.length - 1 ? (
-            <div className="ml-auto flex gap-3">
-              <button type="button" onClick={() => handleFinalSubmit(false)} className="btn-secondary border-red-200 text-red-600 hover:bg-red-50">Demo Fail</button>
-              <button type="button" onClick={() => handleFinalSubmit(true)} className="btn-primary">Submit Application</button>
-            </div>
-          ) : (
-            <button type="submit" className="btn-primary ml-auto">Save and continue</button>
-          )}
+          {stepIndex > 0 && <button type="button" onClick={handleBack} className="btn-secondary">Back</button>}
+          <button type="submit" className="btn-primary ml-auto">{stepIndex === steps.length - 1 ? (appType === 'voa' ? 'Prepare printable summary' : 'Complete demo preparation') : 'Save and continue'}</button>
         </div>
       </form>
-
-      {/* SUBMISSION ANIMATION OVERLAY */}
-      {submitting && (
-        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-[#0c1222]/80 backdrop-blur-md">
-          <div className="bg-white p-10 rounded-2xl shadow-2xl flex flex-col items-center justify-center w-[350px] min-h-[350px] text-center transform transition-all">
-             
-             {/* Loading State */}
-             {!submitStatus && (
-               <div className="flex flex-col items-center animate-[fadeIn_0.3s_ease-out]">
-                 <div className="w-16 h-16 border-4 border-gray-100 border-t-[#D4AF37] rounded-full animate-spin mb-8 shadow-sm" />
-                 <p className="text-xl font-serif font-bold text-[#1E2A4F] animate-pulse">Processing...</p>
-                 <p className="text-sm text-gray-500 mt-3 font-sans">Connecting to secure server</p>
-               </div>
-             )}
-
-             {/* Success State */}
-             {submitStatus === 'success' && (
-               <div className="flex flex-col items-center animate-[scaleIn_0.4s_ease-out_forwards]">
-                 <div className="w-24 h-24 mb-6 bg-green-50 rounded-full flex items-center justify-center text-green-600 border-4 border-green-100 shadow-inner">
-                   <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                   </svg>
-                 </div>
-                 <p className="text-2xl font-serif font-bold text-green-700">Approved!</p>
-                 <p className="text-sm text-gray-500 mt-3 font-sans">Generating your application ID...</p>
-               </div>
-             )}
-
-             {/* Error State */}
-             {submitStatus === 'error' && (
-               <div className="flex flex-col items-center animate-[scaleIn_0.4s_ease-out_forwards]">
-                 <div className="w-24 h-24 mb-6 bg-red-50 rounded-full flex items-center justify-center text-red-600 border-4 border-red-100 shadow-inner">
-                   <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path>
-                   </svg>
-                 </div>
-                 <p className="text-2xl font-serif font-bold text-red-700">Transaction Failed</p>
-                 <p className="text-sm text-gray-500 mt-3 font-sans px-4">Unable to verify passport details. Please try again.</p>
-               </div>
-             )}
-
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
