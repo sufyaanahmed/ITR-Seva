@@ -4,15 +4,23 @@ import { useStore } from '../../store';
 
 export default function RegularFlow() {
   const navigate = useNavigate();
-  const { updateState } = useStore();
+  const { state, updateState } = useStore();
+  const routedByFinder = state.data?.application_type === 'regular' && Boolean(state.data?.eligibility_ruleset_id);
 
-  const startApplication = () => {
-    updateState({ 
-      type: 'regular', 
-      step: 0, 
-      data: { application_type: 'regular' }, 
-      docs: [], 
-      submitted: false 
+  const startPreparation = () => {
+    updateState({
+      type: 'regular',
+      step: 0,
+      data: {
+        ...state.data,
+        application_type: 'regular',
+        // A trip purpose is not always the legal visa category. Require an explicit choice in the wizard.
+        visa_category: '',
+        demo_only: true,
+      },
+      docs: [],
+      outcome: null,
+      submitted: false,
     });
     navigate('/apply');
   };
@@ -20,54 +28,58 @@ export default function RegularFlow() {
   return (
     <div className="max-w-4xl mx-auto py-12 px-6">
       <div className="mb-10 border-b border-border-dark pb-8">
-        <p className="uppercase tracking-widest text-sm text-primary mb-2 font-bold">Pre-Application Briefing</p>
+        <p className="uppercase tracking-widest text-sm text-primary mb-2 font-bold">Paper-route preparation briefing</p>
         <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Regular / Paper Visa Guide</h1>
-        <p className="text-xl text-text-secondary leading-relaxed">
-          Based on your profile, you need to apply for a Regular Visa. This process involves filling out the online application and then physically submitting your passport and documents to an Indian Mission or Visa Application Center (VAC).
+        <p className="text-xl text-text-secondary leading-relaxed mb-4">
+          Regular-visa categories and filing procedures depend on nationality, purpose, residence, and the Indian Mission/Post responsible for the application.
+        </p>
+        <p className="text-sm text-text-secondary">
+          This educational demo can organise typical information, but it does not identify a universally correct category, submit a form, book an appointment, or replace Mission/Post instructions.
         </p>
       </div>
+
+      {!routedByFinder && (
+        <div className="bg-amber-50 border border-amber-300 p-6 rounded mb-10">
+          <h2 className="font-bold text-amber-950 text-lg mb-2">Route not yet reviewed</h2>
+          <p className="text-sm text-amber-900 mb-5">Opening this page directly does not establish that a regular/paper visa is the right route. Complete the finder before starting a local preparation.</p>
+          <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-primary">Check my preliminary route</button>
+        </div>
+      )}
+
+      {routedByFinder && (
+        <div className="bg-blue-50 border border-blue-200 p-5 rounded mb-10 text-sm text-blue-950">
+          <strong className="block mb-1">Preliminary finder handoff</strong>
+          <p>The reviewed rules snapshot directed these answers to a paper-visa or official-review path. Your intended purpose is recorded as <strong>{state.data.purpose_intent?.replace(/-/g, ' ') || 'not specified'}</strong>, but you must still select and verify the applicable legal category.</p>
+        </div>
+      )}
 
       <div className="space-y-12">
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-10 h-10 rounded-full bg-[#0b2540] text-white font-bold flex items-center justify-center flex-shrink-0 text-xl">1</div>
-            <h2 className="text-2xl font-bold text-gray-900">Complete the Online Form</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Confirm the responsible Mission/Post</h2>
           </div>
           <div className="ml-14 bg-gray-50 p-6 rounded border border-gray-200">
-            <p className="text-gray-700 mb-4">You will need to fill out a comprehensive application form. Have the following ready:</p>
-            <ul className="list-disc pl-5 space-y-2 text-gray-700 mb-6">
-              <li>Passport (Valid for at least 6 months with 2 blank pages)</li>
-              <li>Details of your parents and their nationalities</li>
-              <li>Your complete 10-year travel history</li>
-              <li>Details of any previous visits to India</li>
-              <li>A reference in India and your home country</li>
+            <p className="text-gray-700 mb-4">Before using any checklist, confirm where you are permitted to apply and read that Mission/Post’s current category instructions. Depending on the route, you may need:</p>
+            <ul className="list-disc pl-5 space-y-2 text-gray-700">
+              <li>An eligible passport and any required residence evidence</li>
+              <li>Identity, address, family, employment, and travel-history details</li>
+              <li>Purpose-specific letters, approvals, or relationship evidence</li>
+              <li>References in India and in the home or residence country</li>
             </ul>
-            <div className="bg-white p-4 rounded border-l-4 border-[#0b2540] shadow-sm">
-              <strong className="block text-[#0b2540] mb-2">Important Notice</strong>
-              <p className="text-sm text-gray-600">Ensure all details match your passport exactly. Any discrepancy will result in rejection at the Embassy.</p>
-            </div>
-            
-            <div className="mt-6 flex justify-center">
-              <button 
-                onClick={startApplication}
-                className="bg-[#0b2540] text-white px-8 py-3 font-bold rounded shadow hover:bg-[#163a5f] transition inline-block text-lg"
-              >
-                Start My Application &rarr;
-              </button>
-            </div>
           </div>
         </section>
 
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-10 h-10 rounded-full bg-[#0b2540] text-white font-bold flex items-center justify-center flex-shrink-0 text-xl">2</div>
-            <h2 className="text-2xl font-bold text-gray-900">Upload Photo & Documents</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Prepare category-specific evidence</h2>
           </div>
           <div className="ml-14">
-            <p className="text-gray-700 mb-4">After completing the form, you must upload a digital photograph and required documents based on your visa category (e.g., Invitation letters for Business Visas).</p>
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded text-sm text-blue-800">
-              <strong className="block mb-1">Photo Requirements:</strong>
-              Format: JPEG, Size: 10KB to 300KB, Dimensions: 350x350 pixels (min) to 1000x1000 pixels (max). Must be a recent color photo with a white background.
+            <p className="text-gray-700 mb-4">Photo format, upload steps, physical copies, translations, attestations, passport validity, and blank-page rules can vary by category and Mission/Post. The demo therefore records document-readiness metadata without asserting universal regular-visa upload limits.</p>
+            <div className="bg-blue-50 border border-blue-100 p-4 rounded text-sm text-blue-900">
+              <strong className="block mb-1">Do not reuse e-Visa upload rules automatically</strong>
+              The standard e-Visa JPEG/PDF limits are not presented here as universal paper-visa requirements. Check the current official checklist for the selected category and filing location.
             </div>
           </div>
         </section>
@@ -75,28 +87,32 @@ export default function RegularFlow() {
         <section>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-10 h-10 rounded-full bg-[#0b2540] text-white font-bold flex items-center justify-center flex-shrink-0 text-xl">3</div>
-            <h2 className="text-2xl font-bold text-gray-900">Submit Physical Documents</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Follow the published filing procedure</h2>
           </div>
           <div className="ml-14">
-            <p className="text-gray-700 mb-4">Once your online application is submitted, you will receive an Application ID. You must print the application form, sign it, and submit it along with your physical passport and supporting documents.</p>
-            
+            <p className="text-gray-700 mb-4">The responsible service may require an online form, printout and signature, physical passport, appointment, biometrics, interview, fee, or additional documents. Availability and sequence must be taken from the current official instructions—not inferred from this prototype.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
               <div className="border border-gray-200 p-4 rounded">
-                <strong className="block text-gray-900 mb-2">Book an Appointment</strong>
-                <p className="text-sm text-gray-600 mb-4">You may need to schedule an appointment at the nearest Indian Embassy or outsourced Visa Application Center (e.g., BLS, VFS).</p>
+                <strong className="block text-gray-900 mb-2">Appointment or service provider</strong>
+                <p className="text-sm text-gray-600">Use only the provider named by the relevant Indian Mission/Post. An appointment is not universally required or offered in the same way.</p>
               </div>
               <div className="border border-gray-200 p-4 rounded">
-                <strong className="block text-gray-900 mb-2">Pay the Fee</strong>
-                <p className="text-sm text-gray-600 mb-4">Fees vary by nationality and visa type. Payment is typically made at the time of document submission or via bank transfer.</p>
+                <strong className="block text-gray-900 mb-2">Fee and decision</strong>
+                <p className="text-sm text-gray-600">Fees, payment channels, processing, and decisions vary. This demo does not calculate, collect, predict, or verify them.</p>
               </div>
             </div>
           </div>
         </section>
       </div>
 
-      {/* Important Note */}
-      <div className="bg-yellow-50 border-l-4 border-secondary p-6 text-yellow-900 text-[0.95rem] leading-relaxed mt-12">
-        <strong>Important Note:</strong> Requirements, appointment procedures, processing times, fees, and document requirements may vary by visa category and Indian Mission. Check the official instructions and the website of the relevant Indian Mission before submitting your application.
+      {routedByFinder && (
+        <div className="mt-12 flex justify-center">
+          <button type="button" onClick={startPreparation} className="bg-[#0b2540] text-white px-8 py-3 font-bold rounded shadow hover:bg-[#163a5f] transition inline-block text-lg">Start local demo preparation &rarr;</button>
+        </div>
+      )}
+
+      <div className="bg-yellow-50 border-l-4 border-secondary p-6 text-yellow-950 text-[0.95rem] leading-relaxed mt-12">
+        <strong>Demo boundary:</strong> requirements, categories, appointments, fees, and documents vary by route and Indian Mission/Post. Verify everything on the responsible official website. Completing this local demo does not create or submit a Government application.
       </div>
     </div>
   );

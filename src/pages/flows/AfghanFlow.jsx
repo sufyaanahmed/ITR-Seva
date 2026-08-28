@@ -2,137 +2,116 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
 
-const AFGHAN_VISA_CATEGORIES = [
-  { id: 'business', label: 'Business Visa', docs: ['Invitation letter from an Indian company', 'Letter from company in country of residence', 'Recommendation from Chamber of Commerce', 'Proof of occupation (if available)'] },
-  { id: 'student', label: 'Student Visa', docs: ['Admission letter from a recognized Indian institution', 'Documentation of financial support', 'Student undertaking form'] },
-  { id: 'medical', label: 'Medical Visa', docs: ['System-generated medical invitation letter from an Indian hospital', 'Consent letter from parent (for minors)'] },
-  { id: 'medical_attendant', label: 'Medical Attendant Visa', docs: ['System-generated medical invitation letter', "Copy of principal patient's visa"] },
-  { id: 'entry', label: 'Entry Visa', docs: ['Documents vary by specific Entry Visa subcategory — consult the official portal'] },
-  { id: 'un_diplomat', label: 'UN Diplomat Visa', docs: ['Official UN credentials and mission documentation'] },
+const AFGHAN_PORTAL = 'https://www.indianvisaonline.gov.in/avisa/index.html';
+
+const categories = [
+  { value: 'business', label: 'Business Visa', note: 'Business, investment, sports and eligible dependant purposes have different evidence requirements.' },
+  { value: 'student', label: 'Student Visa', note: 'Scholarship, new or returning study, and eligible dependant purposes are assessed separately.' },
+  { value: 'medical', label: 'Medical Visa', note: 'For the patient travelling for treatment in India.' },
+  { value: 'medical-attendant', label: 'Medical Attendant Visa', note: 'For an Afghan national accompanying the principal patient.' },
+  { value: 'entry', label: 'Entry Visa', note: 'Covers several defined family, cultural, official, property, student-guardian and other purposes.' },
+  { value: 'un-diplomat', label: 'UN Diplomat Visa', note: 'For qualifying UN assignment, visit and dependant purposes.' },
 ];
 
 export default function AfghanFlow() {
   const navigate = useNavigate();
   const { updateState } = useStore();
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [category, setCategory] = useState('');
+  const [showCategoryError, setShowCategoryError] = useState(false);
 
   const startApplication = () => {
-    if (!selectedCategory) return;
+    if (!category) {
+      setShowCategoryError(true);
+      return;
+    }
+
     updateState({
       type: 'afghan',
       step: 0,
-      data: {
-        application_type: 'afghan',
-        visa_category: selectedCategory,
-        nationality: 'Afghanistan',
-      },
+      data: { application_type: 'afghan', visa_category: category, nationality: 'Afghanistan' },
       docs: [],
       submitted: false,
     });
     navigate('/apply');
   };
 
-  const selectedCat = AFGHAN_VISA_CATEGORIES.find(c => c.id === selectedCategory);
-
   return (
     <div className="max-w-4xl mx-auto py-12 px-6">
       <div className="mb-10 border-b border-border-dark pb-8">
-        <p className="uppercase tracking-widest text-sm text-primary mb-2 font-bold">Pre-Application Briefing</p>
-        <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Indian Visa for Afghan Nationals</h1>
+        <p className="uppercase tracking-widest text-sm text-primary mb-2 font-bold">Dedicated route briefing</p>
+        <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Indian visa route for Afghan nationals</h1>
         <p className="text-xl text-text-secondary leading-relaxed">
-          Afghan nationals use a dedicated visa portal separate from the standard Indian e-Visa system. Select your visa category below and review the document requirements before starting your application.
+          Afghan nationals are directed to the Government of India&apos;s dedicated Afghan online visa/ETA route—not the ordinary e-Visa or regular-paper flow.
         </p>
       </div>
 
-      <div className="space-y-10">
+      <div className="mb-10 bg-amber-50 border border-amber-300 p-5 rounded">
+        <p className="font-bold text-amber-950 mb-1">Demonstration boundary</p>
+        <p className="text-sm text-amber-900">This is an independent educational prototype. It saves a demo draft only for the current browser-tab session and cannot submit, amend, or check a Government of India application. Use the official portal for a real application.</p>
+      </div>
 
-        {/* Core Documents */}
+      <div className="space-y-12">
+        <section>
+          <h2 className="text-2xl font-bold mb-3 text-gray-900">1. Select the official category</h2>
+          <p className="mb-6 text-text-secondary">A category is required before the demo can begin. The official portal then asks for the applicable purpose or subtype, which determines the full evidence list.</p>
+          <fieldset>
+            <legend className="sr-only">Afghan visa category</legend>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {categories.map((item) => (
+                <label key={item.value} className={`border p-5 rounded cursor-pointer transition ${category === item.value ? 'border-primary bg-blue-50 ring-1 ring-primary' : 'border-border bg-white hover:border-primary-light'}`}>
+                  <span className="flex items-start gap-3">
+                    <input type="radio" name="afghan-category" value={item.value} checked={category === item.value} onChange={() => { setCategory(item.value); setShowCategoryError(false); }} className="mt-1" />
+                    <span>
+                      <strong className="block text-gray-900 mb-1">{item.label}</strong>
+                      <span className="block text-sm text-text-secondary leading-relaxed">{item.note}</span>
+                    </span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          {showCategoryError && <p role="alert" className="mt-3 text-sm font-bold text-red-700">Choose one of the six official categories to continue.</p>}
+        </section>
+
         <section className="bg-blue-50 border-l-4 border-primary p-6">
-          <h2 className="text-xl font-bold mb-3 text-[#081e33]">Core Documents Required (All Categories)</h2>
-          <p className="text-gray-800 mb-3">Before starting any application, you must have:</p>
+          <h2 className="text-xl font-bold mb-4 text-[#081e33]">2. Prepare the mandatory common documents</h2>
           <ul className="list-disc pl-6 space-y-2 text-gray-800">
-            <li>A copy of the <strong>passport page</strong> containing your personal particulars.</li>
-            <li>A <strong>National ID Card (Tazkira)</strong>.</li>
+            <li>A recent, clear, front-facing photograph with a white background.</li>
+            <li>A clear copy of the passport bio page containing the applicant&apos;s particulars.</li>
+            <li>A clear copy of the <strong>National Identity Card (Tazkira)</strong>.</li>
+            <li>All documents required for the selected category and purpose; invitation letters and business cards must be in English.</li>
           </ul>
+          <p className="mt-4 text-sm text-blue-950">Upload formats and limits could not be verified because the official live application route was unavailable during the review. The demo must not be treated as the authoritative upload validator.</p>
         </section>
 
-        {/* Category Selector */}
         <section>
-          <h2 className="text-2xl font-bold mb-2 text-gray-900">Select Your Visa Category</h2>
-          <p className="text-text-secondary mb-6">Choose the category that matches your purpose of travel. Each category has different additional requirements.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {AFGHAN_VISA_CATEGORIES.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`p-5 text-left border-2 rounded transition-all duration-200 ${
-                  selectedCategory === cat.id
-                    ? 'border-primary bg-blue-50 shadow-sm'
-                    : 'border-border-dark bg-gray-50 hover:border-primary-light'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${selectedCategory === cat.id ? 'border-primary' : 'border-gray-400'}`}>
-                    {selectedCategory === cat.id && <div className="w-2 h-2 rounded-full bg-primary" />}
-                  </div>
-                  <span className={`font-bold ${selectedCategory === cat.id ? 'text-primary' : 'text-gray-800'}`}>{cat.label}</span>
-                </div>
-              </button>
+          <h2 className="text-2xl font-bold mb-5 text-gray-900">3. Application and travel journey</h2>
+          <ol className="space-y-4 text-text-secondary">
+            {[
+              ['Apply once per person', 'Complete a separate application for every traveller and keep the generated Application ID.'],
+              ['Save, review, then finalize', 'An unfinished official form may be resumed. Review it carefully: the portal says no changes are allowed after final submission. Re-upload is a separate action, not general editing.'],
+              ['Wait for the official decision', 'Before travel, confirm the Electronic Travel Authorization status is GRANTED. This demo does not issue or verify an ETA.'],
+              ['Carry the right documents', 'Print and carry the ETA and travel on the passport used in the application. If that passport was replaced, carry both the old and new passports.'],
+              ['Complete arrival steps', 'Complete the separate e-Arrival Card within the published pre-arrival window. Biometrics are captured by immigration upon arrival.'],
+            ].map(([title, detail], index) => (
+              <li key={title} className="flex gap-4 border border-border p-5 rounded bg-white">
+                <span className="flex-none w-8 h-8 rounded-full bg-primary text-white grid place-items-center font-bold">{index + 1}</span>
+                <p><strong className="block text-gray-900 mb-1">{title}</strong>{detail}</p>
+              </li>
             ))}
+          </ol>
+        </section>
+
+        <section className="bg-gray-50 border border-border p-6 rounded">
+          <h2 className="text-xl font-bold mb-3 text-gray-900">Continue safely</h2>
+          <p className="text-sm text-text-secondary mb-5">The Government portal controls current eligibility, subtypes, evidence, and decisions. Regulatory information can change; verify it there before relying on this briefing.</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a href={AFGHAN_PORTAL} target="_blank" rel="noreferrer" className="btn-primary">Open official Afghan portal ↗</a>
+            <button type="button" onClick={startApplication} className="btn-secondary">Explore local demo draft</button>
           </div>
+          <p className="text-xs text-gray-500 mt-4">The second option stores data only for the current browser-tab session. It does not contact or submit to the Government of India.</p>
         </section>
-
-        {/* Additional Docs for Selected Category */}
-        {selectedCat && (
-          <section className="bg-amber-50 border border-amber-200 p-6 rounded">
-            <h3 className="font-bold text-gray-900 mb-3">Additional Documents for {selectedCat.label}</h3>
-            <ul className="list-disc pl-6 space-y-2 text-gray-800 text-sm">
-              {selectedCat.docs.map((d, i) => <li key={i}>{d}</li>)}
-            </ul>
-            <p className="text-xs text-gray-500 mt-4">All supporting documents must be in English, or accompanied by a certified English translation.</p>
-          </section>
-        )}
-
-        {/* Important Advisory */}
-        <section>
-          <h2 className="text-2xl font-bold mb-4 text-gray-900">Important Advisory</h2>
-          <ul className="space-y-4 text-text-secondary">
-            <li className="flex gap-3">
-              <span className="text-primary font-bold">1.</span>
-              <p><strong>Separate Applications:</strong> Each online application form is for one person. A separate application must be submitted for each applicant.</p>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-primary font-bold">2.</span>
-              <p><strong>Document Language:</strong> Documents such as invitation letters must be in English; otherwise, the application may be rejected.</p>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-primary font-bold">3.</span>
-              <p><strong>Biometrics:</strong> Biometric details are captured at immigration upon arrival in India.</p>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-primary font-bold">4.</span>
-              <p><strong>Travel Document:</strong> You must travel on the same passport on which the visa was issued. If you receive a new passport, carry the old one as well.</p>
-            </li>
-          </ul>
-        </section>
-
-        <div className="mt-12 text-center pt-8 border-t border-gray-200">
-          <button
-            onClick={startApplication}
-            disabled={!selectedCategory}
-            className={`px-8 py-4 font-bold rounded shadow transition inline-block text-lg ${
-              selectedCategory
-                ? 'bg-[#0b2540] text-white hover:bg-[#163a5f]'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            Start My Application &rarr;
-          </button>
-          {!selectedCategory && <p className="text-sm text-gray-400 mt-3">Please select a visa category to continue.</p>}
-          {selectedCategory && <p className="text-sm text-gray-500 mt-3">Your progress will be saved automatically.</p>}
-        </div>
       </div>
     </div>
   );
 }
-
