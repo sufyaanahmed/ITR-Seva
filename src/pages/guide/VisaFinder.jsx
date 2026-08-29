@@ -122,17 +122,7 @@ export default function VisaFinder() {
             </ul>
           </section>
 
-          <div className="text-xs text-text-secondary font-sans border-t border-border-dark pt-4 mb-8">
-            <p className="font-bold text-primary">Reviewed reference snapshot</p>
-            <p>Effective {VISA_RULESET.effectiveDate}; reviewed {VISA_RULESET.reviewedDate}. This demo does not automatically synchronize with Government systems.</p>
-            <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-              {VISA_RULESET.sources.map((source) => (
-                <a key={source.url} href={source.url} target="_blank" rel="noreferrer" className="text-secondary-accent underline hover:text-primary">
-                  {source.label}
-                </a>
-              ))}
-            </p>
-          </div>
+
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={reviseAnswers} className="btn-secondary">Change answers</button>

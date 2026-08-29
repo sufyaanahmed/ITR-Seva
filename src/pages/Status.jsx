@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const EVISA_PORTAL = 'https://indianvisaonline.gov.in/evisa/';
-const AFGHAN_PORTAL = 'https://www.indianvisaonline.gov.in/avisa/index.html';
 
 const mockDb = [
   {
@@ -190,7 +188,7 @@ export default function Status() {
               <div className="flex flex-col sm:flex-row gap-3 print:hidden">
                 <button type="button" onClick={() => window.print()} className="btn-secondary">Print demo summary</button>
                 <Link to="/e-arrival" className="btn-secondary">Review e-Arrival</Link>
-                <a href={result.nationality === 'Afghanistan' ? AFGHAN_PORTAL : EVISA_PORTAL} target="_blank" rel="noreferrer" className="btn-primary">Open official portal ↗</a>
+
               </div>
             </div>
           ) : (

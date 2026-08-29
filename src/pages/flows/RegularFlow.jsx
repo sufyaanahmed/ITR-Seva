@@ -111,9 +111,7 @@ export default function RegularFlow() {
         </div>
       )}
 
-      <div className="bg-yellow-50 border-l-4 border-secondary p-6 text-yellow-950 text-[0.95rem] leading-relaxed mt-12">
-        <strong>Demo boundary:</strong> requirements, categories, appointments, fees, and documents vary by route and Indian Mission/Post. Verify everything on the responsible official website. Completing this local demo does not create or submit a Government application.
-      </div>
+
     </div>
   );
 }

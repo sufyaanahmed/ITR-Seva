@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
 
 const VOA_PAGE = 'https://indianvisaonline.gov.in/visa/visa-on-arrival.html';
-const VOA_FORM = 'https://indianvisaonline.gov.in/visa/image/VOA_FORM.pdf';
 const nationalities = ['Japan', 'South Korea', 'United Arab Emirates'];
 const purposes = ['Tourism', 'Business', 'Conference', 'Medical'];
 const airports = ['Bangalore', 'Chennai', 'Delhi', 'Hyderabad', 'Kolkata', 'Mumbai'];
@@ -20,8 +19,17 @@ const confirmations = [
 
 export default function VoaFlow() {
   const navigate = useNavigate();
-  const { updateState } = useStore();
-  const [form, setForm] = useState({ nationality: '', priorVisa: '', purpose: '', days: '', airport: '' });
+  const { state, updateState } = useStore();
+  const [form, setForm] = useState(() => {
+    const data = state?.data || {};
+    return {
+      nationality: data.nationality || '',
+      priorVisa: data.uae_prior_indian_visa && data.uae_prior_indian_visa !== 'not_applicable' ? data.uae_prior_indian_visa : '',
+      purpose: data.visa_category ? data.visa_category.charAt(0).toUpperCase() + data.visa_category.slice(1) : '',
+      days: data.intended_stay_days || '',
+      airport: data.voa_arrival_port_gate && data.voa_arrival_port_gate !== 'not_applicable' ? data.voa_arrival_port_gate : ''
+    };
+  });
   const [checked, setChecked] = useState({});
   const [attempted, setAttempted] = useState(false);
 
@@ -52,6 +60,7 @@ export default function VoaFlow() {
       type: 'voa',
       step: 0,
       data: {
+        ...(state?.data || {}),
         application_type: 'voa',
         nationality: form.nationality,
         visa_category: form.purpose.toLowerCase(),
@@ -150,7 +159,7 @@ export default function VoaFlow() {
             {eligible && (
               <div className="mt-5 flex flex-col sm:flex-row gap-3">
                 <button type="button" onClick={startFormPreparation} className="btn-secondary">Prepare Annexure I in the local demo</button>
-                <a href={VOA_FORM} target="_blank" rel="noreferrer" className="btn-primary">Open official Annexure I PDF ↗</a>
+
                 <Link to="/e-arrival" className="btn-secondary">Review mandatory e-Arrival</Link>
               </div>
             )}

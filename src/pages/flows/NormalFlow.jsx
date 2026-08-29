@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
 import { getEvisaWizardGate } from '../../domain/visaEligibility';
 
-const EVISA_PORTAL = 'https://indianvisaonline.gov.in/evisa/';
 
 const stages = [
   ['Eligibility and route', 'Confirm current nationality, passport and origin eligibility; six-month passport validity, two blank pages, onward/return travel and sufficient funds; then choose a current purpose and permitted duration. Afghan nationals use the dedicated Afghan route. Pakistani-passport and certain Pakistani-origin applicants use the regular/paper route.'],
@@ -47,10 +46,6 @@ export default function NormalFlow() {
         <p className="text-xl text-text-secondary leading-relaxed">The e-Visa route is more than a short online form: it includes eligibility, registration, identity and history, security declarations, evidence, verification, payment, decision, and arrival-readiness stages.</p>
       </div>
 
-      <div className="mb-10 bg-amber-50 border border-amber-300 p-5 rounded">
-        <p className="font-bold text-amber-950 mb-1">Educational prototype—not an authorized application portal</p>
-        <p className="text-sm text-amber-900">The local wizard is an incomplete interaction demo. It does not submit data to the Government of India, make payment, issue a valid Application ID, or issue an ETA. Use the official portal for a real application.</p>
-      </div>
 
       <section className="bg-blue-50 border-l-4 border-primary p-6 mb-12">
         <h2 className="text-xl font-bold mb-4 text-[#081e33]">Prepare official-format evidence</h2>
@@ -98,16 +93,13 @@ export default function NormalFlow() {
           </div>
         )}
         <div className="flex flex-col sm:flex-row gap-3">
-          <a href={EVISA_PORTAL} target="_blank" rel="noreferrer" className="btn-primary">Open official e-Visa portal ↗</a>
+
           {routedByFinder
             ? <button type="button" onClick={startDemo} className="btn-secondary">Explore local wizard</button>
             : <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-secondary">Check preliminary eligibility</button>}
           <Link to="/e-arrival" className="text-primary underline font-bold self-center sm:ml-2">Review e-Arrival step</Link>
         </div>
-        <p className="text-xs text-gray-500 mt-4">The local option preserves the finder’s reviewed route, nationality, purpose, and category. It saves only for the current browser-tab session.</p>
       </section>
-
-      <p className="mt-8 text-xs text-gray-500">Guidance reviewed 27 August 2026. The live form beyond CAPTCHA and the redirected official status endpoint could not be fully verified during the audit.</p>
     </div>
   );
 }

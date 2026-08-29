@@ -1,6 +1,5 @@
 import React from 'react';
 
-const OFFICIAL_EARRIVAL = 'https://indianvisaonline.gov.in/earrival/';
 
 export default function EArrival() {
   return (
@@ -39,13 +38,7 @@ export default function EArrival() {
         </section>
       </div>
 
-      <section className="bg-blue-50 border-l-4 border-primary p-6 mb-10">
-        <h2 className="text-xl font-bold mb-3 text-[#081e33]">Safe handoff to the Government service</h2>
-        <p className="text-sm text-blue-950 mb-5">The button below opens the official Government of India domain in a new tab. Check the address before entering personal information. Data entered there is governed by that service, not this prototype.</p>
-        <a href={OFFICIAL_EARRIVAL} target="_blank" rel="noreferrer" className="btn-primary">Open official e-Arrival Card ↗</a>
-      </section>
 
-      <p className="text-xs text-gray-500">Form and guidance reviewed 27 August 2026. Recheck the official page before travel because requirements may change.</p>
     </div>
   );
 }

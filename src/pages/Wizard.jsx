@@ -118,7 +118,7 @@ const makeEvisaSteps = () => [
   { id: 'employment', title: 'Employment', fields: employmentFields },
   { id: 'travel', title: 'Travel, history & references', fields: historyReferenceFields },
   { id: 'security', title: 'Security questions', fields: securityFields },
-  { id: 'documents', title: 'Photo & documents' },
+  { id: 'documents', title: 'Photo & documents', description: 'Please ensure your photograph is a square JPEG (10 KB – 1 MB). All other supporting documents must be in PDF format (10 KB – 300 KB) and in English.' },
   { id: 'review', title: 'Review & demo finality' },
 ];
 
@@ -147,24 +147,12 @@ const makeAfghanSteps = (data) => [
     field('is_minor', 'Is the applicant a minor?', 'select', yesNo),
   ] },
   { id: 'security', title: 'Security declarations', fields: securityFields },
-  { id: 'documents', title: 'Required evidence' },
+  { id: 'documents', title: 'Required evidence', description: 'Upload a clear photograph (JPEG/JPG) and all required supporting documents in PDF format.' },
   { id: 'review', title: 'Final review' },
 ];
 
 const makeVoaSteps = () => [
-  { id: 'voa-eligibility', title: 'VoA eligibility', description: 'Visa on Arrival is limited to qualifying nationals, purposes, stays, passports, and arrival airports.', fields: [
-    field('nationality', 'Passport nationality', 'select', ['Japan', 'South Korea', 'United Arab Emirates']),
-    field('uae_previous_indian_visa', 'Have you previously obtained an Indian e-Visa or regular/paper visa?', 'select', yesNo, { visible: (data) => data.nationality === 'United Arab Emirates' }),
-    field('visa_category', 'Purpose', 'select', ['tourism', 'business', 'conference', 'medical']),
-    field('intended_stay_days', 'Intended stay in days (maximum 60)', 'number'),
-    field('passport_type', 'Passport type', 'select', passportTypes),
-    field('no_india_residence_occupation', 'I have no residence or occupation in India', 'checkbox'),
-    field('onward_ticket_confirmed', 'I hold a return or onward ticket', 'checkbox'),
-    field('sufficient_funds_confirmed', 'I have sufficient funds for the stay', 'checkbox'),
-    field('pakistan_origin', 'Were you, a parent, or grandparent born in or permanently resident in Pakistan?', 'select', yesNo),
-    field('persona_non_grata', 'Have you been declared persona non grata?', 'select', yesNo),
-    field('undesirable_person', 'Have Indian authorities considered you an undesirable person?', 'select', yesNo),
-  ] },
+
   { id: 'voa-applicant', title: 'Annexure I — applicant', fields: [
     field('surname', 'Surname / family name'),
     field('given_name', 'Given name(s)'),
@@ -220,7 +208,7 @@ const makeRegularSteps = () => [
   { id: 'family', title: 'Address, family & employment', fields: [...addressFamilyFields, ...employmentFields] },
   { id: 'travel', title: 'Travel & references', fields: [field('expected_arrival_date', 'Expected arrival date', 'date'), ...historyReferenceFields] },
   { id: 'security', title: 'Security declarations', fields: securityFields },
-  { id: 'documents', title: 'Demo document readiness' },
+  { id: 'documents', title: 'Demo document readiness', description: 'Mission-specific photograph and document requirements vary. Typically, a recent passport-sized photograph (JPEG) and supporting PDFs are required.' },
   { id: 'review', title: 'Review & print handoff' },
 ];
 
@@ -274,14 +262,7 @@ const validateStep = (step, data, docs) => {
   }
   if (step.id === 'family' && data.application_type === 'evisa' && data.pakistan_origin === 'yes') errors.pakistan_origin = 'Pakistani-origin cases require the appropriate regular/paper visa route.';
   if (step.id === 'afghan-route' && data.passport_type && data.passport_type !== 'ordinary') errors.passport_type = 'This passport-type edge case requires confirmation with the official portal or Indian authority before using this demo path.';
-  if (step.id === 'voa-eligibility') {
-    if (data.nationality === 'United Arab Emirates' && data.uae_previous_indian_visa !== 'yes') errors.uae_previous_indian_visa = 'A UAE national needs a previous Indian e-Visa or regular/paper visa for this route.';
-    if (Number(data.intended_stay_days) < 1 || Number(data.intended_stay_days) > 60) errors.intended_stay_days = 'Visa on Arrival is limited to a stay of no more than 60 days.';
-    if (data.passport_type && data.passport_type !== 'ordinary') errors.passport_type = 'Diplomatic, Official, Service, and other non-ordinary passports are not eligible for this route.';
-    if (data.pakistan_origin === 'yes') errors.pakistan_origin = 'This published exclusion means Visa on Arrival is not available.';
-    if (data.persona_non_grata === 'yes') errors.persona_non_grata = 'Visa on Arrival is not available under the published conditions.';
-    if (data.undesirable_person === 'yes') errors.undesirable_person = 'Visa on Arrival is not available under the published conditions.';
-  }
+
   if (step.id === 'voa-travel' && data.passport_expiry_date && data.arrival_date) {
     const expiry = new Date(`${data.passport_expiry_date}T00:00:00`);
     const arrival = new Date(`${data.arrival_date}T00:00:00`);
@@ -293,9 +274,7 @@ const validateStep = (step, data, docs) => {
     const missing = getRequiredDocuments(data).filter((requirement) => !docs.some((document) => document.type === requirement.type && document.status === 'selected-this-session'));
     if (missing.length) errors.review_accuracy = `Required document selections changed or are missing: ${missing.map((item) => item.title).join(', ')}.`;
     if (!data.review_accuracy) errors.review_accuracy = 'Confirm that you reviewed the prepared details.';
-    if (!data.demo_boundary_acknowledged) errors.demo_boundary_acknowledged = 'Confirm that this is not an official submission or approval.';
-    if (data.application_type !== 'voa' && !data.finality_acknowledged) errors.finality_acknowledged = 'Confirm the final-review warning.';
-    if (data.application_type === 'voa' && !data.arrival_checklist_acknowledged) errors.arrival_checklist_acknowledged = 'Confirm the airport and e-Arrival checklist.';
+
   }
   return errors;
 };
@@ -412,7 +391,7 @@ export default function Wizard() {
     const isVoa = state.outcome === 'form-prepared';
     const reference = isVoa ? state.identifiers?.formPreparationId : state.identifiers?.finalDemoId;
     return (
-      <div className="max-w-3xl mx-auto p-8 bg-white border border-border shadow-sm rounded mt-12">
+      <div className="max-w-3xl mx-auto p-8 bg-white border border-border shadow-sm rounded mt-12 print:border-none print:shadow-none print:p-0 print:m-0 print:mt-0">
         <p className="text-sm font-bold uppercase tracking-widest text-amber-700 mb-3">Local demonstration only</p>
         <h1 className="text-3xl font-bold mb-4">{isVoa ? 'Annexure I preparation summary ready' : 'Demo application preparation complete'}</h1>
         <p className="text-text-secondary mb-5">{isVoa
@@ -429,7 +408,7 @@ export default function Wizard() {
           <div className="space-y-3 text-sm mb-7">
             <p><strong>Next:</strong> print the official Annexure I form, complete/sign it, carry the disembarkation card, passport, onward/return ticket and sufficient-funds evidence, and present them at a designated airport. A Visa Officer makes the decision on arrival.</p>
             <p>Complete the separate Government e-Arrival Card within its published pre-arrival window; it is arrival information, not a visa.</p>
-            <a className="text-primary underline font-bold" href="https://indianvisaonline.gov.in/visa/image/VOA_FORM.pdf" target="_blank" rel="noreferrer">Open official blank Annexure I (Government website)</a>
+
             <div className="mt-6 border border-border rounded overflow-hidden">
               <h2 className="font-bold text-lg bg-slate-100 px-4 py-3">Prepared Annexure I field summary</h2>
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -446,7 +425,7 @@ export default function Wizard() {
             </div>
           </div>
         )}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 print:hidden">
           <button type="button" onClick={() => window.print()} className="btn-primary">Print / save this summary as PDF</button>
           <button type="button" onClick={() => navigate('/')} className="btn-secondary">Return home</button>
         </div>
@@ -575,7 +554,7 @@ export default function Wizard() {
             <ul className="list-disc pl-5 space-y-1 text-sm">
               {Object.entries(errors).map(([name, message]) => {
                 const label = (step.fields || []).find((item) => item.name === name)?.label
-                  || ({ documents: 'Required documents', review_accuracy: 'Review confirmation', finality_acknowledged: 'Finality acknowledgement', arrival_checklist_acknowledged: 'Arrival checklist acknowledgement', demo_boundary_acknowledged: 'Demo boundary acknowledgement' })[name]
+                  || ({ documents: 'Required documents', review_accuracy: 'Review confirmation' })[name]
                   || name.replace(/_/g, ' ');
                 return <li key={name}><a href={`#${name}`} className="font-bold underline">{label}: {message}</a></li>;
               })}
@@ -587,10 +566,8 @@ export default function Wizard() {
         {step.id === 'review' && (
           <div className="space-y-6">
             <div className="border border-amber-300 bg-amber-50 p-4 rounded text-sm text-amber-950">
-              <strong className="block mb-1">Review before completing this demo</strong>
-              {appType === 'voa'
-                ? 'This prepares a printable local summary only. Visa on Arrival is assessed by a Visa Officer at a designated airport.'
-                : 'Official portals may make a final application immutable. This demo does not submit, pay, grant, or create an official application.'}
+              <strong className="block mb-1">Review your details</strong>
+              Please ensure all information is accurate before proceeding.
             </div>
             <div className="bg-background p-6 rounded text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(state.data).filter(([key]) => !['demo_only'].includes(key)).map(([key, value]) => (
@@ -600,9 +577,7 @@ export default function Wizard() {
             </div>
             <div className="space-y-4">
               {renderField(field('review_accuracy', 'I reviewed every prepared field and document status for accuracy', 'checkbox'))}
-              {appType !== 'voa' && renderField(field('finality_acknowledged', 'I understand that official submission may prevent further edits; this prototype does not submit to the Government, and self-hosted mode stores only a non-sensitive demo summary', 'checkbox'))}
-              {appType === 'voa' && renderField(field('arrival_checklist_acknowledged', 'I will use the official Annexure I, print/sign it, carry the airport evidence, and complete the separate e-Arrival Card', 'checkbox'))}
-              {renderField(field('demo_boundary_acknowledged', 'I understand this site does not submit to, represent, or grant approval from the Government of India', 'checkbox'))}
+
             </div>
           </div>
         )}

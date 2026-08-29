@@ -71,14 +71,14 @@ export default function Resume() {
     <div className="max-w-2xl mx-auto py-12 px-6">
       <h1 className="text-3xl font-serif font-bold mb-4">Continue local preparation</h1>
       <p className="text-text-secondary mb-3">This page can reopen only the demo preparation stored for this tab session.</p>
-      <p className="text-sm text-text-secondary mb-8">It cannot retrieve a Government application, check an official Application ID, or resume work completed on another device.</p>
+
 
       {hasLocalPreparation ? (
         <div className="border-2 border-primary p-6 rounded bg-primary-light/20 shadow-sm mb-10">
           <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{isComplete ? 'Prepared result found in this tab' : 'Session draft found in this tab'}</p>
           <h2 className="font-bold text-xl mb-2 text-primary">{flowLabels[appType]}</h2>
           <p className="text-sm text-text-secondary mb-4">{isComplete
-            ? 'This result records local demo preparation only. It is not evidence of an official submission, payment, visa decision, or approval.'
+            ? 'This result records local demo preparation only.'
             : 'Your entered demo fields and validated file metadata were saved for this tab session. File contents were not saved.'}</p>
           {reference && (
             <div className="bg-white/70 border border-primary/20 rounded p-3 mb-6">
@@ -96,15 +96,6 @@ export default function Resume() {
         </div>
       )}
 
-      <div className="border border-amber-200 p-6 rounded bg-amber-50 text-amber-950">
-        <h2 className="font-bold text-lg mb-2">This-tab storage is not an official account</h2>
-        <ul className="text-sm space-y-2 list-disc pl-5">
-          <li>Refreshing this tab may restore the draft; opening a separate tab or restarting the browser will not.</li>
-          <li>Closing this tab or browser ends the draft session. File contents are never retained.</li>
-          <li>The temporary demo reference works only as an on-screen label inside this prototype.</li>
-          <li>For a real application or official status, use only the appropriate Government of India service and its issued credentials.</li>
-        </ul>
-      </div>
 
       <DraftErasure persistence={persistence} onErase={eraseAndLeave} />
     </div>

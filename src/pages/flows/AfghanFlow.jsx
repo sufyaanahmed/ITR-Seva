@@ -15,8 +15,8 @@ const categories = [
 
 export default function AfghanFlow() {
   const navigate = useNavigate();
-  const { updateState } = useStore();
-  const [category, setCategory] = useState('');
+  const { state, updateState } = useStore();
+  const [category, setCategory] = useState(state?.data?.visa_category || '');
   const [showCategoryError, setShowCategoryError] = useState(false);
 
   const startApplication = () => {
@@ -28,7 +28,7 @@ export default function AfghanFlow() {
     updateState({
       type: 'afghan',
       step: 0,
-      data: { application_type: 'afghan', visa_category: category, nationality: 'Afghanistan' },
+      data: { ...(state?.data || {}), application_type: 'afghan', visa_category: category, nationality: 'Afghanistan' },
       docs: [],
       submitted: false,
     });

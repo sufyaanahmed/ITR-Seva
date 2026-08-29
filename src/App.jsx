@@ -71,7 +71,7 @@ const Header = () => {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className="relative z-50 border-b border-border bg-background">
+    <header className="relative z-50 border-b border-border bg-background print:hidden">
       <div className="mx-auto flex min-h-[104px] w-full max-w-[1200px] flex-wrap items-center gap-4 px-4 py-4 sm:px-6 lg:flex-nowrap">
         <Link to="/" className="group mr-auto flex shrink-0 items-center gap-3 font-serif text-[1.2rem] text-primary no-underline sm:gap-4 sm:text-[1.4rem] md:text-2xl" aria-label="India Visa Seva independent demo home">
           <span className="grid h-[48px] w-[48px] shrink-0 place-items-center sm:h-[56px] sm:w-[56px]" aria-hidden="true">
@@ -150,7 +150,7 @@ const Header = () => {
 };
 
 const Footer = () => (
-  <footer className="relative bg-[#111A31] pt-20 pb-12 text-[#FAF7F0] overflow-hidden border-t-4 border-[#D4AF37]">
+  <footer className="relative bg-[#111A31] pt-20 pb-12 text-[#FAF7F0] overflow-hidden border-t-4 border-[#D4AF37] print:hidden">
     <div className="mx-auto max-w-6xl px-6 relative z-10">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 mb-16">
         
@@ -208,26 +208,13 @@ const RouteFallback = () => (
 
 
 export default function App() {
-  const [showBanner, setShowBanner] = useState(true);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background font-sans text-text">
+    <div className="flex min-h-screen flex-col bg-background font-sans text-text print:bg-white">
       <Loader />
       <ScrollToTop />
       <Header />
-      {showBanner && (
-        <div className="relative bg-secondary-accent px-10 py-3 text-center text-sm font-medium tracking-wide text-white flex flex-col sm:flex-row items-center justify-center gap-2">
-          <svg className="hidden sm:block w-4 h-4 text-white opacity-90 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-          </svg>
-          <span>Travel-guidance snapshot: review the separate <Link to="/e-arrival" className="font-bold underline transition-colors hover:text-primary-dark">e-Arrival Card explainer</Link> and verify it on the official service before travel.</span>
-          <button onClick={() => setShowBanner(false)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 hover:bg-white/20 rounded-full transition-colors focus:outline-none" aria-label="Dismiss announcement">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      )}
+
       <main id="main-content" className="w-full flex-1">
         <Suspense fallback={<RouteFallback />}>
           <Routes>

@@ -24,9 +24,7 @@ export default function Service({ type = 'evisa' }) {
         <button type="button" onClick={() => navigate('/status')} className="btn-secondary">Before-travel demo</button>
       </div>
 
-      <div className="bg-yellow-50 border-l-4 border-secondary p-4 text-yellow-950 text-sm">
-        <strong>Demo boundary:</strong> this site does not submit applications, accept Government payments, retrieve official status, or issue a visa or ETA.
-      </div>
+
     </div>
   );
 }
