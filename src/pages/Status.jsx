@@ -8,8 +8,8 @@ const mockDb = [
   {
     id: 'DEMO2026E00001',
     passport: 'DEMO123456',
-    birthDate: '1992-04-18',
-    applicant: 'Asha Example',
+    birthDate: '1985-04-22',
+    applicant: 'Sam Altman',
     nationality: 'United States',
     visa: 'e-Tourist Visa (synthetic)',
     status: 'GRANTED',
@@ -69,7 +69,7 @@ export default function Status() {
   const fillDemoData = () => {
     setApplicationId('DEMO2026E00001');
     setPassport('DEMO123456');
-    setBirthDate('1992-04-18');
+    setBirthDate('1985-04-22');
   };
 
   return (
