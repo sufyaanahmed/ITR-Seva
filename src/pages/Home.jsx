@@ -279,7 +279,7 @@ export default function Home() {
                   On Arrival
                 </Link>
                 <span className="opacity-30">·</span>
-                <Link to="/flow/afghan" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"><img src="https://flagcdn.com/w40/af.png" className="w-4 rounded-sm opacity-90" alt=""/> Afghan</Link>
+                <Link to="/flow/afghan" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"><img src="https://flagcdn.com/w20/af.png" className="w-4 rounded-sm opacity-90" alt=""/> Afghan</Link>
               </div>
             </div>
           </div>

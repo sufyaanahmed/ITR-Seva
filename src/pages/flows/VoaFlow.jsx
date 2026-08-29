@@ -80,10 +80,7 @@ export default function VoaFlow() {
         <p className="text-xl text-text-secondary leading-relaxed">This facility is limited to qualifying citizens of Japan, South Korea, and the United Arab Emirates. Complete every published gate before relying on it.</p>
       </div>
 
-      <div className="mb-10 bg-amber-50 border border-amber-300 p-5 rounded">
-        <p className="font-bold text-amber-950 mb-1">This is not an online visa application</p>
-        <p className="text-sm text-amber-900">This independent prototype can explain eligibility and direct you to the official Annexure I form. Only an Immigration Officer can assess and grant Visa-on-Arrival at a designated airport.</p>
-      </div>
+
 
       <form onSubmit={checkEligibility} className="space-y-10" noValidate>
         <section>
@@ -172,11 +169,6 @@ export default function VoaFlow() {
         <p className="mt-4 font-bold text-blue-950">If granted, the Visa-on-Arrival may allow double entry for up to 60 days. It is non-extendable and non-convertible.</p>
       </section>
 
-      <div className="mt-8 flex flex-wrap gap-3">
-        <a href={VOA_PAGE} target="_blank" rel="noreferrer" className="btn-secondary">Verify on official VoA page ↗</a>
-        <Link to="/flow/normal" className="text-primary underline font-bold self-center">Need the e-Visa route?</Link>
-      </div>
-      <p className="mt-5 text-xs text-gray-500">Rules reviewed 27 August 2026. Exact officer-requested documents and airport payment methods were not verifiable from the published page.</p>
     </div>
   );
 }

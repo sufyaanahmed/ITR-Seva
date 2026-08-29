@@ -45,10 +45,6 @@ export default function AfghanFlow() {
         </p>
       </div>
 
-      <div className="mb-10 bg-amber-50 border border-amber-300 p-5 rounded">
-        <p className="font-bold text-amber-950 mb-1">Demonstration boundary</p>
-        <p className="text-sm text-amber-900">This is an independent educational prototype. It saves a demo draft only for the current browser-tab session and cannot submit, amend, or check a Government of India application. Use the official portal for a real application.</p>
-      </div>
 
       <div className="space-y-12">
         <section>
@@ -102,15 +98,11 @@ export default function AfghanFlow() {
           </ol>
         </section>
 
-        <section className="bg-gray-50 border border-border p-6 rounded">
-          <h2 className="text-xl font-bold mb-3 text-gray-900">Continue safely</h2>
-          <p className="text-sm text-text-secondary mb-5">The Government portal controls current eligibility, subtypes, evidence, and decisions. Regulatory information can change; verify it there before relying on this briefing.</p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <a href={AFGHAN_PORTAL} target="_blank" rel="noreferrer" className="btn-primary">Open official Afghan portal ↗</a>
-            <button type="button" onClick={startApplication} className="btn-secondary">Explore local demo draft</button>
-          </div>
-          <p className="text-xs text-gray-500 mt-4">The second option stores data only for the current browser-tab session. It does not contact or submit to the Government of India.</p>
-        </section>
+        <div className="pt-6 border-t border-border-dark flex justify-end">
+          <button type="button" onClick={startApplication} className="bg-gradient-to-r from-secondary-accent to-[#C9933A] text-primary-dark px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 rounded-sm">
+            Start Application →
+          </button>
+        </div>
       </div>
     </div>
   );
