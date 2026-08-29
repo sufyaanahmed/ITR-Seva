@@ -28,8 +28,14 @@ const destinations = [
   { img: '/Places/Taj_Mahal.jpg', title: 'Taj Mahal', desc: "A monument of marble born from an emperor's undying love. Witness a timeless romance etched in stone at the edge of the Yamuna." },
   { img: '/Places/Tamil_Nadu.jpg', title: 'Tamil Nadu', desc: 'A glorious peninsula of towering temple gopurams and classical rhythms. Journey into the ancient soul of the Dravidian heartland.' },
   { img: '/Places/Varanasi.jpg', title: 'Varanasi', desc: "Where the sacred river meets the eternal fires of devotion. Experience the spiritual heart of the world at dawn's golden hour." },
-  { img: '/Places/Vizag.jpg', title: 'Visakhapatnam', desc: 'Where the lush Eastern Ghats plunge into the azure Bay of Bengal. Discover a coastal jewel glistening with untold marine secrets.' }
+  { img: '/Places/Vizag.jpg', title: 'Visakhapatnam', desc: 'Where the lush Eastern Ghats plunge into the azure Bay of Bengal. Discover a coastal jewel glistening with untold marine secrets.' },
+  { img: '/Places/Andaman_Nicobar.jpg', title: 'Andaman & Nicobar Islands', desc: 'Pristine white-sand beaches surrounded by crystal-clear turquoise waters. A tropical haven for marine life and vibrant coral reefs.' },
+  { img: '/Places/Odisha.jpg', title: 'Odisha', desc: 'Where the Sun Temple of Konark stands as a testament to ancient architectural marvels. Discover golden beaches and deeply rooted tribal heritage.' },
+  { img: '/Places/Punjab.jpg', title: 'Punjab', desc: 'The land of five rivers, resonating with the golden glow of the Harmandir Sahib. Experience boundless warmth and vibrant harvest festivals.' },
+  { img: '/Places/Uttarakhand.jpg', title: 'Uttarakhand', desc: 'The land of the gods, nestled in the majestic Himalayas. A spiritual sanctuary offering serene hill stations and sacred pilgrimage routes.' }
 ];
+
+
 
 const stateToDestinations = {
   'IN-AS': ['Assam'],
@@ -50,7 +56,11 @@ const stateToDestinations = {
   'IN-HP': ['Shimla'],
   'IN-SK': ['Sikkim'],
   'IN-UP': ['Taj Mahal', 'Varanasi'],
-  'IN-AP': ['Visakhapatnam']
+  'IN-AP': ['Visakhapatnam'],
+  'IN-PB': ['Punjab'],
+  'IN-AN': ['Andaman & Nicobar Islands'],
+  'IN-OR': ['Odisha'],
+  'IN-UT': ['Uttarakhand']
 };
 
 const stateDescriptions = {
@@ -72,7 +82,11 @@ const stateDescriptions = {
   'IN-HP': { name: 'Himachal Pradesh', desc: 'A Himalayan haven offering breathtaking mountain vistas, serene misty hill stations, and thrilling adventure sports.' },
   'IN-SK': { name: 'Sikkim', desc: 'A pristine Himalayan kingdom known for its stunning orchids, majestic views of Mount Kanchenjunga, and serene Buddhist culture.' },
   'IN-UP': { name: 'Uttar Pradesh', desc: 'The spiritual heartland of India, home to the iconic monument of love, the Taj Mahal, and the sacred eternal ghats of Varanasi.' },
-  'IN-AP': { name: 'Andhra Pradesh', desc: 'Known for its rich cultural heritage, ancient pilgrimage temples, and beautiful coastal landscapes along the azure Bay of Bengal.' }
+  'IN-AP': { name: 'Andhra Pradesh', desc: 'Known for its rich cultural heritage, ancient pilgrimage temples, and beautiful coastal landscapes along the azure Bay of Bengal.' },
+  'IN-PB': { name: 'Punjab', desc: 'Known for its lush green fields, the magnificent Golden Temple in Amritsar, and a culture brimming with warmth and vibrant celebrations.' },
+  'IN-AN': { name: 'Andaman & Nicobar Islands', desc: 'A stunning archipelago featuring pristine beaches, vibrant coral reefs, and historical landmarks like the Cellular Jail.' },
+  'IN-OR': { name: 'Odisha', desc: 'A culturally rich state celebrated for the architectural wonder of the Konark Sun Temple, serene beaches, and vibrant classical dance.' },
+  'IN-UT': { name: 'Uttarakhand', desc: 'Often referred to as Devbhumi (Land of the Gods), known for its majestic Himalayan peaks, holy rivers, and peaceful ashrams.' }
 };
 
 const STATE_NAMES = {
