@@ -181,16 +181,81 @@ const FeaturedShowcase = () => {
   );
 };
 
+import { useNavigate } from 'react-router-dom';
+import { useStore } from '../store';
+
+const STATE_AIRPORTS = {
+  'IN-RJ': 'Jaipur International Airport (JAI) or Delhi (DEL)',
+  'IN-KL': 'Cochin (COK) or Trivandrum (TRV)',
+  'IN-MH': 'Mumbai Chhatrapati Shivaji Airport (BOM)',
+  'IN-DL': 'Indira Gandhi International Airport (DEL)',
+  'IN-KA': 'Bengaluru Kempegowda Airport (BLR)',
+  'IN-TN': 'Chennai International Airport (MAA)',
+  'IN-WB': 'Kolkata Netaji Subhash Chandra Bose Airport (CCU)',
+  'IN-TG': 'Hyderabad Rajiv Gandhi Airport (HYD)',
+  'IN-GA': 'Goa Dabolim (GOI) / Manohar International (GOX)',
+  'IN-UP': 'Lucknow (LKO) or Varanasi (VNS)',
+  'IN-AS': 'Guwahati Lokpriya Gopinath Bordoloi Airport (GAU)',
+  'IN-JK': 'Srinagar Airport (SXR) via Delhi Checkpoint',
+  'IN-LA': 'Leh Kushok Bakula Rimpochee Airport via Delhi',
+  'IN-HP': 'Chandigarh (IXC) or Delhi (DEL) Checkpoint',
+  'IN-UT': 'Dehradun Jolly Grant Airport via Delhi',
+};
+
 const StateHeader = ({ stateId }) => {
+  const navigate = useNavigate();
+  const { updateState } = useStore();
   const info = stateDescriptions[stateId] || { 
     name: STATE_NAMES[stateId] || 'Selected Region', 
     desc: 'Experience the unique culture, rich heritage, and stunning landscapes of this beautiful region.' 
   };
+  const airport = STATE_AIRPORTS[stateId] || 'Major Indian International Entry Ports';
+
+  const handleApplyForState = () => {
+    updateState({
+      type: 'evisa',
+      step: 0,
+      data: {
+        application_type: 'evisa',
+        visa_category: 'tourist',
+        places_to_visit: info.name,
+        arrival_port: airport.split(' ')[0] + ' Airport',
+      },
+      docs: [],
+      submitted: false,
+    });
+    navigate('/apply');
+  };
+
   return (
     <div className="mb-8 flex flex-col items-center text-center">
-      <h2 className="text-3xl font-serif font-bold text-[#1E2A4F] mb-3">{info.name}</h2>
-      <p className="text-[#1E2A4F]/80 text-[0.95rem] max-w-lg leading-relaxed">{info.desc}</p>
-      <div className="w-16 h-0.5 bg-[#D4AF37] mt-5 opacity-70" />
+      <h2 className="text-3xl font-serif font-bold text-[#1E2A4F] mb-2">{info.name}</h2>
+      <p className="text-[#1E2A4F]/80 text-[0.95rem] max-w-lg leading-relaxed mb-5">{info.desc}</p>
+      
+      {/* Contextual Visa Callout Card */}
+      <div className="w-full max-w-md bg-white border border-[#D4AF37]/50 rounded-xl p-4 shadow-sm text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <span className="text-[9px] font-sans font-bold uppercase tracking-widest text-[#C4762A] block">
+            Official Travel Facilitation
+          </span>
+          <strong className="text-xs font-serif font-bold text-[#1E2A4F] block">
+            e-Tourist Visa for {info.name}
+          </strong>
+          <span className="text-[10px] text-gray-500 block mt-0.5">
+            Gateway: {airport}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={handleApplyForState}
+          className="bg-gradient-to-r from-[#1E2A4F] to-[#162040] hover:from-[#162040] hover:to-[#0B2540] text-white text-[11px] font-sans font-bold uppercase tracking-wider px-3.5 py-2 rounded shadow-xs transition-all whitespace-nowrap cursor-pointer shrink-0"
+        >
+          <span>Apply Visa</span>
+          <span className="text-[#D4AF37] ml-1">→</span>
+        </button>
+      </div>
+
+      <div className="w-16 h-0.5 bg-[#D4AF37] mt-2 opacity-70" />
     </div>
   );
 };

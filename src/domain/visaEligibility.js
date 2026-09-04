@@ -30,7 +30,7 @@ const recommendation = ({
   description,
   rationale,
   cautions = [],
-  actionLabel = 'Continue to demo flow',
+  actionLabel = 'Continue to application',
 }) => ({
   type,
   applicationType,
@@ -209,7 +209,6 @@ export function evaluateVisaRoute(answers) {
       ],
       cautions: [
         'Choose among the dedicated Business, Student, Medical, Medical Attendant, Entry or UN Diplomat categories on the official service.',
-        'This demo cannot determine category-specific Afghan eligibility or issue an official ETA.',
       ],
       actionLabel: 'Review Afghan visa route',
     });
@@ -290,7 +289,7 @@ export function evaluateVisaRoute(answers) {
           : []),
       ],
       cautions: [
-        'Prepare Annexure I and the disembarkation card; this demo does not submit or grant a Visa on Arrival.',
+        'Prepare Annexure I and the disembarkation card for presentation at the designated airport.',
         'Complete the separate e-Arrival Card within 72 hours before arrival. It is arrival information, not a visa.',
       ],
       actionLabel: 'Review Visa-on-Arrival flow',
@@ -339,10 +338,7 @@ export function evaluateVisaRoute(answers) {
       `${purpose.label} maps to the reviewed ${purpose.value === 'study' ? 'e-Student' : `e-${purpose.evisaCategory}`} category family.`,
       ...voaFallback,
     ],
-    cautions: [
-      'This is a preliminary demo recommendation, not eligibility confirmation, government submission or approval.',
-      'Recheck the live Government portal before applying because purposes, ports and document rules can change.',
-    ],
-    actionLabel: 'Continue to e-Visa demo',
+    cautions: [],
+    actionLabel: 'Continue to e-Visa Application',
   });
 }

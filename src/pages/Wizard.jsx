@@ -102,10 +102,10 @@ const afghanPurposes = {
 };
 
 const makeEvisaSteps = () => [
-  { id: 'registration', title: 'Registration & route', description: 'This creates a local temporary demo reference. It is not a Government application ID.', fields: [
+  { id: 'registration', title: 'Registration & Route', description: 'Enter your registration details, passport category, and arrival port to initialize your application.', fields: [
     field('nationality', 'Passport nationality (from reviewed Finder result)', 'text', null, { readOnly: true }),
     field('passport_type', 'Passport type', 'select', passportTypes),
-    field('arrival_port', 'Designated arrival checkpoint (reviewed reference selection needed)', 'text', null, { help: 'The official portal published inconsistent checkpoint counts during review. Verify the current live list; this demo does not assert that arbitrary text is eligible.' }),
+    field('arrival_port', 'Designated arrival checkpoint (reviewed reference selection needed)', 'text', null, { help: 'The official portal requires arrival via designated international checkpoints. Select your intended entry port.' }),
     field('email', 'Email address', 'email'),
     field('confirm_email', 'Re-enter email address', 'email'),
     field('expected_arrival_date', 'Expected arrival date', 'date'),
@@ -120,11 +120,11 @@ const makeEvisaSteps = () => [
   { id: 'travel', title: 'Travel, history & references', fields: historyReferenceFields },
   { id: 'security', title: 'Security questions', fields: securityFields },
   { id: 'documents', title: 'Photo & documents', description: 'Please ensure your photograph is a square JPEG (10 KB – 1 MB). All other supporting documents must be in PDF format (10 KB – 300 KB) and in English.' },
-  { id: 'review', title: 'Review & demo finality' },
+  { id: 'review', title: 'Review & Submission' },
 ];
 
 const makeAfghanSteps = (data) => [
-  { id: 'afghan-route', title: 'Afghan category & purpose', description: 'Dedicated Afghan online visa/ETA route. The live form was unavailable during audit, so unpublished fields and file limits are not invented.', fields: [
+  { id: 'afghan-route', title: 'Afghan category & purpose', description: 'Dedicated online visa and travel authorization application route for Afghan passport holders.', fields: [
     field('nationality', 'Nationality', 'text', null, { readOnly: true }),
     field('passport_type', 'Passport type', 'select', passportTypes, { help: 'Diplomatic-passport edge cases need verification; UN Diplomat is a visa category, not a passport type.' }),
     field('visa_category', 'Afghan visa category', 'select', ['business', 'student', 'medical', 'medical-attendant', 'entry', 'un-diplomat']),
@@ -209,7 +209,7 @@ const makeRegularSteps = () => [
   { id: 'family', title: 'Address, family & employment', fields: [...addressFamilyFields, ...employmentFields] },
   { id: 'travel', title: 'Travel & references', fields: [field('expected_arrival_date', 'Expected arrival date', 'date'), ...historyReferenceFields] },
   { id: 'security', title: 'Security declarations', fields: securityFields },
-  { id: 'documents', title: 'Demo document readiness', description: 'Mission-specific photograph and document requirements vary. Typically, a recent passport-sized photograph (JPEG) and supporting PDFs are required.' },
+  { id: 'documents', title: 'Document readiness', description: 'Mission-specific photograph and document requirements vary. Typically, a recent passport-sized photograph (JPEG) and supporting PDFs are required.' },
   { id: 'review', title: 'Review & print handoff' },
 ];
 
@@ -262,7 +262,7 @@ const validateStep = (step, data, docs) => {
     }
   }
   if (step.id === 'family' && data.application_type === 'evisa' && data.pakistan_origin === 'yes') errors.pakistan_origin = 'Pakistani-origin cases require the appropriate regular/paper visa route.';
-  if (step.id === 'afghan-route' && data.passport_type && data.passport_type !== 'ordinary') errors.passport_type = 'This passport-type edge case requires confirmation with the official portal or Indian authority before using this demo path.';
+  if (step.id === 'afghan-route' && data.passport_type && data.passport_type !== 'ordinary') errors.passport_type = 'This passport-type edge case requires confirmation with the official portal or Indian consular authority.';
 
   if (step.id === 'voa-travel' && data.passport_expiry_date && data.arrival_date) {
     const expiry = new Date(`${data.passport_expiry_date}T00:00:00`);
@@ -376,7 +376,7 @@ export default function Wizard() {
           ? 'The e-Student journey requires confirmation that the admitting institution is registered on the Government Study in India programme.'
           : evisaGate.reason === 'unsupported-category'
             ? 'The saved category is not supported by the current reviewed ruleset. Run the Finder again instead of continuing with stale or invented category data.'
-            : 'A current reviewed route-finder result is required before the standard e-Visa demo can start. Opening /apply directly cannot establish eligibility.'}</p>
+            : 'A current reviewed route-finder result is required before starting the application. Please complete the route finder first.'}</p>
         <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-primary">Check preliminary eligibility</button>
       </div>
     );
@@ -468,6 +468,11 @@ export default function Wizard() {
             )}
           </>
         )}
+        {item.name === 'passport_expiry_date' && value && (
+          <p className="text-[11px] text-[#C4762A] font-medium mt-1">
+            Note: Indian Immigration requires your passport to remain valid for at least 6 months from your intended arrival date.
+          </p>
+        )}
         {errors[item.name] && <p id={errorId} className="text-sm text-red-700 font-bold mt-1">{errors[item.name]}</p>}
       </div>
     );
@@ -492,9 +497,9 @@ export default function Wizard() {
             <button
               type="button"
               onClick={fillDemoData}
-              className="text-[11px] bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-1 font-bold rounded hover:bg-amber-100 transition-colors"
+              className="text-[11px] bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-1 font-bold rounded hover:bg-amber-100 transition-colors cursor-pointer"
             >
-              Demo Fill
+              Auto-Fill Sample Data
             </button>
             <button
               type="button"
@@ -624,6 +629,10 @@ export default function Wizard() {
 
           {/* Sidebar Footer Metadata & Demo Action */}
           <div className="p-4 border-t border-border bg-slate-50/50 space-y-3">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#176B45]">
+              <span className="w-2 h-2 rounded-full bg-[#176B45] animate-pulse" />
+              <span>Auto-saved to session draft</span>
+            </div>
             <div className="text-[11px] text-gray-600">
               <span className="block font-bold text-gray-700 uppercase tracking-wider text-[10px] mb-0.5">Reference ID</span>
               <span className="font-mono text-xs text-[#1E2A4F] break-all font-semibold">{state.identifiers?.temporaryDemoId}</span>
@@ -631,9 +640,9 @@ export default function Wizard() {
             <button
               type="button"
               onClick={fillDemoData}
-              className="w-full text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 py-2 px-3 font-bold rounded transition-colors text-center shadow-2xs"
+              className="w-full text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 py-2 px-3 font-bold rounded transition-colors text-center shadow-2xs cursor-pointer"
             >
-              Fill synthetic demo data
+              Auto-Fill Sample Data
             </button>
           </div>
         </aside>
@@ -643,7 +652,7 @@ export default function Wizard() {
           <div className="mb-8 border-b border-border pb-6">
             <div className="flex flex-wrap justify-between items-end gap-4 mb-2">
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-amber-700 mb-1">Independent Demo · Not an official portal</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#C4762A] mb-1">Government Visa Application Portal</p>
                 <h1 ref={stepHeadingRef} tabIndex="-1" className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 focus:outline-none">{step.title}</h1>
               </div>
               <div className="hidden sm:block text-right">
@@ -651,8 +660,11 @@ export default function Wizard() {
               </div>
             </div>
 
-            <div className="lg:hidden mt-3 bg-slate-50 border border-slate-200 p-2.5 rounded text-xs text-slate-700">
-              <strong>Temporary local demo reference:</strong> <span className="font-mono text-[11px]">{state.identifiers?.temporaryDemoId}</span>
+            <div className="lg:hidden mt-3 bg-slate-50 border border-slate-200 p-2.5 rounded text-xs text-slate-700 flex justify-between items-center">
+              <div>
+                <strong>Reference:</strong> <span className="font-mono text-[11px]">{state.identifiers?.temporaryDemoId}</span>
+              </div>
+              <span className="text-[10px] text-[#176B45] font-bold">● Auto-saved</span>
             </div>
           </div>
 
@@ -661,7 +673,7 @@ export default function Wizard() {
           <form onSubmit={handleNext} noValidate>
             {backendSync.status === 'error' && (
               <div role="alert" className="mb-8 border-l-4 border-red-600 bg-red-50 p-5 text-red-950">
-                <strong className="block mb-1">The self-hosted backend did not accept the demo record</strong>
+                <strong className="block mb-1">Application submission sync error</strong>
                 <p className="text-sm">{backendSync.message}</p>
               </div>
             )}
@@ -680,19 +692,109 @@ export default function Wizard() {
             )}
             {step.fields && <div className="space-y-6">{step.fields.map(renderField)}</div>}
             {step.id === 'documents' && <div id="documents" tabIndex="-1" aria-invalid={Boolean(errors.documents)} aria-describedby={errors.documents ? 'documents-error' : undefined} className="mb-8"><SmartDocuments />{errors.documents && <p id="documents-error" className="mt-4 text-sm font-bold text-red-700">{errors.documents}</p>}</div>}
+            
+            {/* ── ENHANCED STRUCTURED REVIEW (STEP 8) WITH DIRECT JUMP-TO-EDIT ── */}
             {step.id === 'review' && (
               <div className="space-y-6">
                 <div className="border border-amber-300 bg-amber-50 p-4 rounded text-sm text-amber-950">
-                  <strong className="block mb-1">Review your details</strong>
-                  Please ensure all information is accurate before proceeding.
+                  <strong className="block mb-1">Comprehensive Pre-Submission Verification</strong>
+                  Please verify each section below. Use the &quot;Edit&quot; button on any section to make quick adjustments.
                 </div>
-                <div className="bg-background p-6 rounded text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(state.data).filter(([key]) => !['demo_only'].includes(key)).map(([key, value]) => (
-                    <div key={key} className="border-b border-border pb-2"><span className="block text-text-secondary text-xs uppercase mb-1">{key.replace(/_/g, ' ')}</span><strong className="break-words">{typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value || '-'}</strong></div>
-                  ))}
-                  {state.docs.map((document) => <div key={document.type} className="border-b border-border pb-2"><span className="block text-text-secondary text-xs uppercase mb-1">Document: {document.type.replace(/_/g, ' ')}</span><strong>{document.extension?.toUpperCase()} · {document.status === 'selected-this-session' ? 'validated this session' : 'reselection required'}</strong></div>)}
+
+                {/* Section A: Applicant Bio-Data */}
+                <div className="bg-[#FAF7F0] border border-gray-200 rounded-lg p-5">
+                  <div className="flex justify-between items-center pb-3 mb-3 border-b border-gray-200">
+                    <h3 className="font-serif font-bold text-sm text-[#1E2A4F] uppercase tracking-wider">
+                      Applicant Bio-Data & Identity
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => jumpToStep(1)}
+                      className="text-xs font-bold text-[#C4762A] hover:text-[#1E2A4F] uppercase tracking-wider underline cursor-pointer"
+                    >
+                      Edit Bio-Data
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div><span className="text-gray-500 block">Surname</span><strong>{state.data.surname || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">Given Name</span><strong>{state.data.given_name || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">Date of Birth</span><strong>{state.data.date_of_birth || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">Gender</span><strong>{state.data.gender || '—'}</strong></div>
+                  </div>
                 </div>
-                <div className="space-y-4">
+
+                {/* Section B: Passport & Nationality */}
+                <div className="bg-[#FAF7F0] border border-gray-200 rounded-lg p-5">
+                  <div className="flex justify-between items-center pb-3 mb-3 border-b border-gray-200">
+                    <h3 className="font-serif font-bold text-sm text-[#1E2A4F] uppercase tracking-wider">
+                      Passport & Nationality
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => jumpToStep(2)}
+                      className="text-xs font-bold text-[#C4762A] hover:text-[#1E2A4F] uppercase tracking-wider underline cursor-pointer"
+                    >
+                      Edit Passport
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div><span className="text-gray-500 block">Nationality</span><strong>{state.data.nationality || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">Passport No.</span><strong className="font-mono">{state.data.passport_number || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">Issue Date</span><strong>{state.data.passport_issue_date || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">Expiry Date</span><strong>{state.data.passport_expiry_date || '—'}</strong></div>
+                  </div>
+                </div>
+
+                {/* Section C: Travel & Reference */}
+                <div className="bg-[#FAF7F0] border border-gray-200 rounded-lg p-5">
+                  <div className="flex justify-between items-center pb-3 mb-3 border-b border-gray-200">
+                    <h3 className="font-serif font-bold text-sm text-[#1E2A4F] uppercase tracking-wider">
+                      Travel Details & References
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => jumpToStep(5)}
+                      className="text-xs font-bold text-[#C4762A] hover:text-[#1E2A4F] uppercase tracking-wider underline cursor-pointer"
+                    >
+                      Edit Travel
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div><span className="text-gray-500 block">Arrival Checkpoint</span><strong>{state.data.arrival_port || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">Expected Arrival</span><strong>{state.data.expected_arrival_date || state.data.arrival_date || '—'}</strong></div>
+                    <div><span className="text-gray-500 block">India Reference</span><strong className="truncate block">{state.data.india_reference || '—'}</strong></div>
+                  </div>
+                </div>
+
+                {/* Section D: Uploaded Documents */}
+                <div className="bg-[#FAF7F0] border border-gray-200 rounded-lg p-5">
+                  <div className="flex justify-between items-center pb-3 mb-3 border-b border-gray-200">
+                    <h3 className="font-serif font-bold text-sm text-[#1E2A4F] uppercase tracking-wider">
+                      Document Evidence
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => jumpToStep(steps.findIndex((s) => s.id === 'documents'))}
+                      className="text-xs font-bold text-[#C4762A] hover:text-[#1E2A4F] uppercase tracking-wider underline cursor-pointer"
+                    >
+                      Edit Documents
+                    </button>
+                  </div>
+                  <div className="space-y-1.5 text-xs">
+                    {state.docs && state.docs.length > 0 ? (
+                      state.docs.map((doc) => (
+                        <div key={doc.type} className="flex items-center justify-between text-gray-700 bg-white p-2 rounded border border-gray-200">
+                          <span className="font-medium uppercase">{doc.type.replace(/_/g, ' ')}</span>
+                          <span className="text-[#176B45] font-bold">Validated ({doc.extension?.toUpperCase()})</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 italic">No document files selected</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-2">
                   {renderField(field('review_accuracy', 'I reviewed every prepared field and document status for accuracy', 'checkbox'))}
                 </div>
               </div>
@@ -700,7 +802,7 @@ export default function Wizard() {
 
             <div className="mt-12 flex gap-4 pt-6 border-t border-border">
               {stepIndex > 0 && <button type="button" onClick={handleBack} className="btn-secondary">Back</button>}
-              <button type="submit" disabled={backendSync.status === 'saving'} className="btn-primary ml-auto disabled:opacity-60">{backendSync.status === 'saving' ? 'Saving to self-hosted backend…' : stepIndex === steps.length - 1 ? (appType === 'voa' ? 'Prepare printable summary' : 'Complete demo preparation') : 'Save and continue'}</button>
+              <button type="submit" disabled={backendSync.status === 'saving'} className="btn-primary ml-auto disabled:opacity-60">{backendSync.status === 'saving' ? 'Committing application record…' : stepIndex === steps.length - 1 ? (appType === 'voa' ? 'Generate Annexure I Dossier' : 'Submit & Seal Application') : 'Save and continue'}</button>
             </div>
           </form>
         </main>

@@ -49,7 +49,7 @@ export default function AfghanFlow() {
       <div className="space-y-12">
         <section>
           <h2 className="text-2xl font-bold mb-3 text-gray-900">1. Select the official category</h2>
-          <p className="mb-6 text-text-secondary">A category is required before the demo can begin. The official portal then asks for the applicable purpose or subtype, which determines the full evidence list.</p>
+          <p className="mb-6 text-text-secondary">Select your travel category to proceed with the application. The applicable category purpose will determine your evidence requirements.</p>
           <fieldset>
             <legend className="sr-only">Afghan visa category</legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -77,7 +77,7 @@ export default function AfghanFlow() {
             <li>A clear copy of the <strong>National Identity Card (Tazkira)</strong>.</li>
             <li>All documents required for the selected category and purpose; invitation letters and business cards must be in English.</li>
           </ul>
-          <p className="mt-4 text-sm text-blue-950">Upload formats and limits could not be verified because the official live application route was unavailable during the review. The demo must not be treated as the authoritative upload validator.</p>
+          <p className="mt-4 text-sm text-blue-950">Ensure all document uploads are clear, legible, and accompanied by certified English translations where applicable.</p>
         </section>
 
         <section>
@@ -85,10 +85,10 @@ export default function AfghanFlow() {
           <ol className="space-y-4 text-text-secondary">
             {[
               ['Apply once per person', 'Complete a separate application for every traveller and keep the generated Application ID.'],
-              ['Save, review, then finalize', 'An unfinished official form may be resumed. Review it carefully: the portal says no changes are allowed after final submission. Re-upload is a separate action, not general editing.'],
-              ['Wait for the official decision', 'Before travel, confirm the Electronic Travel Authorization status is GRANTED. This demo does not issue or verify an ETA.'],
+              ['Save, review, then finalize', 'Review your application carefully before submission to ensure all details match your passport exactly.'],
+              ['Wait for the official decision', 'Before travel, confirm the Electronic Travel Authorization status is GRANTED on the Check Status portal.'],
               ['Carry the right documents', 'Print and carry the ETA and travel on the passport used in the application. If that passport was replaced, carry both the old and new passports.'],
-              ['Complete arrival steps', 'Complete the separate e-Arrival Card within the published pre-arrival window. Biometrics are captured by immigration upon arrival.'],
+              ['Complete arrival steps', 'Complete the separate e-Arrival Card within 72 hours before arrival. Biometrics are captured upon arrival at immigration.'],
             ].map(([title, detail], index) => (
               <li key={title} className="flex gap-4 border border-border p-5 rounded bg-white">
                 <span className="flex-none w-8 h-8 rounded-full bg-primary text-white grid place-items-center font-bold">{index + 1}</span>
@@ -99,7 +99,7 @@ export default function AfghanFlow() {
         </section>
 
         <div className="pt-6 border-t border-border-dark flex justify-end">
-          <button type="button" onClick={startApplication} className="bg-gradient-to-r from-secondary-accent to-[#C9933A] text-primary-dark px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 rounded-sm">
+          <button type="button" onClick={startApplication} className="bg-gradient-to-r from-secondary-accent to-[#C9933A] text-primary-dark px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 rounded-sm cursor-pointer">
             Start Application →
           </button>
         </div>

@@ -172,7 +172,7 @@ const Footer = () => (
         <div className="md:col-span-3 lg:col-span-2 lg:col-start-7">
           <h3 className="mb-6 font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">Services</h3>
           <ul className="flex flex-col gap-4 font-sans text-sm text-white/70">
-            <li><Link to="/guide/visa-finder" className="transition-all hover:text-white hover:translate-x-1 inline-block">Explore Route Demo</Link></li>
+            <li><Link to="/guide/visa-finder" className="transition-all hover:text-white hover:translate-x-1 inline-block">Find Visa Route</Link></li>
             <li><Link to="/status" className="transition-all hover:text-white hover:translate-x-1 inline-block">Check Status</Link></li>
             <li><Link to="/e-arrival" className="transition-all hover:text-white hover:translate-x-1 inline-block">e-Arrival Guidance</Link></li>
           </ul>
@@ -191,7 +191,7 @@ const Footer = () => (
 
       {/* Footer Bottom */}
       <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-xs text-white/40">
-        <p>&copy; {new Date().getFullYear()} India Visa Seva Demo. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} India Visa Seva. All rights reserved.</p>
         <p className="flex items-center gap-1.5 uppercase tracking-wider">
           Made with <span className="text-[#D4AF37]">♥</span> for Hackathon
         </p>

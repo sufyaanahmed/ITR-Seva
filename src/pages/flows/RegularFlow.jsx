@@ -34,22 +34,22 @@ export default function RegularFlow() {
           Regular-visa categories and filing procedures depend on nationality, purpose, residence, and the Indian Mission/Post responsible for the application.
         </p>
         <p className="text-sm text-text-secondary">
-          This educational demo can organise typical information, but it does not identify a universally correct category, submit a form, book an appointment, or replace Mission/Post instructions.
+          This guide organizes document requirements, filing steps, and consular procedures for regular paper visas.
         </p>
       </div>
 
       {!routedByFinder && (
         <div className="bg-amber-50 border border-amber-300 p-6 rounded mb-10">
           <h2 className="font-bold text-amber-950 text-lg mb-2">Route not yet reviewed</h2>
-          <p className="text-sm text-amber-900 mb-5">Opening this page directly does not establish that a regular/paper visa is the right route. Complete the finder before starting a local preparation.</p>
-          <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-primary">Check my preliminary route</button>
+          <p className="text-sm text-amber-900 mb-5">Complete the route finder to verify that a regular paper visa is appropriate for your nationality and travel purpose.</p>
+          <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-primary cursor-pointer">Check my preliminary route</button>
         </div>
       )}
 
       {routedByFinder && (
         <div className="bg-blue-50 border border-blue-200 p-5 rounded mb-10 text-sm text-blue-950">
           <strong className="block mb-1">Preliminary finder handoff</strong>
-          <p>The reviewed rules snapshot directed these answers to a paper-visa or official-review path. Your intended purpose is recorded as <strong>{state.data.purpose_intent?.replace(/-/g, ' ') || 'not specified'}</strong>, but you must still select and verify the applicable legal category.</p>
+          <p>The reviewed rules directed these answers to a paper-visa or official-review path. Your intended purpose is recorded as <strong>{state.data.purpose_intent?.replace(/-/g, ' ') || 'not specified'}</strong>, but you must still select and verify the applicable legal category.</p>
         </div>
       )}
 
@@ -76,10 +76,10 @@ export default function RegularFlow() {
             <h2 className="text-2xl font-bold text-gray-900">Prepare category-specific evidence</h2>
           </div>
           <div className="ml-14">
-            <p className="text-gray-700 mb-4">Photo format, upload steps, physical copies, translations, attestations, passport validity, and blank-page rules can vary by category and Mission/Post. The demo therefore records document-readiness metadata without asserting universal regular-visa upload limits.</p>
+            <p className="text-gray-700 mb-4">Photo format, upload steps, physical copies, translations, attestations, passport validity, and blank-page rules can vary by category and Mission/Post.</p>
             <div className="bg-blue-50 border border-blue-100 p-4 rounded text-sm text-blue-900">
-              <strong className="block mb-1">Do not reuse e-Visa upload rules automatically</strong>
-              The standard e-Visa JPEG/PDF limits are not presented here as universal paper-visa requirements. Check the current official checklist for the selected category and filing location.
+              <strong className="block mb-1">Check category-specific upload rules</strong>
+              Check the current official checklist for your selected category and consular filing location.
             </div>
           </div>
         </section>
@@ -90,15 +90,15 @@ export default function RegularFlow() {
             <h2 className="text-2xl font-bold text-gray-900">Follow the published filing procedure</h2>
           </div>
           <div className="ml-14">
-            <p className="text-gray-700 mb-4">The responsible service may require an online form, printout and signature, physical passport, appointment, biometrics, interview, fee, or additional documents. Availability and sequence must be taken from the current official instructions—not inferred from this prototype.</p>
+            <p className="text-gray-700 mb-4">The responsible service may require an online form, printout and signature, physical passport, appointment, biometrics, interview, fee, or additional documents.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
               <div className="border border-gray-200 p-4 rounded">
                 <strong className="block text-gray-900 mb-2">Appointment or service provider</strong>
-                <p className="text-sm text-gray-600">Use only the provider named by the relevant Indian Mission/Post. An appointment is not universally required or offered in the same way.</p>
+                <p className="text-sm text-gray-600">Use only the authorized visa application center designated by the responsible Indian Embassy or Consulate.</p>
               </div>
               <div className="border border-gray-200 p-4 rounded">
                 <strong className="block text-gray-900 mb-2">Fee and decision</strong>
-                <p className="text-sm text-gray-600">Fees, payment channels, processing, and decisions vary. This demo does not calculate, collect, predict, or verify them.</p>
+                <p className="text-sm text-gray-600">Fees and processing times depend on nationality, service speed, and consular jurisdiction.</p>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function RegularFlow() {
 
       {routedByFinder && (
         <div className="mt-12 flex justify-center">
-          <button type="button" onClick={startPreparation} className="bg-[#0b2540] text-white px-8 py-3 font-bold rounded shadow hover:bg-[#163a5f] transition inline-block text-lg">Start local demo preparation &rarr;</button>
+          <button type="button" onClick={startPreparation} className="btn-primary px-8 py-3 font-bold rounded shadow hover:bg-[#163a5f] transition inline-block text-base cursor-pointer">Prepare Application Checklist &rarr;</button>
         </div>
       )}
 

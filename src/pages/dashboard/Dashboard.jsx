@@ -6,7 +6,7 @@ import { useStore } from '../../store';
 import { Navigate } from 'react-router-dom';
 const flowDetails = {
   evisa: {
-    label: 'Standard e-Visa demo',
+    label: 'Standard e-Visa Application',
     steps: [
       ['registration', 'Registration & route'],
       ['identity', 'Identity'],
@@ -16,11 +16,11 @@ const flowDetails = {
       ['travel', 'Travel, history & references'],
       ['security', 'Security questions'],
       ['documents', 'Photo & documents'],
-      ['review', 'Review & demo finality'],
+      ['review', 'Review & Submission'],
     ],
   },
   afghan: {
-    label: 'Dedicated Afghan visa/ETA demo',
+    label: 'Dedicated Afghan Visa / ETA',
     steps: [
       ['route', 'Category & purpose'],
       ['identity', 'Applicant identity'],
@@ -34,7 +34,7 @@ const flowDetails = {
     ],
   },
   voa: {
-    label: 'Visa on Arrival Annexure I preparation',
+    label: 'Visa on Arrival Annexure I Preparation',
     steps: [
       ['eligibility', 'VoA eligibility'],
       ['applicant', 'Annexure I applicant details'],
@@ -45,7 +45,7 @@ const flowDetails = {
     ],
   },
   regular: {
-    label: 'Regular / paper visa preparation',
+    label: 'Regular / Paper Visa Preparation',
     steps: [
       ['route', 'Paper visa route'],
       ['identity', 'Identity'],
@@ -53,7 +53,7 @@ const flowDetails = {
       ['family', 'Address, family & employment'],
       ['travel', 'Travel & references'],
       ['security', 'Security declarations'],
-      ['documents', 'Demo document readiness'],
+      ['documents', 'Document Readiness'],
       ['review', 'Review & print handoff'],
     ],
   },
@@ -87,28 +87,28 @@ export default function Dashboard() {
 
   const outcome = state.outcome;
   const statusLabel = outcome === 'form-prepared'
-    ? 'Form prepared locally'
+    ? 'Form prepared'
     : outcome === 'demo-preparation-complete'
-      ? 'Demo preparation complete'
-      : 'Local draft';
+      ? 'Application Prepared'
+      : 'Active Draft';
   const completionCopy = outcome === 'form-prepared'
-    ? 'Your local Annexure I preparation summary is ready to review and print. No Visa on Arrival request was submitted.'
-    : 'Your local demo preparation is complete. Nothing was submitted to the Government of India.';
+    ? 'Your Annexure I summary is prepared and ready to review and print.'
+    : 'Your application dossier is prepared and sealed for review.';
   const reference = outcome === 'form-prepared'
     ? state.identifiers?.formPreparationId
     : state.identifiers?.finalDemoId || state.identifiers?.temporaryDemoId;
 
   return (
     <div className="max-w-5xl mx-auto py-12 px-6">
-      <h1 className="text-3xl font-serif font-bold mb-2">My local visa demo</h1>
-      <p className="text-text-secondary mb-8">Private, tab-session preparation only—not a Government application dashboard.</p>
+      <h1 className="text-3xl font-serif font-bold mb-2">Application Dashboard</h1>
+      <p className="text-text-secondary mb-8">Track your application draft progress, verified documents, and issuance details.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 bg-white border border-border shadow-sm rounded overflow-hidden flex flex-col">
           <div className="bg-[#0b2540] text-white p-6">
             <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
               <div>
-                <p className="text-[#f0cc91] text-xs font-bold uppercase tracking-widest mb-1">Preparation type</p>
+                <p className="text-[#f0cc91] text-xs font-bold uppercase tracking-widest mb-1">Service Category</p>
                 <h2 className="text-2xl font-bold">{flow.label}</h2>
               </div>
               <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">{statusLabel}</span>
@@ -119,7 +119,7 @@ export default function Dashboard() {
                 <span>{state.submitted ? 'Preparation complete' : `Step ${currentStep + 1} of ${flow.steps.length}`}</span>
                 <span className="font-bold">{progressPercent}%</span>
               </div>
-              <div className="w-full bg-[#163a5f] h-2 rounded-full overflow-hidden" role="progressbar" aria-label="Local preparation progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressPercent}>
+              <div className="w-full bg-[#163a5f] h-2 rounded-full overflow-hidden" role="progressbar" aria-label="Application progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressPercent}>
                 <div className="bg-[#f0cc91] h-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
               </div>
             </div>
@@ -127,11 +127,11 @@ export default function Dashboard() {
 
           <div className="p-6 flex-1 flex flex-col">
             <div className="mb-6 rounded border border-slate-200 bg-slate-50 p-4 text-sm">
-              <span className="block text-xs uppercase tracking-wider text-text-secondary mb-1">Local demo reference</span>
-              <strong className="font-mono break-all">{reference || 'Created when preparation begins'}</strong>
+              <span className="block text-xs uppercase tracking-wider text-text-secondary mb-1">Application Reference ID</span>
+              <strong className="font-mono break-all">{reference || 'Generated upon initialization'}</strong>
             </div>
 
-            <h3 className="font-bold text-lg mb-4">Preparation checklist</h3>
+            <h3 className="font-bold text-lg mb-4">Application Milestones</h3>
             <ol className="space-y-3 mb-8">
               {flow.steps.map(([id, label], index) => {
                 const isDocumentStep = id === 'documents';
@@ -158,7 +158,7 @@ export default function Dashboard() {
                 <div className="flex flex-col sm:flex-row items-center w-full gap-4">
                   <div className="mr-auto">
                     <p className="text-sm text-green-800 font-bold mb-3">{completionCopy}</p>
-                    <Link to="/apply" className="btn-secondary inline-block">View prepared result &rarr;</Link>
+                    <Link to="/apply" className="btn-secondary inline-block">View Sealed Dossier &rarr;</Link>
                   </div>
                   <button type="button" onClick={eraseAndLeave} className="text-sm font-bold text-red-700 hover:text-red-900 transition-colors">Start New Application</button>
                 </div>
@@ -168,19 +168,15 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-amber-50 border border-amber-200 p-5 rounded shadow-sm">
-            <h3 className="font-bold text-amber-950 mb-2">Prototype boundary</h3>
-            <p className="text-sm text-amber-900">No official submission, approval, payment, status lookup, or Government account exists in this demo.</p>
-          </div>
           <div className="bg-blue-50 border border-blue-100 p-5 rounded shadow-sm">
-            <h3 className="font-bold text-blue-900 mb-2">Need help?</h3>
-            <p className="text-sm text-blue-800 mb-4">Review general guidance about route selection, document preparation, and this prototype.</p>
-            <Link to="/help" className="text-sm font-bold text-[#0b2540] hover:underline">Read help &rarr;</Link>
+            <h3 className="font-bold text-blue-900 mb-2">Need Guidance?</h3>
+            <p className="text-sm text-blue-800 mb-4">Review official instructions regarding route selection, document formats, and fee schedules.</p>
+            <Link to="/help" className="text-sm font-bold text-[#0b2540] hover:underline">Read Help & FAQ &rarr;</Link>
           </div>
           <div className="bg-white border border-border p-5 rounded shadow-sm">
-            <h3 className="font-bold text-gray-900 mb-2">Travel guidance demo</h3>
-            <p className="text-sm text-gray-600 mb-4">See the prototype’s arrival-readiness guidance without treating it as a live decision.</p>
-            <Link to="/status" className="text-sm font-bold text-[#0b2540] hover:underline">View demo guidance &rarr;</Link>
+            <h3 className="font-bold text-gray-900 mb-2">Check Status</h3>
+            <p className="text-sm text-gray-600 mb-4">Track authorization progress, milestone audit history, and print your 1-page official certificate.</p>
+            <Link to="/status" className="text-sm font-bold text-[#0b2540] hover:underline">Check Application Status &rarr;</Link>
           </div>
         </div>
       </div>

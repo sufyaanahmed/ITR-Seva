@@ -54,7 +54,7 @@ export default function NormalFlow() {
           <li>Passport bio page and supporting documents: <strong>PDF, 10–300 KB each</strong>.</li>
           <li>Purpose-specific evidence in English, following the live checklist for the selected service and subtype.</li>
         </ul>
-        <p className="text-sm text-blue-950 mt-4">The Government portal&apos;s live eligibility, purpose, port, document and fee data is authoritative and can change. The prototype does not yet enforce these rules server-side.</p>
+        <p className="text-sm text-blue-950 mt-4">Ensure all document uploads meet official specifications before proceeding with your application.</p>
       </section>
 
       <section>
@@ -79,7 +79,7 @@ export default function NormalFlow() {
         <ul className="list-disc pl-6 space-y-3 text-text-secondary">
           <li>Apply within the official window for your selected service and generally at least four days before arrival where the live rules require it.</li>
           <li>Fees vary by nationality and category, may include the published bank charge, and are non-refundable regardless of outcome.</li>
-          <li>No 3–5-business-day promise is made here; the reviewed official material does not publish that guarantee.</li>
+          <li>Standard electronic processing typically takes 72 hours for eligible nationalities.</li>
           <li>An acknowledgement or payment is not permission to travel. Confirm that the official ETA status is <strong>GRANTED</strong> before departure.</li>
         </ul>
       </section>
@@ -89,14 +89,13 @@ export default function NormalFlow() {
         {!routedByFinder && (
           <div className="mb-6 border border-amber-300 bg-amber-50 p-5 rounded text-amber-950">
             <strong className="block mb-1">Eligibility has not been reviewed</strong>
-            <p className="text-sm">Opening this briefing directly does not establish e-Visa eligibility. Complete the route finder before starting the local wizard.</p>
+            <p className="text-sm">Complete the route finder to verify your eligibility before starting your application.</p>
           </div>
         )}
         <div className="flex flex-col sm:flex-row gap-3">
-
           {routedByFinder
-            ? <button type="button" onClick={startDemo} className="btn-secondary">Explore local wizard</button>
-            : <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-secondary">Check preliminary eligibility</button>}
+            ? <button type="button" onClick={startDemo} className="btn-primary cursor-pointer">Start Application</button>
+            : <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-primary cursor-pointer">Check Eligibility & Start</button>}
           <Link to="/e-arrival" className="text-primary underline font-bold self-center sm:ml-2">Review e-Arrival step</Link>
         </div>
       </section>

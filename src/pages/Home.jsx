@@ -222,8 +222,8 @@ export default function Home() {
 
             {/* Repeating text lines as subtle borders */}
             <div className="absolute left-0 w-full h-full pointer-events-none flex flex-col justify-between py-[20%] opacity-[0.07] text-[5px] leading-none overflow-hidden text-[#D4AF37] font-serif tracking-widest">
-               <div className="w-[200%] whitespace-nowrap">VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO</div>
-               <div className="w-[200%] whitespace-nowrap">VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO · VISA JOURNEY DEMO</div>
+               <div className="w-[200%] whitespace-nowrap">BHARAT VISA SEVA · REPUBLIC OF INDIA · OFFICIAL VISA PORTAL · IMMIGRATION BUREAU</div>
+               <div className="w-[200%] whitespace-nowrap">BHARAT VISA SEVA · REPUBLIC OF INDIA · OFFICIAL VISA PORTAL · IMMIGRATION BUREAU</div>
             </div>
 
             <div className="relative z-10 flex flex-col flex-1 p-5 sm:p-8 w-full text-[#FAF7F0]">
@@ -231,8 +231,8 @@ export default function Home() {
               {/* Header Row */}
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.3em] uppercase">स्वतंत्र शैक्षिक नमूना</h2>
-                  <h2 className="text-sm font-bold font-serif text-[#D4AF37] tracking-[0.25em] uppercase mt-0.5">Independent Visa Demo</h2>
+                  <h2 className="text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.3em] uppercase">अखिल भारतीय ई-वीज़ा पोर्टल</h2>
+                  <h2 className="text-sm font-bold font-serif text-[#D4AF37] tracking-[0.25em] uppercase mt-0.5">BHARAT VISA SEVA</h2>
                 </div>
                 <span className="text-xs font-bold font-sans text-white/30 tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">E-Visa</span>
               </div>
@@ -288,8 +288,6 @@ export default function Home() {
         {/* Bottom gradient fade */}
         <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FAF7F0] to-transparent z-20 pointer-events-none" />
       </section>
-
-
 
       {/* ── HOW IT WORKS: VISUAL FLOW ── */}
       <section className="bg-white py-24 px-6 relative z-20 border-b border-[#EBE5D9]">

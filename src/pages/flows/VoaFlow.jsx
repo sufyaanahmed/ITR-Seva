@@ -158,9 +158,8 @@ export default function VoaFlow() {
             </p>
             {eligible && (
               <div className="mt-5 flex flex-col sm:flex-row gap-3">
-                <button type="button" onClick={startFormPreparation} className="btn-secondary">Prepare Annexure I in the local demo</button>
-
-                <Link to="/e-arrival" className="btn-secondary">Review mandatory e-Arrival</Link>
+                <button type="button" onClick={startFormPreparation} className="btn-primary cursor-pointer">Prepare Annexure I Form</button>
+                <Link to="/e-arrival" className="btn-secondary">Review e-Arrival Requirements</Link>
               </div>
             )}
           </section>

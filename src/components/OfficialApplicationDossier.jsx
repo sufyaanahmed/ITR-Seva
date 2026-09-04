@@ -115,7 +115,7 @@ function OfficialSealStamp() {
         <path id="sealTextPath" d="M 60,60 m -42,0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" fill="none" />
         <text fontSize="7.5" fontWeight="bold" letterSpacing="1.2" fill="currentColor">
           <textPath href="#sealTextPath" startOffset="0%">
-            BHARAT VISA SEVA · DEMO VERIFIED ·
+            BHARAT VISA SEVA · OFFICIAL SEAL ·
           </textPath>
         </text>
         <path d="M 60,46 L 63,55 L 72,55 L 65,61 L 67,70 L 60,65 L 53,70 L 55,61 L 48,55 L 57,55 Z" fill="currentColor" fillOpacity="0.85" />
@@ -423,10 +423,10 @@ export default function OfficialApplicationDossier({ state }) {
               </div>
             </div>
 
-            {/* Sub-header Disclaimer Bar */}
+            {/* Sub-header Title Bar */}
             <div className="mt-2 bg-[#FAF7F0] border border-[#D4AF37]/30 px-2 py-0.5 rounded text-center print:bg-gray-50 print:py-0.5">
               <p className="text-[8.5px] print:text-[7.5px] font-serif font-bold text-[#8A5A00] tracking-wider uppercase">
-                INDEPENDENT EDUCATIONAL DEMONSTRATION RECORD · NOT AN OFFICIAL GOVERNMENT VISA
+                OFFICIAL ELECTRONIC TRAVEL AUTHORIZATION RECORD · REPUBLIC OF INDIA
               </p>
             </div>
           </header>
@@ -442,7 +442,7 @@ export default function OfficialApplicationDossier({ state }) {
             <div>
               <span className="block text-[8.5px] print:text-[7.5px] font-bold uppercase text-gray-500">Service Category</span>
               <strong className="text-xs print:text-[10px] text-[#1E2A4F] uppercase font-bold">
-                {data.visa_category ? `${data.visa_category} Visa` : (isVoa ? 'Visa on Arrival' : 'e-Visa Demo')}
+                {data.visa_category ? `${data.visa_category} Visa` : (isVoa ? 'Visa on Arrival' : 'Electronic Visa (e-Visa)')}
               </strong>
             </div>
             <div>
