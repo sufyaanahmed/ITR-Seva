@@ -63,37 +63,6 @@
     @apply bg-white border border-border-dark p-6 transition-all duration-300 hover:border-primary-light hover:shadow-sm relative overflow-hidden;
   }
   
-  /* Royal Curtains Animation */
-  .curtain-left {
-    animation: openCurtainLeft 2.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-    animation-delay: 0.5s;
-    transform-origin: left;
-  }
-  .curtain-right {
-    animation: openCurtainRight 2.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-    animation-delay: 0.5s;
-    transform-origin: right;
-  }
-  .hero-content-reveal {
-    opacity: 0;
-    transform: scale(0.95);
-    animation: revealContent 2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-    animation-delay: 1s;
-  }
-  
-  @keyframes openCurtainLeft {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-  }
-  @keyframes openCurtainRight {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(100%); }
-  }
-  @keyframes revealContent {
-    0% { opacity: 0; transform: scale(0.95); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-  
   /* Themed Cards */
   .theme-card {
     @apply relative overflow-hidden rounded-t-full border-4 border-surface shadow-lg transition-transform duration-700 hover:-translate-y-4;
@@ -104,6 +73,29 @@
   .theme-card:hover .theme-card-inner {
     @apply m-4;
   }
+}
+
+.route-loading-track {
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  opacity: 0;
+  background: rgba(30, 42, 79, 0.05);
+  animation: route-cue-in 180ms ease 220ms forwards;
+}
+
+.route-loading-track > span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #D4AF37, #1E2A4F, transparent);
+  animation: route-cue-travel 1.6s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+
+@keyframes route-cue-in { to { opacity: 1; } }
+@keyframes route-cue-travel {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(390%); }
 }
 
 @layer utilities {
@@ -132,6 +124,11 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .route-loading-track, .route-loading-track > span {
+    animation: none;
+    opacity: 1;
+  }
+  .route-loading-track > span { width: 100%; }
   *, *::before, *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;

@@ -1,0 +1,128 @@
+const KB = 1024;
+const MB = 1024 * KB;
+
+// https://indianvisaonline.gov.in/evisa/tvoa.html (checked 2026-09-05)
+const jpegPhoto = {
+  type: 'photograph',
+  title: 'Photograph',
+  desc: 'Front-facing, full face, open eyes, plain light/white background, no spectacles, borders, or shadows.',
+  accepted: '.jpg,.jpeg,image/jpeg',
+  extensions: ['jpg', 'jpeg'],
+  mimeTypes: ['image/jpeg'],
+  minBytes: 10 * KB,
+  maxBytes: MB,
+  square: true,
+  rule: 'JPEG, 10 KB–1 MB, square.',
+};
+
+// https://www.indianvisaonline.gov.in/visa/instruction.html (checked 2026-09-05)
+const regularPhoto = {
+  ...jpegPhoto,
+  maxBytes: 300 * KB,
+  rule: 'JPEG, 10–300 KB, square.',
+};
+
+const pdfDocument = (type, title, desc) => ({
+  type,
+  title,
+  desc,
+  accepted: '.pdf,application/pdf',
+  extensions: ['pdf'],
+  mimeTypes: ['application/pdf'],
+  minBytes: 10 * KB,
+  maxBytes: 300 * KB,
+  rule: 'PDF, 10–300 KB. Supporting documents must be in English.',
+});
+
+const afghanPhoto = {
+  ...jpegPhoto,
+  minBytes: null,
+  maxBytes: null,
+  square: false,
+  rule: 'JPEG.',
+};
+
+const afghanPdf = (type, title, desc) => ({
+  ...pdfDocument(type, title, desc),
+  minBytes: null,
+  maxBytes: null,
+  rule: 'PDF.',
+});
+
+const evisaPurposeDocs = {
+  business: [pdfDocument('business_card', 'Business card', 'Applicant business card showing business identity and contact details.')],
+  medical: [pdfDocument('hospital_letter', 'Indian hospital letter', 'Letter on the Indian hospital letterhead stating the treatment sought.')],
+  'medical-attendant': [pdfDocument('hospital_letter', 'Patient hospital letter', 'Hospital letter linking the attendant to the principal patient.')],
+  conference: [
+    pdfDocument('conference_invitation', 'Conference invitation', 'Invitation from the conference organiser.'),
+    pdfDocument('conference_clearance', 'Conference clearances', 'Applicable political/event clearances required for the selected conference.'),
+  ],
+  student: [
+    pdfDocument('admission_letter', 'Admission letter', 'Admission evidence for the eligible e-Student course/institution.'),
+    pdfDocument('financial_guardian_support', 'Financial / guardian support evidence', 'Evidence of financial support and, where applicable, the parent or guardian undertaking for the student.'),
+  ],
+  family: [pdfDocument('relationship_evidence', 'Relationship evidence', 'Evidence supporting the selected family/dependant category.')],
+  transit: [pdfDocument('travel_itinerary', 'Confirmed onward itinerary', 'Travel evidence supporting the transit purpose.')],
+  film: [pdfDocument('film_clearance', 'Film/project documents', 'Official project, permission, and production documents for the selected film purpose.')],
+  'production-investment': [pdfDocument('production_investment_evidence', 'Production investment evidence', 'Project, investment, approval, and entity evidence required for the selected production-investment purpose.')],
+  ayush: [pdfDocument('ayush_letter', 'AYUSH institution/hospital letter', 'Admission or treatment evidence for the selected AYUSH purpose.')],
+};
+
+const afghanPurposeDocs = (data) => {
+  const category = data.visa_category;
+  const purpose = data.afghan_purpose;
+  if (category === 'business') {
+    if (purpose === 'sports') return [
+      afghanPdf('sports_invitation', 'Sports invitation and approvals', 'Invitation plus applicable sports authority approvals.'),
+      afghanPdf('business_support', 'Organisation support letter', 'Signed support letter from the relevant organisation.'),
+    ];
+    if (purpose === 'business-dependant') return [afghanPdf('relationship_evidence', 'Relationship and principal-visa evidence', 'Evidence of relationship to the principal business applicant and their visa/application.')];
+    return [
+      afghanPdf('india_company_invitation', 'Indian company invitation', 'Invitation letter from the Indian company.'),
+      afghanPdf('resident_company_letter', 'Resident-country company letter', 'Original signed company letter from the country of residence.'),
+      afghanPdf('chamber_recommendation', 'Chamber recommendation', 'Recommendation from the Afghan or an Indian Chamber of Commerce.'),
+    ];
+  }
+  if (category === 'student') {
+    if (purpose === 'student-dependant') return [afghanPdf('relationship_evidence', 'Relationship and student evidence', 'Relationship evidence and the principal student’s admission/visa details.')];
+    return [
+      afghanPdf('admission_letter', 'Admission / returning-student letter', 'Admission or continuing-enrolment evidence from the Indian institution.'),
+      afghanPdf('financial_support', 'Financial support evidence', 'Evidence of funds, sponsorship, or the applicable ICCR scholarship.'),
+      afghanPdf('student_undertaking', 'Student undertaking', 'Completed undertaking required for the selected student purpose.'),
+    ];
+  }
+  if (category === 'medical') return [afghanPdf('hospital_letter', 'System-generated hospital invitation', 'Invitation generated by the Indian hospital.'), ...(data.is_minor === 'yes' ? [afghanPdf('minor_consent', 'Parent or guardian consent', 'Consent for the minor patient.')] : [])];
+  if (category === 'medical-attendant') return [afghanPdf('hospital_letter', 'Patient hospital invitation', 'Hospital-generated invitation linking the attendant to the principal patient.')];
+  if (category === 'entry') return [afghanPdf('entry_purpose_evidence', 'Entry-purpose evidence', 'Evidence matching the selected Entry subtype, such as relationship, clearance, property, student, seaman, cultural, or itinerary records.')];
+  if (category === 'un-diplomat') return [afghanPdf('un_diplomat_note', 'UN / diplomatic assignment evidence', 'Official note, assignment, visit, or dependant documentation for the selected subtype.')];
+  return [];
+};
+
+export const getRequiredDocuments = (data = {}) => {
+  const flow = data.application_type;
+  if (flow === 'voa') return [];
+  if (flow === 'afghan') {
+    return [
+      afghanPhoto,
+      afghanPdf('passport', 'Passport bio page', 'Clear copy of the passport page containing personal particulars.'),
+      afghanPdf('tazkira', 'National Identity Card (Tazkira)', 'Clear copy of the applicant’s Tazkira.'),
+      ...afghanPurposeDocs(data),
+    ];
+  }
+  if (flow === 'regular') {
+    return [
+      regularPhoto,
+      { ...afghanPdf('passport', 'Passport bio page', 'A clear copy of the page showing your photograph and personal details.'), rule: 'PDF. Keep your original passport ready for your appointment.' },
+      { ...afghanPdf('purpose_support', 'Supporting documents', 'Documents for your visa category, following your Embassy or Consulate’s checklist.'), rule: 'PDF.' },
+    ];
+  }
+  const evisaDocuments = [
+    jpegPhoto,
+    pdfDocument('passport', 'Passport bio page', 'PDF containing the passport page with personal particulars.'),
+    ...(evisaPurposeDocs[data.visa_category] || []),
+  ];
+  if (data.visa_category === 'student' && data.student_course_type === 'medical-paramedical') {
+    evisaDocuments.push(pdfDocument('medical_course_noc', 'Medical / paramedical course approval or NOC', 'Applicable Ministry of Health and Family Welfare approval or No Objection Certificate for the selected course.'));
+  }
+  return evisaDocuments;
+};

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/hero-reveal.css';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    INLINE SVG ILLUSTRATION COMPONENTS
@@ -25,31 +26,32 @@ function JaliPattern({ id = 'jali-hero', color = '#1E2A4F', opacity = 0.06 }) {
   );
 }
 
-/** Authentic Spirograph / Guilloche Star for Visa */
-function GuillocheStar({ className }) {
-  const numPaths = 20;
-  return (
-    <svg viewBox="0 0 100 100" className={className} fill="none" stroke="currentColor">
-      {[...Array(numPaths)].map((_, i) => {
-        // Radius grows from center outwards
-        const baseR = 4 + (i * 42 / numPaths);
-        let points = [];
-        for (let a = 0; a <= 360; a += 1) {
-          const angle = (a * Math.PI) / 180;
-          // Base 5-point star shape
-          const starShape = 1 + 0.15 * Math.cos(5 * angle);
-          // High-frequency wobble
-          const wobble = 1.2 * Math.sin(100 * angle);
+/** The visa's engraved geometry is shared by all three printed stars. */
+const guillochePaths = Array.from({ length: 20 }, (_, i) => {
+  const baseR = 4 + (i * 42 / 20);
+  const points = Array.from({ length: 361 }, (_, degrees) => {
+    const angle = (degrees * Math.PI) / 180;
+    const radius = baseR * (1 + 0.15 * Math.cos(5 * angle)) + 1.2 * Math.sin(100 * angle);
+    return `${50 + radius * Math.sin(angle)},${50 - radius * Math.cos(angle)}`;
+  });
+  return `M ${points.join(' L ')} Z`;
+});
 
-          const r = (baseR * starShape) + wobble;
-          const x = 50 + r * Math.sin(angle);
-          const y = 50 - r * Math.cos(angle);
-          points.push(`${x},${y}`);
-        }
-        return <path key={i} d={`M ${points.join(' L ')} Z`} strokeWidth={0.3} opacity={0.6} style={{ mixBlendMode: 'multiply' }} />;
-      })}
+function GuillocheStar({ className }) {
+  return (
+    <svg viewBox="0 0 100 100" className={className} fill="none" stroke="currentColor" aria-hidden="true">
+      {guillochePaths.map((path, i) => (
+        <path key={i} d={path} strokeWidth={0.3} opacity={0.6} style={{ mixBlendMode: 'multiply' }} />
+      ))}
     </svg>
   );
+}
+
+let heroRevealedThisRuntime = false;
+
+function shouldRevealHero() {
+  if (typeof window === 'undefined' || heroRevealedThisRuntime) return false;
+  return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 /** Royal Bengal Tiger Image */
@@ -145,83 +147,110 @@ function TempleGopuram({ className = '' }) {
 ───────────────────────────────────────────────────────────────────────────── */
 
 export default function Home() {
+  const [isRevealing, setIsRevealing] = useState(shouldRevealHero);
+  const [isInteracting, setIsInteracting] = useState(false);
+
+  useEffect(() => {
+    // Returning through the router is instant. A fresh page load can play the
+    // entrance again, without introducing a replay control into the design.
+    heroRevealedThisRuntime = true;
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const respectPreference = () => {
+      if (preference.matches) setIsRevealing(false);
+    };
+    preference.addEventListener('change', respectPreference);
+    return () => preference.removeEventListener('change', respectPreference);
+  }, []);
 
   return (
     <div className="w-full bg-[#FAF7F0] overflow-x-hidden">
 
-      {/* ── HERO: Royal Palace Doors ── */}
-      <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6">
+      {/* The existing chakra and visa become the opening sequence. */}
+      <section
+        className={`hero-reveal relative min-h-screen flex flex-col justify-center items-center text-center px-6${isRevealing ? ' is-revealing' : ''}${isInteracting ? ' is-interacting' : ''}`}
+        data-hero-reveal={isRevealing ? 'active' : 'complete'}
+        onFocusCapture={(event) => {
+          if (event.target.closest('a, button, input, select, textarea')) setIsInteracting(true);
+        }}
+      >
 
         {/* Jali tiling background */}
         <JaliPattern />
-        <div className="absolute inset-0 z-0" style={{ background: 'url(#jali-hero)' }}>
+        <div className="hero-jali absolute inset-0 z-0" style={{ background: 'url(#jali-hero)' }} aria-hidden="true">
           <svg width="100%" height="100%">
             <rect width="100%" height="100%" fill="url(#jali-hero)" />
           </svg>
         </div>
 
-        {/* Mandala background — very faint, slow spin */}
-        <div className="absolute inset-0 flex items-center justify-center z-[25] pointer-events-none">
-          <svg viewBox="0 0 400 400" className="w-[140vw] max-w-[900px] h-auto opacity-[0.08] animate-[spin_120s_linear_infinite] text-[#8B1C1C]">
-            {/* Outer rings */}
-            <circle cx="200" cy="200" r="185" fill="none" stroke="currentColor" strokeWidth="12" />
-            <circle cx="200" cy="200" r="172" fill="none" stroke="currentColor" strokeWidth="3" />
+        {/* The wheel keeps turning independently of its entrance. */}
+        <div className="absolute inset-0 flex items-center justify-center z-[25] pointer-events-none" aria-hidden="true">
+          <svg viewBox="0 0 400 400" className="hero-chakra w-[140vw] max-w-[900px] h-auto text-[#8B1C1C]"
+            onAnimationEnd={(event) => {
+              // Let the final decorative motion finish naturally. A timer can
+              // cut the sequence short after a slow frame or a background tab.
+              if (event.target === event.currentTarget && event.animationName === 'hero-chakra-reveal') setIsRevealing(false);
+            }}
+          >
+            <g className="hero-chakra-rotor">
+              <circle className="hero-chakra-ring hero-chakra-ring-outer" cx="200" cy="200" r="185" fill="none" stroke="currentColor" strokeWidth="12" pathLength="1" transform="rotate(-35 200 200)" />
+              <circle className="hero-chakra-ring hero-chakra-ring-inner" cx="200" cy="200" r="172" fill="none" stroke="currentColor" strokeWidth="3" pathLength="1" transform="rotate(-35 200 200)" />
 
-            {/* 24 Spokes and Rim Dots */}
-            {[...Array(24)].map((_, i) => {
-              const rotation = (i * 360) / 24;
-              return (
-                <g key={`spoke-${i}`} style={{ transform: `rotate(${rotation}deg)`, transformOrigin: "200px 200px" }}>
-                  {/* Spoke tapering outwards */}
-                  <polygon points="192,180 208,180 202,30 198,30" fill="currentColor" />
-                  {/* Dot on the rim between spokes (rotated 7.5 deg) */}
-                  <circle cx="200" cy="34" r="5.5" fill="currentColor" style={{ transform: `rotate(7.5deg)`, transformOrigin: "200px 200px" }} />
+              {Array.from({ length: 24 }, (_, i) => (
+                <g key={`spoke-${i}`} transform={`rotate(${i * 15} 200 200)`}>
+                  <g className="hero-chakra-spoke" style={{ '--spoke-delay': `${120 + i * 27}ms` }}>
+                    <polygon points="192,180 208,180 202,30 198,30" fill="currentColor" />
+                    <circle cx="200" cy="34" r="5.5" fill="currentColor" transform="rotate(7.5 200 200)" />
+                  </g>
                 </g>
-              );
-            })}
+              ))}
 
-            {/* Inner Hub */}
-            <circle cx="200" cy="200" r="32" fill="none" stroke="currentColor" strokeWidth="12" />
-            <circle cx="200" cy="200" r="14" fill="currentColor" />
+              <g className="hero-chakra-hub">
+                <circle cx="200" cy="200" r="32" fill="none" stroke="currentColor" strokeWidth="12" />
+                <circle cx="200" cy="200" r="14" fill="currentColor" />
+              </g>
+            </g>
           </svg>
         </div>
 
         {/* ── Hero Content ── */}
         <div
-          className="relative z-30 flex flex-col items-center gap-6 w-full max-w-3xl px-4 mb-20 sm:mb-32 animate-[fadeIn_1.5s_ease-out]"
+          className="hero-card-stage relative z-30 flex flex-col items-center gap-6 w-full max-w-3xl px-4 mb-20 sm:mb-32"
         >
 
 
-          {/* LUXURY PASSPORT CARD */}
+          <div className="hero-visa-shell relative w-full rounded-2xl">
+          <div className="hero-visa-shadow" aria-hidden="true" />
+          {/* Surface and typography have separate timelines. The chakra never
+              shows through a fading group of text and card decorations. */}
           <div
-            className="relative flex flex-col justify-between w-full min-h-[400px] sm:min-h-[460px] rounded-2xl overflow-hidden border border-[#D4AF37]/25"
-            style={{
-              background: 'linear-gradient(160deg, #1E2A4F 0%, #162040 40%, #1E2A4F 70%, #243260 100%)',
-              boxShadow: '0 30px 60px rgba(30,42,79,0.6), 0 0 0 1px rgba(212,175,55,0.15), inset 0 1px 0 rgba(255,255,255,0.08)',
-            }}
+            className="hero-visa-card relative flex flex-col justify-between w-full min-h-[400px] sm:min-h-[460px] rounded-2xl overflow-hidden"
           >
+            <div className="hero-visa-surface" aria-hidden="true" />
+            <svg className="hero-visa-edge" aria-hidden="true">
+              <rect width="100%" height="100%" rx="16" fill="none" stroke="currentColor" strokeWidth="2" pathLength="1" />
+            </svg>
             {/* Guilloche / Security Pattern Overlay - Gold */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none"
+            <div className="hero-engraving absolute inset-0 opacity-20 pointer-events-none"
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q 25 20, 50 10 T 100 10' fill='none' stroke='%23D4AF37' stroke-width='0.3'/%3E%3Cpath d='M0 10 Q 25 0, 50 10 T 100 10' fill='none' stroke='%23D4AF37' stroke-width='0.15'/%3E%3C/svg%3E")` }}
             />
 
             {/* Radial glow in center */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,175,55,0.08) 0%, transparent 70%)' }} />
+            <div className="hero-card-glow absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,175,55,0.08) 0%, transparent 70%)' }} />
 
             {/* Decorative watermark */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
+            <div className="hero-watermark absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
               <img src="/emblem.svg" alt="" aria-hidden="true" className="w-2/3 max-w-[260px] h-auto" style={{ filter: 'brightness(0) invert(1)' }} />
             </div>
 
             {/* Guilloche Stars (Bottom Right) */}
-            <div className="absolute bottom-16 right-4 sm:right-8 opacity-90 pointer-events-none z-0 flex flex-col items-end">
+            <div className="hero-seals absolute bottom-16 right-4 sm:right-8 opacity-90 pointer-events-none z-0 flex flex-col items-end">
                <GuillocheStar className="w-14 h-14 text-[#FF9933] drop-shadow-[0_0_8px_rgba(255,153,51,0.6)]" />
                <GuillocheStar className="w-10 h-10 text-white -mt-3 mr-8 transform -rotate-12 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
                <GuillocheStar className="w-12 h-12 text-[#138808] -mt-5 mr-1 transform rotate-12 drop-shadow-[0_0_8px_rgba(19,136,8,1)]" />
             </div>
 
             {/* Repeating text lines as subtle borders */}
-            <div className="absolute left-0 w-full h-full pointer-events-none flex flex-col justify-between py-[20%] opacity-[0.07] text-[5px] leading-none overflow-hidden text-[#D4AF37] font-serif tracking-widest">
+            <div className="hero-microprint absolute left-0 w-full h-full pointer-events-none flex flex-col justify-between py-[20%] opacity-[0.07] text-[5px] leading-none overflow-hidden text-[#D4AF37] font-serif tracking-widest">
                <div className="w-[200%] whitespace-nowrap">BHARAT VISA SEVA · REPUBLIC OF INDIA · OFFICIAL VISA PORTAL · IMMIGRATION BUREAU</div>
                <div className="w-[200%] whitespace-nowrap">BHARAT VISA SEVA · REPUBLIC OF INDIA · OFFICIAL VISA PORTAL · IMMIGRATION BUREAU</div>
             </div>
@@ -229,33 +258,31 @@ export default function Home() {
             <div className="relative z-10 flex flex-col flex-1 p-5 sm:p-8 w-full text-[#FAF7F0]">
 
               {/* Header Row */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.3em] uppercase">अखिल भारतीय ई-वीज़ा पोर्टल</h2>
-                  <h2 className="text-sm font-bold font-serif text-[#D4AF37] tracking-[0.25em] uppercase mt-0.5">BHARAT VISA SEVA</h2>
+              <div className="hero-card-heading flex items-start justify-between gap-3">
+                <div className="min-w-0 text-left">
+                  <h2 className="text-[10px] sm:text-xs font-bold font-serif text-[#D4AF37]/80 tracking-[0.18em] sm:tracking-[0.3em] uppercase">अखिल भारतीय ई-वीज़ा पोर्टल</h2>
+                  <h2 className="text-xs sm:text-sm font-bold font-serif text-[#D4AF37] tracking-[0.2em] sm:tracking-[0.25em] uppercase mt-0.5">BHARAT VISA SEVA</h2>
                 </div>
-                <span className="text-xs font-bold font-sans text-white/30 tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">E-Visa</span>
+                <span className="shrink-0 text-[10px] sm:text-xs font-bold font-sans text-white/30 tracking-[0.2em] sm:tracking-[0.3em] uppercase border border-white/10 px-2 py-1 rounded">E-Visa</span>
               </div>
 
               {/* Divider */}
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4" />
+              <div className="hero-divider w-full h-px bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-4" />
 
               {/* Central gateway text */}
               <div className="flex-1 flex flex-col items-center justify-center py-2 z-10 text-center">
-                 <p className="text-[10px] font-sans font-bold tracking-[0.5em] text-white/40 uppercase mb-3">Welcome To</p>
-                 <h2 className="text-4xl sm:text-5xl font-serif font-light text-white leading-[1.15]">
-                    Your Gateway
-                 </h2>
-                 <h2 className="text-4xl sm:text-5xl font-serif italic font-light text-[#D4AF37] leading-[1.15] mt-1">
-                    to India
-                 </h2>
-                 <p className="text-[11px] font-sans text-white/40 tracking-widest uppercase mt-4"> Discover · Experience · Flourish</p>
+                 <p className="hero-eyebrow text-[10px] font-sans font-bold tracking-[0.5em] text-white/40 uppercase mb-3">Welcome To</p>
+                 <h1 className="focus:outline-none text-4xl sm:text-5xl font-serif font-light text-white leading-[1.15]">
+                   <span className="hero-line-mask"><span className="hero-title-first">Your Gateway</span></span>
+                   <span className="hero-line-mask mt-1"><span className="hero-title-second italic text-[#D4AF37]">to India</span></span>
+                 </h1>
+                 <p className="hero-tagline text-[11px] font-sans text-white/40 tracking-widest uppercase mt-4"> Discover · Experience · Flourish</p>
               </div>
             </div>
 
             {/* ACTION BUTTONS (Inside the sticker) */}
-            <div className="relative z-10 flex flex-col w-full border-t border-white/10 bg-gradient-to-r from-white/5 to-white/[0.03]">
-              <div className="flex flex-col sm:flex-row gap-3 p-4 sm:p-6 pb-3 justify-center">
+            <div className="hero-action-panel relative z-10 flex flex-col w-full">
+              <div className="hero-actions flex flex-col sm:flex-row gap-3 p-4 sm:p-6 pb-3 justify-center">
                 <Link to="/guide/visa-finder"
                   className="relative bg-gradient-to-r from-[#D4AF37] to-[#C9933A] text-[#1E2A4F] px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs overflow-hidden group shadow-[0_8px_20px_rgba(212,175,55,0.25)] hover:shadow-[0_12px_28px_rgba(212,175,55,0.35)] transition-all duration-300 hover:-translate-y-0.5 text-center rounded-lg">
                   <span className="absolute inset-1 border border-[#1E2A4F]/15 pointer-events-none rounded transition-all duration-300" />
@@ -268,7 +295,7 @@ export default function Home() {
               </div>
               
               {/* Subtle direct links */}
-              <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 px-6 pb-5 text-[10px] sm:text-[11px] font-sans tracking-widest text-white/50 uppercase">
+              <div className="hero-direct-routes flex flex-wrap justify-center items-center gap-x-4 gap-y-2 px-6 pb-5 text-[10px] sm:text-[11px] font-sans tracking-widest text-white/50 uppercase">
                 <span className="hidden sm:inline opacity-60 font-bold mr-1">Direct Routes:</span>
                 <Link to="/flow/voa" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
                   <div className="flex gap-1">
@@ -282,6 +309,7 @@ export default function Home() {
                 <Link to="/flow/afghan" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"><img src="https://flagcdn.com/w20/af.png" className="w-4 rounded-sm opacity-90" alt=""/> Afghan</Link>
               </div>
             </div>
+          </div>
           </div>
         </div>
 
@@ -360,7 +388,7 @@ export default function Home() {
             <div className="w-20 h-[2px] bg-[#D4AF37] mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">            {/* Kashmir — Tiger */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">            {/* Kashmir: Tiger */}
             <Link to="/tourism" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/tiger.jpg" alt="Kashmir Tiger" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
@@ -378,7 +406,7 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* Rajasthan — Elephant */}
+            {/* Rajasthan: Elephant */}
             <Link to="/tourism" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer md:mt-12">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/elephant.jpg" alt="Rajasthan Elephant" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />
@@ -396,7 +424,7 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* Kerala — Peacock */}
+            {/* Kerala: Peacock */}
             <Link to="/tourism" className="group block relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 h-[500px] cursor-pointer">
               <div className="absolute inset-0 w-full h-full bg-[#1E2A4F]">
                 <img src="/peacock.jpg" alt="Kerala Peacock" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out opacity-90 group-hover:opacity-100" />

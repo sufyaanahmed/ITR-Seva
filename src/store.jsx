@@ -7,6 +7,8 @@ const legacyPersistentKey = 'bharat-visa-drafts';
 const legacyDatabaseName = 'bharat-visa-drafts';
 const schemaVersion = 4;
 
+export const formatReference = (reference) => reference?.replace(/-DEMO(?=-|$)/g, '');
+
 const makeReference = (prefix) => {
   const random = globalThis.crypto?.randomUUID?.().replace(/-/g, '').slice(0, 12)
     || Math.random().toString(36).slice(2, 14);
@@ -17,14 +19,17 @@ const makeDefaultState = () => ({
   schemaVersion,
   type: 'evisa',
   step: 0,
+  furthestStep: 0,
   data: {
     application_type: 'evisa',
     visa_category: '',
     demo_only: true,
   },
   docs: [],
+  finder: { answers: {}, step: 0, showResult: false },
+  flowDrafts: {},
   identifiers: {
-    temporaryDemoId: makeReference('TMP-DEMO'),
+    temporaryDemoId: makeReference('TMP'),
     finalDemoId: null,
     formPreparationId: null,
   },
@@ -52,7 +57,8 @@ export const safeDocumentMetadata = (document, { hydrated = false } = {}) => {
     height: Number.isFinite(document.height) ? document.height : null,
     // File bytes deliberately are not persisted. A remembered selection must be
     // reselected after reload before it can satisfy document completeness.
-    status: hydrated ? 'needs-reselection' : 'selected-this-session',
+    status: document.cloudId ? 'uploaded' : hydrated ? 'needs-reselection' : 'selected-this-session',
+    ...(document.cloudId ? { cloudId: document.cloudId } : {}),
     selectedAt: document.selectedAt || new Date().toISOString(),
   };
 };
@@ -79,7 +85,7 @@ export const hydrateState = (saved) => {
     identifiers: {
       ...base.identifiers,
       ...(saved.identifiers || {}),
-      temporaryDemoId: saved.identifiers?.temporaryDemoId || makeReference('TMP-DEMO'),
+      temporaryDemoId: saved.identifiers?.temporaryDemoId || makeReference('TMP'),
     },
   };
 };
@@ -92,8 +98,8 @@ const loadSessionDraft = () => {
       persistence: {
         status: 'saved',
         message: saved
-          ? 'This tab\'s session draft was restored.'
-          : 'No session draft was present when this tab opened.',
+          ? 'Your draft was restored.'
+          : 'No saved draft found.',
       },
     };
   } catch (error) {
@@ -101,7 +107,7 @@ const loadSessionDraft = () => {
       state: makeDefaultState(),
       persistence: {
         status: 'error',
-        message: `Session draft storage is unavailable: ${error instanceof Error ? error.message : 'unknown browser storage error'}`,
+        message: 'Your saved draft could not be opened. Check that browser storage is enabled and try again.',
       },
     };
   }
@@ -132,6 +138,8 @@ export const applyDataUpdate = (previous, field, value) => {
   return {
     ...previous,
     data,
+    // Revalidate later steps if an earlier form answer changes after Back.
+    furthestStep: changed ? Math.min(previous.furthestStep || previous.step || 0, previous.step || 0) : previous.furthestStep,
     docs: invalidatesDocuments ? [] : previous.docs,
   };
 };
@@ -156,12 +164,12 @@ export const StoreProvider = ({ children }) => {
       globalThis.sessionStorage?.setItem(sessionKey, JSON.stringify(state));
       setPersistence({
         status: 'saved',
-        message: 'Saved for this tab session. Closing this tab or browser ends the draft session.',
+        message: 'Your draft is available while this tab stays open.',
       });
     } catch (error) {
       setPersistence({
         status: 'error',
-        message: `This tab could not save the session draft: ${error instanceof Error ? error.message : 'unknown browser storage error'}`,
+        message: 'Your draft could not be saved. Keep this page open and check that browser storage is enabled.',
       });
     }
   }, [state]);
@@ -181,12 +189,16 @@ export const StoreProvider = ({ children }) => {
         && (newState.data.application_type !== previous.data?.application_type || previous.submitted || isExplicitFreshStart);
 
       if (isStartingNewFlow) {
+        next.furthestStep = 0;
         next.identifiers = {
-          temporaryDemoId: makeReference('TMP-DEMO'),
+          temporaryDemoId: makeReference('TMP'),
           finalDemoId: null,
           formPreparationId: null,
         };
         next.outcome = null;
+        next.cloud = newState.cloud || null;
+      } else if (Number.isInteger(newState.step)) {
+        next.furthestStep = Math.max(previous.furthestStep || 0, previous.step || 0, newState.step);
       }
       return next;
     });
@@ -194,6 +206,17 @@ export const StoreProvider = ({ children }) => {
 
   const updateData = (field, value) => {
     setState((previous) => applyDataUpdate(previous, field, value));
+  };
+
+  const updateFinder = (update) => {
+    setState((previous) => ({
+      ...previous,
+      finder: typeof update === 'function' ? update(previous.finder) : { ...previous.finder, ...update },
+    }));
+  };
+
+  const updateFlowDraft = (key, draft) => {
+    setState((previous) => ({ ...previous, flowDrafts: { ...previous.flowDrafts, [key]: draft } }));
   };
 
   const addDocument = (type, fileMetadata) => {
@@ -229,9 +252,9 @@ export const StoreProvider = ({ children }) => {
           ...previous.identifiers,
           finalDemoId: isFormOnly
             ? previous.identifiers.finalDemoId
-            : backendRecord?.reference || previous.identifiers.finalDemoId || makeReference('FINAL-DEMO'),
+            : backendRecord?.reference || previous.identifiers.finalDemoId || makeReference('APP'),
           formPreparationId: isFormOnly
-            ? backendRecord?.reference || previous.identifiers.formPreparationId || makeReference('VOA-FORM-DEMO')
+            ? backendRecord?.reference || previous.identifiers.formPreparationId || makeReference('VOA-FORM')
             : previous.identifiers.formPreparationId,
         },
       };
@@ -239,7 +262,7 @@ export const StoreProvider = ({ children }) => {
   };
 
   const clearLocalDraft = async () => {
-    setPersistence({ status: 'clearing', message: 'Erasing this tab\'s draft and any legacy browser copies…' });
+    setPersistence({ status: 'clearing', message: 'Erasing your draft…' });
     const failures = [];
 
     try {
@@ -272,16 +295,18 @@ export const StoreProvider = ({ children }) => {
     setState(makeDefaultState());
 
     if (failures.length) {
-      const message = `The visible draft was cleared, but some browser data could not be erased (${failures.join('; ')}).`;
+      const message = 'Some saved data could not be erased. Close other Visa Seva tabs and try again.';
       setPersistence({ status: 'error', message });
       return { ok: false, message };
     }
 
-    const message = 'This tab\'s draft and legacy browser copies were erased.';
+    const message = 'Your saved draft was erased.';
     setPersistence({ status: 'cleared', message });
     return { ok: true, message };
   };
 
+  // Starting another application must not reuse the previous finder result or cloud ID.
+  const startNewApplication = () => setState(makeDefaultState());
   const resetState = clearLocalDraft;
 
   return (
@@ -289,12 +314,15 @@ export const StoreProvider = ({ children }) => {
       state,
       updateState,
       updateData,
+      updateFinder,
+      updateFlowDraft,
       addDocument,
       removeDocument,
       completeDemo,
       clearLocalDraft,
       persistence,
       resetState,
+      startNewApplication,
     }}>
       {children}
     </StoreContext.Provider>

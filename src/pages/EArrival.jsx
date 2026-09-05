@@ -11,7 +11,7 @@ export default function EArrival() {
       </div>
 
       <div className="bg-amber-50 border border-amber-300 p-5 rounded mb-10">
-        <p className="font-bold text-amber-950 mb-1">Arrival information—not a visa</p>
+        <p className="font-bold text-amber-950 mb-1">Arrival information only</p>
         <p className="text-sm text-amber-900">The e-Arrival Card does not grant entry, replace an e-Visa, replace the dedicated Afghan visa/ETA route, or replace the Visa-on-Arrival Annexure I form. Please complete your card submission directly on the official pre-flight portal.</p>
       </div>
 

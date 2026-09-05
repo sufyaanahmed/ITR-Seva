@@ -38,9 +38,9 @@ export default function NotFound() {
           Path Not Found • Error 404
         </span>
         
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#1E2A4F] mb-6 leading-tight">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1E2A4F] mb-6 leading-tight">
           Like a mirage in <br className="hidden md:block"/> the Thar Desert.
-        </h2>
+        </h1>
         
         <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto mb-8" />
         

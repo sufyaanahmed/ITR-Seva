@@ -1,117 +1,37 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
+import FlowGuide from '../../components/FlowGuide';
 
 export default function RegularFlow() {
   const navigate = useNavigate();
   const { state, updateState } = useStore();
   const routedByFinder = state.data?.application_type === 'regular' && Boolean(state.data?.eligibility_ruleset_id);
-
   const startPreparation = () => {
-    updateState({
-      type: 'regular',
-      step: 0,
-      data: {
-        ...state.data,
-        application_type: 'regular',
-        // A trip purpose is not always the legal visa category. Require an explicit choice in the wizard.
-        visa_category: '',
-        demo_only: true,
-      },
-      docs: [],
-      outcome: null,
-      submitted: false,
-    });
+    if (state.data.visa_category === 'unconfirmed') {
+      updateState({ data: { ...state.data, visa_category: '' } });
+    }
     navigate('/apply');
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6">
-      <div className="mb-10 border-b border-border-dark pb-8">
-        <p className="uppercase tracking-widest text-sm text-primary mb-2 font-bold">Paper-route preparation briefing</p>
-        <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Regular / Paper Visa Guide</h1>
-        <p className="text-xl text-text-secondary leading-relaxed mb-4">
-          Regular-visa categories and filing procedures depend on nationality, purpose, residence, and the Indian Mission/Post responsible for the application.
-        </p>
-        <p className="text-sm text-text-secondary">
-          This guide organizes document requirements, filing steps, and consular procedures for regular paper visas.
-        </p>
+    <FlowGuide title="Regular / paper visa" intro="Apply through the Indian Embassy or Consulate responsible for where you live. Requirements, fees and processing times vary by location and visa category.">
+      <ol className="divide-y divide-border border-y border-border">
+        {[
+          ['Find your Embassy or Consulate', 'Check its visa categories and the authorized application centre for your place of residence.'],
+          ['Gather your documents', 'Prepare your passport, photo, residence evidence and documents for your purpose of travel. Follow the local checklist for translations and physical copies.'],
+          ['Apply and attend your appointment', 'Complete the official form, print and sign it, and follow the local instructions for payment, passport submission and any interview or biometrics.'],
+        ].map(([title, detail], index) => (
+          <li key={title} className="flex gap-4 py-6">
+            <span className="text-sm font-semibold text-secondary-accent">0{index + 1}</span>
+            <div><h2 className="mb-2 font-semibold text-primary">{title}</h2><p className="text-sm leading-relaxed text-text-secondary">{detail}</p></div>
+          </li>
+        ))}
+      </ol>
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+        <button type="button" onClick={routedByFinder ? startPreparation : () => navigate('/guide/visa-finder')} className="btn-primary rounded-md">{routedByFinder ? 'Prepare my application' : 'Find my visa route'} →</button>
+        <a href="https://indianvisaonline.gov.in/visa/" target="_blank" rel="noreferrer" className="text-sm text-primary underline">Official visa portal ↗</a>
       </div>
-
-      {!routedByFinder && (
-        <div className="bg-amber-50 border border-amber-300 p-6 rounded mb-10">
-          <h2 className="font-bold text-amber-950 text-lg mb-2">Route not yet reviewed</h2>
-          <p className="text-sm text-amber-900 mb-5">Complete the route finder to verify that a regular paper visa is appropriate for your nationality and travel purpose.</p>
-          <button type="button" onClick={() => navigate('/guide/visa-finder')} className="btn-primary cursor-pointer">Check my preliminary route</button>
-        </div>
-      )}
-
-      {routedByFinder && (
-        <div className="bg-blue-50 border border-blue-200 p-5 rounded mb-10 text-sm text-blue-950">
-          <strong className="block mb-1">Preliminary finder handoff</strong>
-          <p>The reviewed rules directed these answers to a paper-visa or official-review path. Your intended purpose is recorded as <strong>{state.data.purpose_intent?.replace(/-/g, ' ') || 'not specified'}</strong>, but you must still select and verify the applicable legal category.</p>
-        </div>
-      )}
-
-      <div className="space-y-12">
-        <section>
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-10 h-10 rounded-full bg-[#0b2540] text-white font-bold flex items-center justify-center flex-shrink-0 text-xl">1</div>
-            <h2 className="text-2xl font-bold text-gray-900">Confirm the responsible Mission/Post</h2>
-          </div>
-          <div className="ml-14 bg-gray-50 p-6 rounded border border-gray-200">
-            <p className="text-gray-700 mb-4">Before using any checklist, confirm where you are permitted to apply and read that Mission/Post’s current category instructions. Depending on the route, you may need:</p>
-            <ul className="list-disc pl-5 space-y-2 text-gray-700">
-              <li>An eligible passport and any required residence evidence</li>
-              <li>Identity, address, family, employment, and travel-history details</li>
-              <li>Purpose-specific letters, approvals, or relationship evidence</li>
-              <li>References in India and in the home or residence country</li>
-            </ul>
-          </div>
-        </section>
-
-        <section>
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-10 h-10 rounded-full bg-[#0b2540] text-white font-bold flex items-center justify-center flex-shrink-0 text-xl">2</div>
-            <h2 className="text-2xl font-bold text-gray-900">Prepare category-specific evidence</h2>
-          </div>
-          <div className="ml-14">
-            <p className="text-gray-700 mb-4">Photo format, upload steps, physical copies, translations, attestations, passport validity, and blank-page rules can vary by category and Mission/Post.</p>
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded text-sm text-blue-900">
-              <strong className="block mb-1">Check category-specific upload rules</strong>
-              Check the current official checklist for your selected category and consular filing location.
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-10 h-10 rounded-full bg-[#0b2540] text-white font-bold flex items-center justify-center flex-shrink-0 text-xl">3</div>
-            <h2 className="text-2xl font-bold text-gray-900">Follow the published filing procedure</h2>
-          </div>
-          <div className="ml-14">
-            <p className="text-gray-700 mb-4">The responsible service may require an online form, printout and signature, physical passport, appointment, biometrics, interview, fee, or additional documents.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-              <div className="border border-gray-200 p-4 rounded">
-                <strong className="block text-gray-900 mb-2">Appointment or service provider</strong>
-                <p className="text-sm text-gray-600">Use only the authorized visa application center designated by the responsible Indian Embassy or Consulate.</p>
-              </div>
-              <div className="border border-gray-200 p-4 rounded">
-                <strong className="block text-gray-900 mb-2">Fee and decision</strong>
-                <p className="text-sm text-gray-600">Fees and processing times depend on nationality, service speed, and consular jurisdiction.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      {routedByFinder && (
-        <div className="mt-12 flex justify-center">
-          <button type="button" onClick={startPreparation} className="btn-primary px-8 py-3 font-bold rounded shadow hover:bg-[#163a5f] transition inline-block text-base cursor-pointer">Prepare Application Checklist &rarr;</button>
-        </div>
-      )}
-
-
-    </div>
+    </FlowGuide>
   );
 }

@@ -193,7 +193,7 @@ export default function Help() {
             <div className="absolute inset-0 pattern-jali opacity-10" />
             <div className="relative z-10">
               <h2 className="text-2xl font-serif font-bold mb-3">Ready to Begin Your Application?</h2>
-              <p className="mb-6 text-primary-light font-sans text-xs sm:text-sm max-w-lg mx-auto">
+              <p className="mb-6 text-slate-200 font-sans text-xs sm:text-sm max-w-lg mx-auto">
                 Use the interactive Visa Finder to verify requirements or launch your e-Visa application directly.
               </p>
               <div className="flex flex-wrap justify-center gap-3">

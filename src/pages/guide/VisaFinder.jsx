@@ -1,182 +1,88 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../../store';
-import { PASSPORT_NATIONALITIES, VISA_RULESET } from '../../data/visaEligibilityRules.js';
 import { evaluateVisaRoute, getFinderQuestions } from '../../domain/visaEligibility.js';
+import { applyFinderAnswer, applicationFromFinder, firstUnansweredStep, isValidFinderAnswer } from '../../domain/finderSession.js';
+import { countryFlag, searchNationalities } from '../../domain/countries.js';
+import Disclosure from '../../components/Disclosure.jsx';
 
-const displayValue = (question, value) => {
-  if (!value) return '';
-  const option = question.options?.find((candidate) => candidate.value === value);
-  return option?.label || value;
-};
-
-const dependentAnswers = {
-  passport: ['pakistanOrigin', 'purpose', 'durationDays', 'studyInIndiaInstitution', 'uaePriorVisa', 'voaArrivalPort', 'voaIndiaResidenceOrOccupation', 'voaAdmissibility', 'travelReadiness'],
-  purpose: ['durationDays', 'studyInIndiaInstitution', 'uaePriorVisa', 'voaArrivalPort', 'voaIndiaResidenceOrOccupation', 'voaAdmissibility', 'travelReadiness'],
-  durationDays: ['voaArrivalPort', 'voaIndiaResidenceOrOccupation', 'voaAdmissibility'],
-};
+const displayValue = (question, value) => question.options?.find((option) => option.value === value)?.label || value || '';
 
 export default function VisaFinder() {
   const navigate = useNavigate();
-  const { updateState } = useStore();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [showHelp, setShowHelp] = useState(false);
-  const [result, setResult] = useState(null);
-
+  const [params, setParams] = useSearchParams();
+  const { state, updateState, updateFinder } = useStore();
+  const finder = state.finder;
+  const answers = finder.answers;
   const [countrySearch, setCountrySearch] = useState('');
-
-  const filteredNationalities = useMemo(() => {
-    if (!countrySearch.trim()) return PASSPORT_NATIONALITIES;
-    const q = countrySearch.toLowerCase();
-    return PASSPORT_NATIONALITIES.filter((name) => name.toLowerCase().includes(q));
-  }, [countrySearch]);
-
+  const heading = useRef(null);
   const questions = useMemo(() => getFinderQuestions(answers), [answers]);
-  const safeStep = Math.min(currentStep, questions.length - 1);
+  const firstMissing = firstUnansweredStep(answers);
+  const complete = firstMissing === questions.length;
+  const requestedStep = params.has('step') ? Math.max(0, questions.findIndex((q) => q.id === params.get('step'))) : finder.step;
+  const safeStep = Math.min(requestedStep, firstMissing, questions.length - 1);
   const currentQ = questions[safeStep];
-  const currentValue = answers[currentQ.id];
-  const isCurrentAnswerValid = currentQ.type !== 'number'
-    ? Boolean(currentValue)
-    : Number.isFinite(Number(currentValue))
-      && Number(currentValue) >= currentQ.min
-      && Number(currentValue) <= currentQ.max;
+  const showResult = complete && (params.get('view') === 'result' || (!params.has('step') && finder.showResult));
+  const result = showResult ? evaluateVisaRoute(answers) : null;
+  const isCurrentAnswerValid = isValidFinderAnswer(currentQ, answers[currentQ.id]);
+  const filteredNationalities = useMemo(() => searchNationalities(countrySearch), [countrySearch]);
 
-  const handleSelect = (value) => {
-    setAnswers((previous) => {
-      const next = { ...previous, [currentQ.id]: value };
-      (dependentAnswers[currentQ.id] || []).forEach((answerId) => {
-        delete next[answerId];
-      });
-      return next;
-    });
-  };
-
-  const handleNext = () => {
-    if (safeStep < questions.length - 1) {
-      setCurrentStep(safeStep + 1);
-      setShowHelp(false);
-      setCountrySearch('');
-      return;
+  useEffect(() => {
+    if (finder.step !== safeStep || finder.showResult !== showResult) updateFinder({ step: safeStep, showResult });
+    if (!params.has('step') && !params.has('view')) {
+      setParams(showResult ? { view: 'result' } : { step: currentQ.id }, { replace: true });
     }
-    setResult(evaluateVisaRoute(answers));
-  };
+  }, [safeStep, showResult, params]);
 
-  const handleBack = () => {
-    if (safeStep > 0) {
-      setCurrentStep(safeStep - 1);
-      setShowHelp(false);
-      setCountrySearch('');
-    } else {
-      navigate(-1);
-    }
-  };
-
-  const reviseAnswers = () => {
-    setResult(null);
-    setCurrentStep(0);
-    setShowHelp(false);
+  useEffect(() => {
     setCountrySearch('');
-  };
+    window.scrollTo(0, 0);
+    heading.current?.focus({ preventScroll: true });
+  }, [currentQ.id, showResult]);
 
-  const jumpToQuestion = (stepIndex) => {
-    if (stepIndex < safeStep) {
-      setCurrentStep(stepIndex);
-      setShowHelp(false);
-      setCountrySearch('');
+  const handleSelect = (value) => updateFinder((previous) => applyFinderAnswer(previous, currentQ.id, value));
+  const jumpToQuestion = (index) => {
+    setParams({ step: questions[index].id });
+    updateFinder({ step: index, showResult: false });
+  };
+  const handleNext = () => {
+    if (!isCurrentAnswerValid) return;
+    if (safeStep < questions.length - 1) jumpToQuestion(safeStep + 1);
+    else if (complete) {
+      updateFinder({ showResult: true });
+      setParams({ view: 'result' });
     }
   };
-
+  const handleBack = () => { if (safeStep > 0) jumpToQuestion(safeStep - 1); };
   const startApplication = () => {
-    updateState({
-      type: result.applicationType,
-      step: 0,
-      data: {
-        application_type: result.applicationType,
-        visa_category: result.visaCategory,
-        nationality: answers.passport,
-        passport_type: answers.passportType,
-        pakistan_origin: answers.pakistanOrigin || 'not_applicable',
-        purpose_intent: answers.purpose,
-        intended_stay_days: Number(answers.durationDays),
-        study_in_india_institution: answers.studyInIndiaInstitution || 'not_applicable',
-        uae_prior_indian_visa: answers.uaePriorVisa || 'not_applicable',
-        voa_arrival_port_gate: answers.voaArrivalPort || 'not_applicable',
-        eligibility_ruleset_id: VISA_RULESET.id,
-        eligibility_reviewed_date: VISA_RULESET.reviewedDate,
-      },
-      docs: [],
-      submitted: false,
-    });
+    const handoff = applicationFromFinder(state, answers, result);
+    if (handoff) updateState(handoff);
     navigate(result.path);
   };
 
   if (result) {
-    // Determine fee tier & turnaround specs based on route
     const isVoa = result.applicationType === 'voa';
-    const isAfghan = result.applicationType === 'afghan';
-    const isPaper = result.applicationType === 'regular';
-    const feeDisplay = isVoa ? '₹2,000 INR at Port' : isAfghan ? 'Exempt / Fee per Mission' : isPaper ? 'Mission Tariff' : '$25 / $40 / $80 USD';
-    const turnaroundDisplay = isVoa ? 'Instant on Arrival' : isAfghan ? 'Prior Clearance' : isPaper ? 'Embassy Schedule' : '72 Hours Standard';
-    const validityDisplay = isVoa ? 'Up to 60 Days (Double Entry)' : isAfghan ? 'Single / Double Entry' : isPaper ? 'Subject to Visa Grant' : '30 Days / 1 Yr / 5 Yrs';
-
     return (
-      <div className="min-h-screen bg-surface py-12 px-4 flex justify-center relative pattern-kalamkari">
-        <div className="absolute inset-0 bg-surface/90" />
-        <div className="max-w-3xl w-full bg-white border border-border-dark p-8 md:p-12 relative z-10 shadow-2xl rounded-sm">
-          <div className="w-16 h-16 bg-surface border border-primary rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-bold text-secondary-accent uppercase tracking-[0.2em] mb-2 font-sans">Identified Official Route</p>
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-primary mb-4">{result.type}</h1>
-            <p className="text-text-secondary mb-6 text-base font-serif italic max-w-xl mx-auto">{result.description}</p>
-          </div>
-
-          {/* Quantitative Specification Badges */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6 bg-[#FAF7F0] border border-[#D4AF37]/30 p-4 rounded text-center">
-            <div className="border-b sm:border-b-0 sm:border-r border-gray-200 pb-2 sm:pb-0 sm:pr-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Permitted Validity</span>
-              <strong className="text-xs font-bold text-[#1E2A4F] block mt-0.5">{validityDisplay}</strong>
-            </div>
-            <div className="border-b sm:border-b-0 sm:border-r border-gray-200 pb-2 sm:pb-0 sm:pr-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Estimated Tariff</span>
-              <strong className="text-xs font-bold text-[#176B45] block mt-0.5">{feeDisplay}</strong>
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Processing Standard</span>
-              <strong className="text-xs font-bold text-[#1E2A4F] block mt-0.5">{turnaroundDisplay}</strong>
-            </div>
-          </div>
-
-          <section className="border border-border-dark p-5 sm:p-6 mb-5 bg-surface" aria-labelledby="why-this-route">
-            <h2 id="why-this-route" className="font-sans font-bold text-primary mb-3 uppercase tracking-widest text-xs">Why this route?</h2>
-            <ul className="space-y-2 text-text-secondary text-sm font-sans list-disc pl-5">
-              {result.rationale.map((reason) => <li key={reason}>{reason}</li>)}
-            </ul>
-          </section>
-
-          {result.cautions && result.cautions.length > 0 && (
-            <section className="border-l-4 border-secondary-accent bg-amber-50 p-5 mb-8" aria-labelledby="before-continuing">
-              <h2 id="before-continuing" className="font-sans font-bold text-primary mb-2 uppercase tracking-widest text-xs">Before continuing</h2>
-              <ul className="space-y-2 text-text-secondary text-sm font-sans list-disc pl-5">
-                {result.cautions.map((caution) => <li key={caution}>{caution}</li>)}
-              </ul>
-            </section>
+      <div className="bg-surface px-4 py-10 sm:py-14">
+        <div className="mx-auto max-w-2xl rounded-xl border border-border bg-white p-6 shadow-sm sm:p-10">
+          <p className="mb-3 text-sm text-text-secondary"><span aria-hidden="true">{countryFlag(answers.passport)}</span> {answers.passport} · {answers.durationDays} days</p>
+          <h1 ref={heading} tabIndex={-1} className="mb-3 font-serif text-3xl font-bold text-primary outline-none sm:text-4xl">{result.type}</h1>
+          <p className="mb-6 leading-relaxed text-text-secondary">{result.description}</p>
+          {isVoa && (
+            <dl className="mb-6 flex flex-wrap gap-x-10 gap-y-3 border-y border-border py-4 text-sm">
+              <div><dt className="text-text-secondary">Stay</dt><dd className="mt-1 font-semibold text-primary">Up to 60 days · Double entry</dd></div>
+              <div><dt className="text-text-secondary">Fee at arrival</dt><dd className="mt-1 font-semibold text-primary">₹2,000 per person</dd></div>
+            </dl>
           )}
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={reviseAnswers} className="btn-secondary">Change answers</button>
-            <button onClick={startApplication} className="btn-mughal group">
-              <span className="inner-border" />
-              <span className="relative z-10 flex items-center gap-2">
-                {result.actionLabel}
-                <span className="text-secondary-accent transform group-hover:translate-x-1 transition-transform" aria-hidden="true">&rarr;</span>
-              </span>
-            </button>
+          {result.cautions.length > 0 && <p className="mb-6 text-sm leading-relaxed text-text-secondary">{result.cautions[0]}</p>}
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+            <button type="button" onClick={startApplication} className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark">{result.actionLabel} <span aria-hidden="true">→</span></button>
+            <button type="button" onClick={() => jumpToQuestion(0)} className="rounded-md px-4 py-3 text-sm font-medium text-primary hover:bg-surface">Edit answers</button>
           </div>
+          <Disclosure title="Why this route?">
+            <ul className="list-disc space-y-2 pl-5">{result.rationale.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+            {result.cautions.slice(1).map((caution) => <p key={caution} className="mt-3">{caution}</p>)}
+          </Disclosure>
         </div>
       </div>
     );
@@ -185,11 +91,11 @@ export default function VisaFinder() {
   return (
     <div className="min-h-screen bg-surface py-12 px-4 flex flex-col items-center relative pattern-kalamkari">
       <div className="absolute inset-0 bg-surface/90" />
-      <div className="max-w-3xl w-full bg-white border border-border-dark flex flex-col min-h-[560px] relative z-10 shadow-2xl rounded-sm">
+      <div className="max-w-3xl w-full bg-white border border-border-dark flex flex-col min-h-[560px] relative z-10 shadow-sm rounded-xl overflow-hidden">
         <div className="bg-primary px-6 sm:px-8 py-6 sm:py-8 text-white relative border-b border-border-dark pattern-jali">
           <div className="absolute inset-0 bg-primary/95" />
           <div className="relative z-10">
-            <p className="text-[0.65rem] font-bold text-secondary-accent uppercase tracking-[0.2em] mb-2 font-sans">Official Route Eligibility</p>
+            <p className="text-[0.65rem] font-bold text-secondary-accent uppercase tracking-[0.2em] mb-2 font-sans">Visa finder</p>
             <div className="flex justify-between items-end gap-4 mb-4">
               <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white">Find the right visa route</h1>
               <span className="text-xs font-sans uppercase tracking-widest text-primary-light whitespace-nowrap">Step {safeStep + 1} of {questions.length}</span>
@@ -210,7 +116,7 @@ export default function VisaFinder() {
                       className="bg-white/15 hover:bg-white/25 text-white/90 text-[10px] font-sans font-medium px-2.5 py-1 rounded-full border border-white/20 flex items-center gap-1.5 transition-all cursor-pointer"
                       title={`Edit ${q.title}`}
                     >
-                      <span className="text-[#D4AF37] font-bold">✓</span>
+                      <span aria-hidden="true" className={q.id === 'passport' ? 'text-base' : 'text-[#D4AF37] font-bold'}>{q.id === 'passport' ? countryFlag(val) : '✓'}</span>
                       <span className="truncate max-w-[140px]">{label}</span>
                       <span className="text-white/50 text-[9px] uppercase">Edit</span>
                     </button>
@@ -226,14 +132,21 @@ export default function VisaFinder() {
         </div>
 
         <div className="p-6 sm:p-10 flex-1 flex flex-col">
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-primary mb-6">{currentQ.title}</h2>
+          <h2 ref={heading} tabIndex={-1} className="text-2xl sm:text-3xl font-serif font-bold text-primary mb-5 outline-none">{currentQ.title}</h2>
+          {currentQ.description && <p className="mb-5 text-sm leading-relaxed text-text-secondary">{currentQ.description}</p>}
+          {currentQ.requirements && (
+            <ul className="mb-5 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary marker:text-primary">
+              {currentQ.requirements.map((requirement) => <li key={requirement}>{requirement}</li>)}
+            </ul>
+          )}
+          {currentQ.source && <a href={currentQ.source.url} target="_blank" rel="noreferrer" className="mb-5 text-xs text-primary underline">{currentQ.source.label} ↗</a>}
 
           {/* Searchable Country Selector */}
           {currentQ.type === 'country_select' && (
             <div className="w-full mb-8">
               <div className="mb-3">
                 <label htmlFor="passport-search-input" className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Search or select passport nationality:
+                  Search country
                 </label>
                 <div className="relative">
                   <input
@@ -241,8 +154,8 @@ export default function VisaFinder() {
                     type="text"
                     value={countrySearch}
                     onChange={(e) => setCountrySearch(e.target.value)}
-                    placeholder="Type to filter country (e.g., United States, Japan, France)..."
-                    className="w-full bg-[#FAF7F0] border border-border-dark px-4 py-3 text-sm font-sans text-primary focus:outline-none focus:border-secondary-accent rounded"
+                    placeholder="Try UAE, United States or Japan"
+                    className="w-full bg-[#FAF7F0] border border-border-dark pl-4 pr-16 py-3 text-sm font-sans text-primary focus:outline-none focus:border-secondary-accent rounded"
                   />
                   {countrySearch && (
                     <button
@@ -265,11 +178,12 @@ export default function VisaFinder() {
                         key={country}
                         type="button"
                         onClick={() => handleSelect(country)}
+                        aria-pressed={isSelected}
                         className={`w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors flex items-center justify-between cursor-pointer ${
                           isSelected ? 'bg-[#1E2A4F] text-white font-bold' : 'hover:bg-gray-100 text-gray-800'
                         }`}
                       >
-                        <span>{country}</span>
+                        <span className="flex items-center gap-2"><span aria-hidden="true" className="text-base">{countryFlag(country)}</span>{country}</span>
                         {isSelected && <span className="text-[#D4AF37] font-bold text-xs">Selected ✓</span>}
                       </button>
                     );
@@ -328,30 +242,18 @@ export default function VisaFinder() {
 
           {answers[currentQ.id] && <p className="sr-only" aria-live="polite">Selected: {displayValue(currentQ, answers[currentQ.id])}</p>}
 
-          {currentQ.help && (
-            <div className="mt-auto pt-6 border-t border-border-dark">
-              <button
-                type="button"
-                onClick={() => setShowHelp((visible) => !visible)}
-                className="text-xs font-sans font-bold text-secondary-accent uppercase tracking-widest flex items-center gap-2 hover:text-primary transition-colors focus:outline-none cursor-pointer"
-                aria-expanded={showHelp}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Why are we asking this?
-              </button>
-              {showHelp && <div className="mt-4 p-4 bg-surface border-l-2 border-secondary-accent text-text-secondary text-sm font-sans italic animate-fade-in">{currentQ.help}</div>}
-            </div>
-          )}
+          {currentQ.help && <div className="mt-auto"><Disclosure key={currentQ.id} title="Why are we asking this?">{currentQ.help}</Disclosure></div>}
+
         </div>
 
         <div className="bg-surface px-6 sm:px-8 py-5 sm:py-6 border-t border-border-dark flex justify-between items-center gap-4">
-          <button onClick={handleBack} className="text-sm font-sans font-bold text-text-secondary uppercase tracking-widest hover:text-primary transition-colors cursor-pointer">&larr; Back</button>
+          <button type="button" onClick={handleBack} disabled={safeStep === 0} className="text-sm font-medium text-text-secondary hover:text-primary transition-colors disabled:invisible">&larr; Back</button>
           <button
             onClick={handleNext}
             disabled={!isCurrentAnswerValid}
             className={`px-6 sm:px-8 py-3 font-sans font-bold uppercase tracking-widest text-xs sm:text-sm transition-all duration-300 border cursor-pointer ${!isCurrentAnswerValid ? 'bg-surface border-border text-text-muted cursor-not-allowed' : 'bg-primary border-primary text-white hover:bg-white hover:text-primary'}`}
           >
-            {safeStep === questions.length - 1 ? 'See preliminary route' : 'Next step'}
+            {safeStep === questions.length - 1 ? 'See my route' : 'Continue'}
           </button>
         </div>
       </div>

@@ -1,9 +1,19 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
 import ScrollToTop from './components/ScrollToTop';
 import Loader from './components/Loader';
+import VisaAssistant from './components/VisaAssistant';
 import { useStore, isMeaningfulDraft } from './store';
+import Home from './pages/Home';
+import { platformEnabled } from './platform/client';
+const Applications = lazy(() => import('./platform/Applications'));
+const ApplicationDetail = lazy(() => import('./platform/Applications').then(m => ({ default: m.ApplicationDetail })));
+const Checkout = lazy(() => import('./platform/Applications').then(m => ({ default: m.Checkout })));
+const Assistants = lazy(() => import('./platform/Assistants'));
+const AssistantConsent = lazy(() => import('./platform/Assistants').then(m => ({ default: m.AssistantConsent })));
+const MagicLink = lazy(() => import('./platform/MagicLink'));
+const Admin = lazy(() => import('./platform/Admin'));
+const isAdminHost = import.meta.env.VITE_APP_ROLE === 'admin' || window.location.hostname === (import.meta.env.VITE_ADMIN_HOST || 'admin.localhost');
 
 const Wizard = lazy(() => import('./pages/Wizard'));
 const Status = lazy(() => import('./pages/Status'));
@@ -73,7 +83,7 @@ const Header = () => {
   return (
     <header className="relative z-50 border-b border-border bg-background print:hidden">
       <div className="mx-auto flex min-h-[104px] w-full max-w-[1200px] flex-wrap items-center gap-4 px-4 py-4 sm:px-6 lg:flex-nowrap">
-        <Link to="/" className="group mr-auto flex shrink-0 items-center gap-3 font-serif text-[1.2rem] text-primary no-underline sm:gap-4 sm:text-[1.4rem] md:text-2xl" aria-label="India Visa Seva independent demo home">
+        <Link to="/" className="group mr-auto flex shrink-0 items-center gap-3 font-serif text-[1.2rem] text-primary no-underline sm:gap-4 sm:text-[1.4rem] md:text-2xl" aria-label="India Visa Seva home">
           <span className="grid h-[48px] w-[48px] shrink-0 place-items-center sm:h-[56px] sm:w-[56px]" aria-hidden="true">
             <img src="/emblem.svg" alt="" className="h-10 w-auto opacity-90 drop-shadow-sm sm:h-14" />
           </span>
@@ -85,7 +95,7 @@ const Header = () => {
 
         <nav aria-label="Primary navigation" className="hidden items-center gap-3 lg:flex xl:gap-6">
           <Link to={hasDraft ? "/dashboard" : "/guide/visa-finder"} className={navLinkClass}>Apply</Link>
-          <Link to="/status" className={navLinkClass}>Check Status</Link>
+          <Link to="/status" className={navLinkClass}>{platformEnabled ? "My applications" : "Check Status"}</Link>
           <Link to="/tourism" className={navLinkClass}>Discover India</Link>
           <Link to="/help" className={navLinkClass}>Help</Link>
         </nav>
@@ -140,7 +150,7 @@ const Header = () => {
       {menuOpen && (
         <nav id="mobile-navigation" aria-label="Mobile navigation" className="absolute left-0 z-40 flex w-full flex-col border-t border-gray-100 bg-white px-6 py-4 shadow-xl lg:hidden">
           <Link to={hasDraft ? "/dashboard" : "/guide/visa-finder"} onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Apply</Link>
-          <Link to="/status" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Check Status</Link>
+          <Link to="/status" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">{platformEnabled ? "My applications" : "Check Status"}</Link>
           <Link to="/tourism" onClick={closeMenu} className="border-b border-gray-100 py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Discover India</Link>
           <Link to="/help" onClick={closeMenu} className="py-3 font-sans text-[0.95rem] font-medium uppercase tracking-wider text-text hover:text-secondary-accent">Help</Link>
         </nav>
@@ -159,13 +169,9 @@ const Footer = () => (
           <div className="flex items-center gap-3 mb-6">
             <img src="/emblem.svg" alt="" className="w-10 h-10 opacity-90 drop-shadow-[0_2px_8px_rgba(212,175,55,0.25)]" style={{ filter: 'brightness(0) saturate(100%) invert(88%) sepia(21%) saturate(1210%) hue-rotate(345deg) brightness(91%) contrast(85%)' }} />
             <div className="flex flex-col">
-              <span className="text-[0.6rem] font-sans font-bold uppercase tracking-[0.2em] text-[#D4AF37] mb-0.5">Independent Prototype</span>
               <span className="font-serif text-xl font-bold tracking-wide text-white">India Visa Seva</span>
             </div>
           </div>
-          <p className="font-sans text-sm text-white/60 leading-relaxed max-w-sm">
-            This is an independent educational prototype. It is not affiliated with, endorsed by, or connected to the Government of India.
-          </p>
         </div>
 
         {/* Links: Services */}
@@ -192,31 +198,21 @@ const Footer = () => (
       {/* Footer Bottom */}
       <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-xs text-white/40">
         <p>&copy; {new Date().getFullYear()} India Visa Seva. All rights reserved.</p>
-        <p className="flex items-center gap-1.5 uppercase tracking-wider">
-          Made with <span className="text-[#D4AF37]">♥</span> for Hackathon
-        </p>
       </div>
     </div>
   </footer>
 );
 
-const RouteFallback = () => (
-  <div role="status" aria-live="polite" aria-busy="true" className="mx-auto flex min-h-[40vh] max-w-6xl items-center justify-center px-6 text-center">
-    <span className="font-sans text-sm font-semibold uppercase tracking-[0.16em] text-primary">Loading demo…</span>
-  </div>
-);
-
-
 export default function App() {
+  if (isAdminHost) return <Suspense fallback={<Loader />}><Admin /></Suspense>;
 
   return (
     <div className="flex min-h-screen flex-col bg-background font-sans text-text print:bg-white">
-      <Loader />
       <ScrollToTop />
       <Header />
 
       <main id="main-content" className="w-full flex-1">
-        <Suspense fallback={<RouteFallback />}>
+        <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/flow/afghan" element={<AfghanFlow />} />
@@ -225,7 +221,13 @@ export default function App() {
             <Route path="/flow/regular" element={<RegularFlow />} />
             <Route path="/guide/visa-finder" element={<VisaFinder />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/status" element={<Status />} />
+            <Route path="/status" element={platformEnabled ? <Applications /> : <Status />} />
+            <Route path="/auth/confirm" element={<MagicLink />} />
+            <Route path="/applications" element={<Applications />} />
+            <Route path="/applications/:id" element={<ApplicationDetail />} />
+            <Route path="/applications/:id/checkout" element={<Checkout />} />
+            <Route path="/assistants" element={<Assistants />} />
+            <Route path="/assistant-consent" element={<AssistantConsent />} />
             <Route path="/e-arrival" element={<EArrival />} />
             <Route path="/resume" element={<Resume />} />
             <Route path="/help" element={<Help />} />
@@ -237,6 +239,7 @@ export default function App() {
         </Suspense>
       </main>
       <Footer />
+      <VisaAssistant />
     </div>
   );
 }

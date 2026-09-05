@@ -8,3 +8,5 @@ dist-ssr
 backend/target
 load-results
 .DS_Store
+.vercel
+.env*

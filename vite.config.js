@@ -6,6 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      '/api/platform': 'http://127.0.0.1:3001',
+      '/oauth': 'http://127.0.0.1:3001',
+      '/.well-known': 'http://127.0.0.1:3001',
+      '/mcp': 'http://127.0.0.1:3001',
       '/api': 'http://127.0.0.1:3000',
     },
   },
