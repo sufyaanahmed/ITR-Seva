@@ -1,0 +1,159 @@
+/* The scene rests fully visible. Only a fresh visit opts into motion. */
+.hero-reveal {
+  --hero-material-ease: cubic-bezier(0.42, 0, 0.24, 1);
+  --hero-type-ease: cubic-bezier(0.32, 0, 0.2, 1);
+}
+
+.hero-chakra { opacity: 0.08; }
+.hero-chakra-rotor {
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+  animation: hero-chakra-rotate 100s linear infinite;
+}
+.hero-chakra-ring { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.hero-chakra-spoke, .hero-chakra-hub { transform-origin: 200px 200px; }
+
+.hero-visa-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 24px 50px rgba(30,42,79,0.28), 0 6px 16px rgba(30,42,79,0.14);
+}
+
+.hero-visa-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(160deg, #1E2A4F 0%, #162040 40%, #1E2A4F 70%, #243260 100%);
+}
+
+.hero-visa-edge {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  color: rgba(212,175,55,0.3);
+  pointer-events: none;
+}
+.hero-visa-edge rect { stroke-dasharray: 1; stroke-dashoffset: 0; }
+
+.hero-action-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+}
+
+.hero-line-mask {
+  display: block;
+  overflow: hidden;
+  padding: 0.06em 0.08em 0.14em;
+  margin-right: -0.08em;
+  margin-bottom: -0.14em;
+  margin-left: -0.08em;
+}
+.hero-title-first, .hero-title-second { display: block; }
+
+/* The entrance clock controls only contrast. Rotation lives on a separate
+   element so completing the reveal cannot stop or restart the wheel. */
+.is-revealing .hero-chakra {
+  animation: hero-chakra-reveal 2200ms linear both;
+}
+.is-revealing .hero-chakra-ring-outer {
+  animation: hero-ring-draw 1150ms cubic-bezier(0.36,0.12,0.24,1) both;
+}
+.is-revealing .hero-chakra-ring-inner {
+  animation: hero-ring-counterdraw 1000ms 80ms cubic-bezier(0.36,0.12,0.24,1) both;
+}
+.is-revealing .hero-chakra-spoke {
+  animation: hero-spoke-arrive 500ms var(--spoke-delay) var(--hero-material-ease) both;
+}
+.is-revealing .hero-chakra-hub {
+  animation: hero-spoke-arrive 550ms 40ms var(--hero-material-ease) both;
+}
+.is-revealing .hero-jali {
+  animation: hero-paper-resolve 1800ms 50ms ease-in-out both;
+}
+
+/* The card stays anchored. Its material develops evenly across the surface,
+   with a smooth exposure curve and a separate shadow. No moving mask edge,
+   translation or parent fade carries the typography along with it. */
+.is-revealing .hero-visa-edge rect {
+  animation: hero-ring-draw 1100ms 200ms var(--hero-material-ease) both;
+}
+.is-revealing .hero-visa-shadow {
+  animation: hero-ink-in 1400ms 240ms ease-in-out both;
+}
+.is-revealing .hero-visa-surface {
+  animation: hero-ink-in 1100ms 180ms ease-in-out both;
+}
+
+/* Lettering and engraved details resolve after the navy gains its depth.
+   Overlapping timings keep the scene continuous through the final controls. */
+.is-revealing .hero-card-heading { animation: hero-detail-arrive 560ms 600ms var(--hero-type-ease) both; }
+.is-revealing .hero-divider { animation: hero-divider-draw 650ms 650ms var(--hero-material-ease) both; }
+.is-revealing .hero-eyebrow { animation: hero-detail-arrive 500ms 750ms var(--hero-type-ease) both; }
+.is-revealing .hero-title-first { animation: hero-title-arrive 650ms 800ms var(--hero-type-ease) both; }
+.is-revealing .hero-title-second { animation: hero-title-arrive 680ms 920ms var(--hero-type-ease) both; }
+.is-revealing .hero-tagline { animation: hero-detail-arrive 560ms 1000ms var(--hero-type-ease) both; }
+.is-revealing .hero-actions { animation: hero-detail-arrive 500ms 1050ms var(--hero-type-ease) both; }
+.is-revealing .hero-direct-routes { animation: hero-detail-arrive 480ms 1200ms var(--hero-type-ease) both; }
+.is-revealing .hero-action-panel::before { animation: hero-ink-in 700ms 900ms var(--hero-material-ease) both; }
+
+/* Engraved details emerge gradually after the material; no bright flash. */
+.hero-engraving { --hero-ink-opacity: 0.2; }
+.hero-watermark { --hero-ink-opacity: 0.06; }
+.hero-microprint { --hero-ink-opacity: 0.07; }
+.hero-seals { --hero-ink-opacity: 0.9; }
+.is-revealing .hero-engraving { animation: hero-ink-in 900ms 900ms ease-in-out both; }
+.is-revealing .hero-watermark { animation: hero-ink-in 1000ms 950ms ease-in-out both; }
+.is-revealing .hero-microprint { animation: hero-ink-in 800ms 1100ms ease-in-out both; }
+.is-revealing .hero-card-glow { animation: hero-ink-in 900ms 1150ms ease-in-out both; }
+.is-revealing .hero-seals { animation: hero-ink-in 750ms 1200ms ease-in-out both; }
+
+@keyframes hero-chakra-reveal {
+  0%, 42% { opacity: 0.11; animation-timing-function: ease-in-out; }
+  100% { opacity: 0.08; }
+}
+@keyframes hero-chakra-rotate { to { transform: rotate(360deg); } }
+@keyframes hero-ring-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes hero-ring-counterdraw { from { stroke-dashoffset: -1; } to { stroke-dashoffset: 0; } }
+@keyframes hero-spoke-arrive {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes hero-paper-resolve { from { opacity: 0.22; } to { opacity: 1; } }
+@keyframes hero-title-arrive {
+  from { opacity: 0; transform: translateY(28%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-detail-arrive {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-divider-draw {
+  from { opacity: 0; transform: scaleX(0.25); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+@keyframes hero-ink-in { from { opacity: 0; } to { opacity: var(--hero-ink-opacity, 1); } }
+
+/* A keyboard user gets a fully visible control immediately, while the chakra
+   continues naturally. Touching or scrolling the background never cuts it. */
+.is-interacting .hero-visa-shell,
+.is-interacting .hero-visa-shell *,
+.is-interacting .hero-visa-shell *::before,
+.is-interacting .hero-visa-shell *::after {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal *, .hero-reveal *::before, .hero-reveal *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

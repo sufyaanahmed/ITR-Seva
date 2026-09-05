@@ -124,8 +124,8 @@ function StatusSealStamp({ status = 'GRANTED' }) {
 
 const mockDb = [
   {
-    id: 'DEMO2026E00001',
-    passport: 'DEMO123456',
+    id: 'VS2026E00001',
+    passport: 'P1234567',
     birthDate: '1985-04-22',
     applicant: 'Sam Altman',
     nationality: 'United States',
@@ -141,8 +141,8 @@ const mockDb = [
     ],
   },
   {
-    id: 'DEMO2026E00002',
-    passport: 'DEMO123457',
+    id: 'VS2026E00002',
+    passport: 'P1234568',
     birthDate: '1988-11-03',
     applicant: 'Ravi Example',
     nationality: 'United Kingdom',
@@ -157,8 +157,8 @@ const mockDb = [
     ],
   },
   {
-    id: 'DEMO2026A00003',
-    passport: 'DEMO123458',
+    id: 'VS2026A00003',
+    passport: 'P1234569',
     birthDate: '1996-02-21',
     applicant: 'Noor Example',
     nationality: 'Afghanistan',
@@ -197,8 +197,8 @@ export default function Status() {
   };
 
   const fillDemoData = () => {
-    setApplicationId('DEMO2026E00001');
-    setPassport('DEMO123456');
+    setApplicationId('VS2026E00001');
+    setPassport('P1234567');
     setBirthDate('1985-04-22');
   };
 
@@ -264,7 +264,7 @@ export default function Status() {
             onClick={fillDemoData} 
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/40 bg-[#FAF7F0] text-[#C4762A] text-xs font-bold uppercase tracking-wider hover:bg-[#D4AF37] hover:text-[#1E2A4F] transition-all shadow-xs cursor-pointer"
           >
-            <span>Auto-Fill Sample Data</span>
+            <span>Autofill</span>
           </button>
         </div>
       </div>
@@ -277,7 +277,7 @@ export default function Status() {
             type="text"
             value={applicationId}
             onChange={(e) => setApplicationId(e.target.value)}
-            placeholder="e.g. DEMO2026E00001 or reference ID"
+            placeholder="Enter your application reference"
             autoComplete="off"
             className="input-field mt-1.5 font-normal text-sm"
             required
@@ -289,7 +289,7 @@ export default function Status() {
             type="text"
             value={passport}
             onChange={(e) => setPassport(e.target.value)}
-            placeholder="DEMO123456"
+            placeholder="Enter your passport number"
             autoComplete="off"
             className="input-field mt-1.5 font-normal text-sm"
             required
@@ -500,7 +500,7 @@ export default function Status() {
                 onClick={fillDemoData}
                 className="text-xs font-bold text-[#C4762A] hover:underline uppercase tracking-wider cursor-pointer"
               >
-                Auto-fill sample record to test status view →
+                Autofill details →
               </button>
             </div>
           )}

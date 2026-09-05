@@ -1,0 +1,11 @@
+.env
+.env.*
+.git
+backend
+supabase/.temp
+supabase/.branches
+node_modules
+load-results
+load-tests
+plans
+tests

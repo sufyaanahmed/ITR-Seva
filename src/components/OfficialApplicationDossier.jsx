@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatReference } from '../store';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    INLINE CULTURAL ORNAMENTS & SVG SEALS (NO EMOJIS)
@@ -48,7 +49,7 @@ function AshokaChakraWatermark() {
 }
 
 /** Vector Barcode Generator (Code-128 Look) */
-function VectorBarcode({ text = 'FINAL-DEMO-2026' }) {
+function VectorBarcode({ text = 'APP-2026' }) {
   const bars = text.split('').flatMap((char) => {
     const code = char.charCodeAt(0);
     return [
@@ -115,12 +116,12 @@ function OfficialSealStamp() {
         <path id="sealTextPath" d="M 60,60 m -42,0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" fill="none" />
         <text fontSize="7.5" fontWeight="bold" letterSpacing="1.2" fill="currentColor">
           <textPath href="#sealTextPath" startOffset="0%">
-            BHARAT VISA SEVA · OFFICIAL SEAL ·
+            INDIA VISA SEVA · APPLICATION ·
           </textPath>
         </text>
         <path d="M 60,46 L 63,55 L 72,55 L 65,61 L 67,70 L 60,65 L 53,70 L 55,61 L 48,55 L 57,55 Z" fill="currentColor" fillOpacity="0.85" />
         <text x="60" y="82" fontSize="6" fontWeight="bold" textAnchor="middle" fill="currentColor" letterSpacing="0.5">
-          VALIDATED
+          PREPARED
         </text>
       </svg>
     </div>
@@ -183,10 +184,10 @@ function VerificationCeremony({ reference, onComplete }) {
 
         {/* Ceremonial Titles */}
         <span className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] text-[#C4762A] block mb-1">
-          Government Protocol Verification
+          Application ready
         </span>
         <h2 className="text-2xl font-serif font-bold text-[#1E2A4F] tracking-wide mb-6">
-          Sealing Application Dossier
+          Preparing your summary
         </h2>
 
         {/* Progressive Verification Steps */}
@@ -196,7 +197,7 @@ function VerificationCeremony({ reference, onComplete }) {
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${stepStage >= 1 ? 'bg-[#176B45] text-white' : 'bg-gray-200 text-gray-500'}`}>
               {stepStage >= 1 ? '✓' : '1'}
             </span>
-            <span>Cryptographic Checksum Verified</span>
+            <span>Application details ready</span>
           </div>
 
           {/* Check 2 */}
@@ -204,7 +205,7 @@ function VerificationCeremony({ reference, onComplete }) {
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${stepStage >= 2 ? 'bg-[#176B45] text-white' : 'bg-gray-200 text-gray-500'}`}>
               {stepStage >= 2 ? '✓' : '2'}
             </span>
-            <span>Immigration Declarations Validated</span>
+            <span>Declarations complete</span>
           </div>
 
           {/* Check 3 */}
@@ -212,26 +213,17 @@ function VerificationCeremony({ reference, onComplete }) {
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${stepStage >= 3 ? 'bg-[#176B45] text-white' : 'bg-gray-200 text-gray-500'}`}>
               {stepStage >= 3 ? '✓' : '3'}
             </span>
-            <span>Electronic Dossier Reference Issued</span>
+            <span>Application reference created</span>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-6">
+        <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
           <div
             className="bg-gradient-to-r from-[#D4AF37] to-[#1E2A4F] h-1.5 rounded-full transition-all duration-700 ease-out"
             style={{ width: `${Math.min(100, stepStage * 34)}%` }}
           />
         </div>
-
-        {/* Instant Skip Action */}
-        <button
-          type="button"
-          onClick={onComplete}
-          className="text-xs text-[#1E2A4F] hover:text-[#C4762A] font-bold uppercase tracking-wider transition-colors cursor-pointer"
-        >
-          View Official Dossier →
-        </button>
       </div>
     </div>
   );
@@ -247,12 +239,12 @@ export default function OfficialApplicationDossier({ state }) {
   const [copied, setCopied] = useState(false);
   const data = state?.data || {};
   const isVoa = state?.outcome === 'form-prepared';
-  const reference = isVoa
-    ? state?.identifiers?.formPreparationId || 'VOA-DEMO-RECORD'
-    : state?.identifiers?.finalDemoId || 'FINAL-DEMO-RECORD';
-  const temporaryId = state?.identifiers?.temporaryDemoId || 'TMP-DEMO-RECORD';
+  const reference = formatReference(isVoa
+    ? state?.identifiers?.formPreparationId || 'VOA-RECORD'
+    : state?.identifiers?.finalDemoId || 'APP-RECORD');
+  const temporaryId = formatReference(state?.identifiers?.temporaryDemoId) || 'TMP-RECORD';
 
-  const applicantName = `${data.given_name || 'DEMO'} ${data.surname || 'APPLICANT'}`.trim();
+  const applicantName = `${data.given_name || ''} ${data.surname || ''}`.trim() || 'Applicant';
   const todayFormatted = new Date().toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -276,9 +268,8 @@ export default function OfficialApplicationDossier({ state }) {
         arrival_port: data.arrival_port,
         expected_arrival: data.expected_arrival_date || data.arrival_date,
       },
-      data_fields: data,
+      data_fields: Object.fromEntries(Object.entries(data).filter(([key]) => key !== 'demo_only')),
       documents_metadata: state.docs || [],
-      disclaimer: 'SYNTHETIC DEMONSTRATION RECORD - NOT A GOVERNMENT OF INDIA VISA',
     };
     navigator.clipboard?.writeText(JSON.stringify(exportData, null, 2));
     setCopied(true);
@@ -340,7 +331,7 @@ export default function OfficialApplicationDossier({ state }) {
                 {isVoa ? 'Visa on Arrival Summary Ready' : 'Electronic Travel Dossier Generated'}
               </h1>
               <p className="text-xs text-gray-300">
-                Official format • Formatted for 1-Page A4 PDF print
+                Ready to print on A4
               </p>
             </div>
           </div>
@@ -361,7 +352,7 @@ export default function OfficialApplicationDossier({ state }) {
               onClick={handleCopyJson}
               className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 py-2 font-bold text-xs uppercase tracking-wider rounded transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              {copied ? 'Copied!' : 'Copy JSON'}
+              {copied ? 'Copied!' : 'Copy details'}
             </button>
             <button
               type="button"
@@ -401,13 +392,13 @@ export default function OfficialApplicationDossier({ state }) {
                 />
                 <div className="flex flex-col">
                   <span className="text-[10px] print:text-[9px] font-serif font-bold uppercase tracking-[0.2em] text-[#8B1C1C]">
-                    भारत सरकार · GOVERNMENT OF INDIA
+                    INDIA VISA SEVA
                   </span>
                   <span className="text-sm sm:text-base print:text-xs font-serif font-bold text-[#1E2A4F] tracking-wide">
-                    अखिल भारतीय ई-वीज़ा पोर्टल · BHARAT VISA SEVA
+                    Visa application summary
                   </span>
                   <span className="text-[9px] print:text-[8px] font-sans font-bold uppercase tracking-widest text-[#D4AF37] print:text-black">
-                    {isVoa ? 'IMMIGRATION TRANSIT & ARRIVAL DESK' : 'ELECTRONIC TRAVEL AUTHORIZATION (ETA) DOSSIER'}
+                    {isVoa ? 'VISA ON ARRIVAL' : 'APPLICATION DETAILS'}
                   </span>
                 </div>
               </div>
@@ -416,9 +407,9 @@ export default function OfficialApplicationDossier({ state }) {
               <div className="flex items-center gap-2">
                 <VectorQrCode />
                 <div className="text-right hidden sm:block print:block">
-                  <span className="text-[8px] uppercase tracking-wider text-gray-500 block font-bold">Issued</span>
+                  <span className="text-[8px] uppercase tracking-wider text-gray-500 block font-bold">Prepared</span>
                   <span className="text-[10px] print:text-[9px] font-mono font-bold text-[#1E2A4F]">{todayFormatted}</span>
-                  <span className="text-[8px] uppercase tracking-wider text-[#176B45] font-bold block">VERIFIED</span>
+                  <span className="text-[8px] uppercase tracking-wider text-[#176B45] font-bold block">READY</span>
                 </div>
               </div>
             </div>
@@ -426,7 +417,7 @@ export default function OfficialApplicationDossier({ state }) {
             {/* Sub-header Title Bar */}
             <div className="mt-2 bg-[#FAF7F0] border border-[#D4AF37]/30 px-2 py-0.5 rounded text-center print:bg-gray-50 print:py-0.5">
               <p className="text-[8.5px] print:text-[7.5px] font-serif font-bold text-[#8A5A00] tracking-wider uppercase">
-                OFFICIAL ELECTRONIC TRAVEL AUTHORIZATION RECORD · REPUBLIC OF INDIA
+                APPLICATION SUMMARY
               </p>
             </div>
           </header>
@@ -446,7 +437,7 @@ export default function OfficialApplicationDossier({ state }) {
               </strong>
             </div>
             <div>
-              <span className="block text-[8.5px] print:text-[7.5px] font-bold uppercase text-gray-500">Session ID</span>
+              <span className="block text-[8.5px] print:text-[7.5px] font-bold uppercase text-gray-500">Draft reference</span>
               <span className="font-mono text-[10px] print:text-[8.5px] text-gray-700 font-medium break-all">{temporaryId}</span>
             </div>
           </section>
@@ -459,35 +450,35 @@ export default function OfficialApplicationDossier({ state }) {
             <div className="grid grid-cols-4 gap-2 text-[11px] print:text-[9.5px] print:gap-1.5 leading-tight">
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Surname</span>
-                <strong className="font-bold text-gray-900 uppercase">{data.surname || '—'}</strong>
+                <strong className="font-bold text-gray-900 uppercase">{data.surname || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Given Name(s)</span>
-                <strong className="font-bold text-gray-900 uppercase">{data.given_name || '—'}</strong>
+                <strong className="font-bold text-gray-900 uppercase">{data.given_name || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Nationality</span>
-                <strong className="font-bold text-gray-900 uppercase">{data.nationality || '—'}</strong>
+                <strong className="font-bold text-gray-900 uppercase">{data.nationality || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Gender</span>
-                <strong className="font-bold text-gray-900 uppercase">{data.gender || '—'}</strong>
+                <strong className="font-bold text-gray-900 uppercase">{data.gender || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Date of Birth</span>
-                <strong className="font-bold text-gray-900">{data.date_of_birth || '—'}</strong>
+                <strong className="font-bold text-gray-900">{data.date_of_birth || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Place of Birth</span>
-                <strong className="font-bold text-gray-900 uppercase">{data.place_of_birth || '—'}</strong>
+                <strong className="font-bold text-gray-900 uppercase">{data.place_of_birth || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Passport Number</span>
-                <strong className="font-mono font-bold text-gray-900 uppercase">{data.passport_number || '—'}</strong>
+                <strong className="font-mono font-bold text-gray-900 uppercase">{data.passport_number || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Passport Expiry</span>
-                <strong className="font-bold text-gray-900">{data.passport_expiry_date || '—'}</strong>
+                <strong className="font-bold text-gray-900">{data.passport_expiry_date || 'Not provided'}</strong>
               </div>
             </div>
           </section>
@@ -504,7 +495,7 @@ export default function OfficialApplicationDossier({ state }) {
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Expected Arrival</span>
-                <strong className="font-bold text-gray-900">{data.expected_arrival_date || data.arrival_date || '—'}</strong>
+                <strong className="font-bold text-gray-900">{data.expected_arrival_date || data.arrival_date || 'Not provided'}</strong>
               </div>
               <div className="border-b border-gray-200 pb-1">
                 <span className="block text-[8.5px] print:text-[7.5px] uppercase text-gray-500 font-medium">Intended Exit Port</span>
@@ -525,12 +516,12 @@ export default function OfficialApplicationDossier({ state }) {
             <div className="grid grid-cols-2 gap-2 text-[10.5px] print:text-[9px] leading-tight">
               <div className="border border-gray-200 p-1.5 rounded print:p-1">
                 <span className="block text-[8px] uppercase text-gray-500 font-bold">Present Residential Address</span>
-                <p className="text-gray-800 truncate">{data.present_address || data.permanent_address || '—'}</p>
-                <p className="text-gray-600 font-mono text-[9px] print:text-[8px]">Phone: {data.phone_abroad || '—'}</p>
+                <p className="text-gray-800 truncate">{data.present_address || data.permanent_address || 'Not provided'}</p>
+                <p className="text-gray-600 font-mono text-[9px] print:text-[8px]">Phone: {data.phone_abroad || 'Not provided'}</p>
               </div>
               <div className="border border-gray-200 p-1.5 rounded print:p-1">
                 <span className="block text-[8px] uppercase text-gray-500 font-bold">Reference in India</span>
-                <p className="text-gray-800 truncate">{data.india_reference || 'Demo Hotel, New Delhi'}</p>
+                <p className="text-gray-800 truncate">{data.india_reference || 'Not provided'}</p>
                 <p className="text-gray-600 font-mono text-[9px] print:text-[8px]">Contact: {data.phone_india || '+91-11-00000000'}</p>
               </div>
             </div>

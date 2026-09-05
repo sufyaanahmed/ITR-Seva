@@ -14,6 +14,12 @@ const storeModuleUrl = `data:text/javascript;base64,${Buffer.from(pureStoreSourc
 const { applyDataUpdate, hydrateState, safeDocumentMetadata } = await import(storeModuleUrl);
 
 describe('document selection session state', () => {
+  test('editing an earlier answer requires later steps to be validated again', () => {
+    const changed = applyDataUpdate({ step: 1, furthestStep: 5, data: { given_name: 'DEMO' }, docs: [] }, 'given_name', '');
+    assert.equal(changed.furthestStep, 1);
+    const unchanged = applyDataUpdate({ step: 1, furthestStep: 5, data: { given_name: 'DEMO' }, docs: [] }, 'given_name', 'DEMO');
+    assert.equal(unchanged.furthestStep, 5);
+  });
   test('normalizes an empty browser MIME type from a valid PDF extension', () => {
     const metadata = safeDocumentMetadata({
       type: 'passport',

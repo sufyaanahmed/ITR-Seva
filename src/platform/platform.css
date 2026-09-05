@@ -1,0 +1,283 @@
+.platform-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 48px 24px 80px;
+}
+.platform-page h1,
+.platform-login h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  color: #202b50;
+  margin: 12px 0 20px;
+}
+.platform-page h2 {
+  font-family: Georgia, serif;
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+}
+.platform-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #846b26;
+}
+.platform-login {
+  max-width: 440px;
+  margin: 64px auto;
+  padding: 32px;
+  border: 1px solid #e1dacb;
+  border-radius: 12px;
+  background: white;
+}
+.platform-login form {
+  margin-top: 24px;
+}
+.platform-page label,
+.platform-login label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0;
+}
+.platform-page input:not([type="checkbox"]),
+.platform-page select,
+.platform-page textarea,
+.platform-login input {
+  display: block;
+  width: 100%;
+  border: 1px solid #c9cbd2;
+  background: white;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 6px;
+  color: #202b50;
+}
+.platform-page textarea {
+  min-height: 100px;
+}
+.platform-primary,
+.platform-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.platform-primary {
+  background: #202b50;
+  color: white;
+}
+.platform-secondary {
+  border: 1px solid #d3cec2;
+  background: white;
+  color: #202b50;
+}
+.platform-primary:disabled,
+.platform-secondary:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.platform-link {
+  color: #202b50;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.platform-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.platform-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.platform-card {
+  background: white;
+  border: 1px solid #e1dacb;
+  border-radius: 10px;
+  padding: 24px;
+  margin: 20px 0;
+}
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+.platform-stat {
+  background: white;
+  border: 1px solid #e1dacb;
+  border-radius: 8px;
+  padding: 18px;
+  text-align: left;
+}
+.platform-stat strong {
+  display: block;
+  font-size: 28px;
+  color: #202b50;
+}
+.platform-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  background: #eceef4;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #202b50;
+  white-space: nowrap;
+}
+.platform-badge.accepted,
+.platform-badge.paid {
+  background: #e2f3e8;
+  color: #185d38;
+}
+.platform-badge.rejected,
+.platform-badge.failed {
+  background: #fbe9e5;
+  color: #913f2b;
+}
+.platform-badge.waiting_for_information,
+.platform-badge.awaiting_payment {
+  background: #fff2d3;
+  color: #745811;
+}
+.platform-alert {
+  padding: 16px;
+  border: 1px solid #dec187;
+  background: #fff8e6;
+  border-radius: 6px;
+  margin: 20px 0;
+  color: #644c1b;
+}
+.platform-table {
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  border-collapse: collapse;
+}
+.platform-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #686e80;
+}
+.platform-table td,
+.platform-table th {
+  padding: 16px 12px;
+  border-bottom: 1px solid #ece8de;
+}
+.platform-table tr:hover td {
+  background: #faf8f2;
+}
+.platform-scroll {
+  overflow-x: auto;
+}
+.platform-history {
+  border-left: 2px solid #e2d9c6;
+  margin: 20px 0 20px 8px;
+  padding-left: 22px;
+}
+.platform-history li {
+  position: relative;
+  margin-bottom: 24px;
+}
+.platform-history li:before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #ae8d35;
+  border-radius: 50%;
+  position: absolute;
+  left: -27px;
+  top: 7px;
+}
+.platform-history p {
+  white-space: pre-wrap;
+  margin-top: 6px;
+  font-size: 14px;
+}
+.platform-history time {
+  font-size: 12px;
+  color: #707584;
+}
+.platform-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.platform-details dt {
+  font-size: 12px;
+  color: #707584;
+}
+.platform-details dd {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 4px;
+}
+.platform-checkout {
+  max-width: 580px;
+  margin: auto;
+}
+.platform-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #e1dacb;
+  border-top-color: #202b50;
+  border-radius: 50%;
+  animation: platform-spin 1s linear infinite;
+  margin: 20px auto;
+}
+@keyframes platform-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .platform-spinner {
+    animation: none;
+  }
+}
+.platform-page :focus-visible,
+.platform-login :focus-visible {
+  outline: 3px solid #b8993e;
+  outline-offset: 3px;
+}
+.platform-muted {
+  font-size: 13px;
+  color: #727787;
+}
+.platform-admin-header {
+  background: #202b50;
+  color: white;
+  padding: 20px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.platform-admin-header button {
+  font-size: 13px;
+  text-decoration: underline;
+}
+.platform-token {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #eef0f5;
+  padding: 16px;
+  border-radius: 6px;
+}
+
+/* Route focus lands on the heading for screen readers without a decorative ring. */
+.platform-page h1:focus,
+.platform-login h1:focus {
+  outline: none;
+}

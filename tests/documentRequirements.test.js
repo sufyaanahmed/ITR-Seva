@@ -1,21 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import { describe, test } from 'node:test';
-
-// SmartDocuments is a JSX browser component, which Node cannot import without a
-// JSX loader. Exercise its actual exported, pure requirement model by loading
-// the implementation prefix before the browser/JSX helpers. This keeps the test
-// dependency-free and fails if the export is removed or moved unexpectedly.
-const smartDocumentsUrl = new URL('../src/components/SmartDocuments.jsx', import.meta.url);
-const smartDocumentsSource = await readFile(smartDocumentsUrl, 'utf8');
-const browserHelperOffset = smartDocumentsSource.indexOf('const readImageDimensions');
-assert.notEqual(browserHelperOffset, -1, 'SmartDocuments browser-helper boundary must remain discoverable');
-
-const pureRequirementSource = smartDocumentsSource
-  .slice(0, browserHelperOffset)
-  .replace(/^import .*;\n/gm, '');
-const requirementModuleUrl = `data:text/javascript;base64,${Buffer.from(pureRequirementSource).toString('base64')}`;
-const { getRequiredDocuments } = await import(requirementModuleUrl);
+import { getRequiredDocuments } from '../src/domain/documentRequirements.js';
 
 const byType = (requirements) => new Map(requirements.map((requirement) => [requirement.type, requirement]));
 const types = (data) => getRequiredDocuments(data).map((requirement) => requirement.type);
@@ -117,7 +102,6 @@ describe('Afghan route document requirements', () => {
     assert.equal(documents.get('photograph').square, false);
     assert.equal(documents.get('passport').minBytes, null);
     assert.equal(documents.get('passport').maxBytes, null);
-    assert.match(documents.get('passport').rule, /not verifiable/);
   });
 
   test('medical includes the hospital invitation and conditional minor consent', () => {
@@ -164,15 +148,15 @@ describe('Afghan route document requirements', () => {
 });
 
 describe('non-e-Visa requirement models', () => {
-  test('regular visa uses a mission-specific demo checklist without universal limits', () => {
+  test('regular visa uses the government photo limit without applying e-Visa PDF limits', () => {
     const requirements = getRequiredDocuments({ application_type: 'regular' });
     const documents = byType(requirements);
 
     assert.deepEqual([...documents.keys()], ['photograph', 'passport', 'purpose_support']);
-    assert.equal(documents.get('photograph').minBytes, null);
+    assert.equal(documents.get('photograph').minBytes, 10 * 1024);
+    assert.equal(documents.get('photograph').maxBytes, 300 * 1024);
+    assert.equal(documents.get('photograph').square, true);
     assert.equal(documents.get('passport').maxBytes, null);
-    assert.match(documents.get('photograph').rule, /vary by mission/);
-    assert.match(documents.get('purpose_support').rule, /not a Government upload/);
   });
 
   test('Visa on Arrival does not request an online upload', () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getRequiredDocuments } from '../../components/SmartDocuments';
-import { useStore } from '../../store';
+import { useStore, formatReference } from '../../store';
 
 import { Navigate } from 'react-router-dom';
 const flowDetails = {
@@ -93,7 +93,7 @@ export default function Dashboard() {
       : 'Active Draft';
   const completionCopy = outcome === 'form-prepared'
     ? 'Your Annexure I summary is prepared and ready to review and print.'
-    : 'Your application dossier is prepared and sealed for review.';
+    : 'Your application is ready to review and print.';
   const reference = outcome === 'form-prepared'
     ? state.identifiers?.formPreparationId
     : state.identifiers?.finalDemoId || state.identifiers?.temporaryDemoId;
@@ -101,7 +101,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-5xl mx-auto py-12 px-6">
       <h1 className="text-3xl font-serif font-bold mb-2">Application Dashboard</h1>
-      <p className="text-text-secondary mb-8">Track your application draft progress, verified documents, and issuance details.</p>
+      <p className="text-text-secondary mb-8">Your application progress and documents.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 bg-white border border-border shadow-sm rounded overflow-hidden flex flex-col">
@@ -128,7 +128,7 @@ export default function Dashboard() {
           <div className="p-6 flex-1 flex flex-col">
             <div className="mb-6 rounded border border-slate-200 bg-slate-50 p-4 text-sm">
               <span className="block text-xs uppercase tracking-wider text-text-secondary mb-1">Application Reference ID</span>
-              <strong className="font-mono break-all">{reference || 'Generated upon initialization'}</strong>
+              <strong className="font-mono break-all">{formatReference(reference) || 'Available when you start'}</strong>
             </div>
 
             <h3 className="font-bold text-lg mb-4">Application Milestones</h3>
@@ -141,7 +141,7 @@ export default function Dashboard() {
                   <li key={id} className="flex items-start gap-3">
                     <span aria-hidden="true" className={complete ? 'text-green-600 font-bold' : warning ? 'text-amber-600 font-bold' : 'text-gray-400'}>{complete ? '✓' : warning ? '⚠' : '○'}</span>
                     <span className={complete ? 'text-gray-900' : warning ? 'text-amber-800 font-bold' : index === currentStep ? 'text-gray-900 font-bold' : 'text-gray-500'}>
-                      {label}{warning ? ` — ${missingDocuments.length} required item${missingDocuments.length === 1 ? '' : 's'} missing` : ''}
+                      {label}{warning ? `: ${missingDocuments.length} required item${missingDocuments.length === 1 ? '' : 's'} missing` : ''}
                     </span>
                   </li>
                 );
@@ -158,7 +158,7 @@ export default function Dashboard() {
                 <div className="flex flex-col sm:flex-row items-center w-full gap-4">
                   <div className="mr-auto">
                     <p className="text-sm text-green-800 font-bold mb-3">{completionCopy}</p>
-                    <Link to="/apply" className="btn-secondary inline-block">View Sealed Dossier &rarr;</Link>
+                    <Link to="/apply" className="btn-secondary inline-block">View application &rarr;</Link>
                   </div>
                   <button type="button" onClick={eraseAndLeave} className="text-sm font-bold text-red-700 hover:text-red-900 transition-colors">Start New Application</button>
                 </div>
@@ -175,7 +175,7 @@ export default function Dashboard() {
           </div>
           <div className="bg-white border border-border p-5 rounded shadow-sm">
             <h3 className="font-bold text-gray-900 mb-2">Check Status</h3>
-            <p className="text-sm text-gray-600 mb-4">Track authorization progress, milestone audit history, and print your 1-page official certificate.</p>
+            <p className="text-sm text-gray-600 mb-4">View your application status and next steps.</p>
             <Link to="/status" className="text-sm font-bold text-[#0b2540] hover:underline">Check Application Status &rarr;</Link>
           </div>
         </div>

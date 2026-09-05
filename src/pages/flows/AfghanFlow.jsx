@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
+import FlowGuide from '../../components/FlowGuide';
+import Disclosure from '../../components/Disclosure';
 
 const AFGHAN_PORTAL = 'https://www.indianvisaonline.gov.in/avisa/index.html';
 
@@ -15,17 +17,17 @@ const categories = [
 
 export default function AfghanFlow() {
   const navigate = useNavigate();
-  const { state, updateState } = useStore();
-  const [category, setCategory] = useState(state?.data?.visa_category || '');
+  const { state, updateState, updateFlowDraft } = useStore();
+  const [category, setCategory] = useState(state.flowDrafts?.afghan?.category || (state.data.application_type === 'afghan' && categories.some((item) => item.value === state.data.visa_category) ? state.data.visa_category : ''));
   const [showCategoryError, setShowCategoryError] = useState(false);
 
   const startApplication = () => {
-    if (!category) {
+    if (!categories.some((item) => item.value === category)) {
       setShowCategoryError(true);
       return;
     }
 
-    updateState({
+    if (state.data.application_type !== 'afghan' || state.data.visa_category !== category) updateState({
       type: 'afghan',
       step: 0,
       data: { ...(state?.data || {}), application_type: 'afghan', visa_category: category, nationality: 'Afghanistan' },
@@ -36,27 +38,17 @@ export default function AfghanFlow() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6">
-      <div className="mb-10 border-b border-border-dark pb-8">
-        <p className="uppercase tracking-widest text-sm text-primary mb-2 font-bold">Dedicated route briefing</p>
-        <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Indian visa route for Afghan nationals</h1>
-        <p className="text-xl text-text-secondary leading-relaxed">
-          Afghan nationals are directed to the Government of India&apos;s dedicated Afghan online visa/ETA route—not the ordinary e-Visa or regular-paper flow.
-        </p>
-      </div>
-
-
-      <div className="space-y-12">
+    <FlowGuide title="Visa for Afghan nationals" intro="Choose your category to apply through the dedicated Afghan visa portal.">
+      <div className="space-y-8">
         <section>
-          <h2 className="text-2xl font-bold mb-3 text-gray-900">1. Select the official category</h2>
-          <p className="mb-6 text-text-secondary">Select your travel category to proceed with the application. The applicable category purpose will determine your evidence requirements.</p>
+          <h2 className="text-2xl font-bold mb-3 text-gray-900">Choose your visa category</h2>
           <fieldset>
             <legend className="sr-only">Afghan visa category</legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {categories.map((item) => (
                 <label key={item.value} className={`border p-5 rounded cursor-pointer transition ${category === item.value ? 'border-primary bg-blue-50 ring-1 ring-primary' : 'border-border bg-white hover:border-primary-light'}`}>
                   <span className="flex items-start gap-3">
-                    <input type="radio" name="afghan-category" value={item.value} checked={category === item.value} onChange={() => { setCategory(item.value); setShowCategoryError(false); }} className="mt-1" />
+                    <input type="radio" name="afghan-category" value={item.value} checked={category === item.value} onChange={() => { setCategory(item.value); updateFlowDraft('afghan', { category: item.value }); setShowCategoryError(false); }} className="mt-1" />
                     <span>
                       <strong className="block text-gray-900 mb-1">{item.label}</strong>
                       <span className="block text-sm text-text-secondary leading-relaxed">{item.note}</span>
@@ -69,28 +61,24 @@ export default function AfghanFlow() {
           {showCategoryError && <p role="alert" className="mt-3 text-sm font-bold text-red-700">Choose one of the six official categories to continue.</p>}
         </section>
 
-        <section className="bg-blue-50 border-l-4 border-primary p-6">
-          <h2 className="text-xl font-bold mb-4 text-[#081e33]">2. Prepare the mandatory common documents</h2>
+        <Disclosure title="Documents to prepare">
           <ul className="list-disc pl-6 space-y-2 text-gray-800">
             <li>A recent, clear, front-facing photograph with a white background.</li>
             <li>A clear copy of the passport bio page containing the applicant&apos;s particulars.</li>
             <li>A clear copy of the <strong>National Identity Card (Tazkira)</strong>.</li>
             <li>All documents required for the selected category and purpose; invitation letters and business cards must be in English.</li>
           </ul>
-          <p className="mt-4 text-sm text-blue-950">Ensure all document uploads are clear, legible, and accompanied by certified English translations where applicable.</p>
-        </section>
+        </Disclosure>
 
         <section>
-          <h2 className="text-2xl font-bold mb-5 text-gray-900">3. Application and travel journey</h2>
+          <h2 className="text-2xl font-bold mb-5 text-gray-900">Before you travel</h2>
           <ol className="space-y-4 text-text-secondary">
             {[
-              ['Apply once per person', 'Complete a separate application for every traveller and keep the generated Application ID.'],
-              ['Save, review, then finalize', 'Review your application carefully before submission to ensure all details match your passport exactly.'],
               ['Wait for the official decision', 'Before travel, confirm the Electronic Travel Authorization status is GRANTED on the Check Status portal.'],
               ['Carry the right documents', 'Print and carry the ETA and travel on the passport used in the application. If that passport was replaced, carry both the old and new passports.'],
               ['Complete arrival steps', 'Complete the separate e-Arrival Card within 72 hours before arrival. Biometrics are captured upon arrival at immigration.'],
             ].map(([title, detail], index) => (
-              <li key={title} className="flex gap-4 border border-border p-5 rounded bg-white">
+              <li key={title} className="flex gap-4 py-3">
                 <span className="flex-none w-8 h-8 rounded-full bg-primary text-white grid place-items-center font-bold">{index + 1}</span>
                 <p><strong className="block text-gray-900 mb-1">{title}</strong>{detail}</p>
               </li>
@@ -98,12 +86,13 @@ export default function AfghanFlow() {
           </ol>
         </section>
 
-        <div className="pt-6 border-t border-border-dark flex justify-end">
-          <button type="button" onClick={startApplication} className="bg-gradient-to-r from-secondary-accent to-[#C9933A] text-primary-dark px-8 py-3.5 font-sans font-bold uppercase tracking-widest text-xs hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 rounded-sm cursor-pointer">
-            Start Application →
+        <div className="pt-6 border-t border-border flex flex-wrap items-center gap-4">
+          <button type="button" onClick={startApplication} className="btn-primary rounded-md">
+            Continue application →
           </button>
+          <a href={AFGHAN_PORTAL} target="_blank" rel="noreferrer" className="text-sm text-primary underline">Official Afghan visa portal ↗</a>
         </div>
       </div>
-    </div>
+    </FlowGuide>
   );
 }

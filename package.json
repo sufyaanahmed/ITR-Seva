@@ -19,21 +19,37 @@
     "demo:open": "./scripts/demo-observability.sh open",
     "demo:load": "./scripts/run-demo-load.sh",
     "demo:status": "./scripts/demo-observability.sh status",
-    "demo:down": "./scripts/demo-observability.sh down"
+    "demo:down": "./scripts/demo-observability.sh down",
+    "platform:dev": "node --env-file-if-exists=.env platform/server.js",
+    "platform:emails": "node --env-file-if-exists=.env platform/email-worker.js",
+    "test:platform": "node --test tests/platform*.test.js",
+    "platform:local-env": "node scripts/platform-local-env.mjs",
+    "test:platform:e2e": "node --env-file=.env scripts/platform-e2e.mjs",
+    "test:platform:hosted": "node --env-file=.env.hosted.local scripts/platform-e2e.mjs --hosted",
+    "platform:admin-build": "node scripts/platform-admin-build.mjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@vitejs/plugin-react": "^6.0.5",
     "@vitejs/plugin-react-swc": "^4.3.3",
     "autoprefixer": "^10.5.4",
     "lightningcss": "^1.33.0",
     "postcss": "^8.5.26",
+    "prettier": "^3.9.6",
     "tailwindcss": "^3.4.19",
     "vite": "^8.2.1"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@supabase/supabase-js": "^2.115.0",
+    "@vercel/functions": "^3.9.5",
     "@vishalvoid/react-india-map": "^1.2.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.2"
+    "react-router-dom": "^7.18.2",
+    "sharp": "^0.35.4",
+    "zod": "^4.5.4"
   }
 }

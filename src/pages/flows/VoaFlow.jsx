@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
+import FlowGuide from '../../components/FlowGuide';
+import Disclosure from '../../components/Disclosure';
+import { countryFlag } from '../../domain/countries';
 
 const VOA_PAGE = 'https://indianvisaonline.gov.in/visa/visa-on-arrival.html';
 const nationalities = ['Japan', 'South Korea', 'United Arab Emirates'];
@@ -12,34 +15,57 @@ const confirmations = [
   ['passportValidity', 'My passport will have at least six months of validity at arrival.'],
   ['noIndiaResidence', 'I do not have a residence or occupation in India.'],
   ['onwardTravel', 'I have a confirmed return or onward ticket.'],
-  ['sufficientFunds', 'I have sufficient funds for my stay.'],
+  ['sufficientFunds', 'I can cover accommodation, meals and travel for my entire stay. No fixed minimum balance is published.'],
   ['noPakistanOrigin', 'Neither I, nor either parent or grandparent, was born in or permanently resident in Pakistan.'],
   ['admissibility', 'I have not been notified that I am persona non grata or otherwise inadmissible; I understand the Government makes the final assessment.'],
 ];
 
 export default function VoaFlow() {
   const navigate = useNavigate();
-  const { state, updateState } = useStore();
+  const { state, updateState, updateFlowDraft } = useStore();
   const [form, setForm] = useState(() => {
-    const data = state?.data || {};
+    if (state.flowDrafts?.voa) return state.flowDrafts.voa.form;
+    const data = state.data.application_type === 'voa' ? state.data : {};
     return {
       nationality: data.nationality || '',
       priorVisa: data.uae_prior_indian_visa && data.uae_prior_indian_visa !== 'not_applicable' ? data.uae_prior_indian_visa : '',
-      purpose: data.visa_category ? data.visa_category.charAt(0).toUpperCase() + data.visa_category.slice(1) : '',
+      purpose: data.visa_category === 'tourist' ? 'Tourism' : data.visa_category ? data.visa_category.charAt(0).toUpperCase() + data.visa_category.slice(1) : '',
       days: data.intended_stay_days || '',
-      airport: data.voa_arrival_port_gate && data.voa_arrival_port_gate !== 'not_applicable' ? data.voa_arrival_port_gate : ''
+      airport: airports.includes(data.arrival_port) ? data.arrival_port : ''
     };
   });
-  const [checked, setChecked] = useState({});
+  const [checked, setChecked] = useState(() => {
+    if (state.flowDrafts?.voa) return state.flowDrafts.voa.checked;
+    if (state.data.application_type !== 'voa' || !state.data.finder_fingerprint) return {};
+    const answers = state.finder.answers;
+    return {
+      ordinaryPassport: answers.passportType === 'ordinary', passportValidity: answers.travelReadiness === 'yes',
+      noIndiaResidence: answers.voaIndiaResidenceOrOccupation === 'no', onwardTravel: answers.travelReadiness === 'yes',
+      sufficientFunds: answers.travelReadiness === 'yes', noPakistanOrigin: answers.pakistanOrigin === 'no',
+      admissibility: answers.voaAdmissibility === 'yes',
+    };
+  });
   const [attempted, setAttempted] = useState(false);
 
-  const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
+  const update = (field, value) => {
+    const next = { ...form, [field]: value };
+    setForm(next);
+    setAttempted(false);
+    updateFlowDraft('voa', { form: next, checked });
+  };
+  const updateConfirmation = (key, value) => {
+    const next = { ...checked, [key]: value };
+    setChecked(next);
+    setAttempted(false);
+    updateFlowDraft('voa', { form, checked: next });
+  };
   const allConfirmed = confirmations.every(([key]) => checked[key]);
   const stayDays = Number(form.days);
   const eligible = useMemo(() => (
     nationalities.includes(form.nationality)
     && (form.nationality !== 'United Arab Emirates' || form.priorVisa === 'yes')
     && purposes.includes(form.purpose)
+    && Number.isInteger(stayDays)
     && stayDays >= 1
     && stayDays <= 60
     && airports.includes(form.airport)
@@ -56,12 +82,15 @@ export default function VoaFlow() {
 
   const startFormPreparation = () => {
     if (!eligible) return;
+    const fingerprint = JSON.stringify({ form, checked });
+    if (state.data.voa_form_fingerprint === fingerprint) { navigate('/apply'); return; }
     updateState({
       type: 'voa',
       step: 0,
       data: {
         ...(state?.data || {}),
         application_type: 'voa',
+        voa_form_fingerprint: fingerprint,
         nationality: form.nationality,
         visa_category: form.purpose.toLowerCase(),
         intended_stay_days: form.days,
@@ -82,23 +111,15 @@ export default function VoaFlow() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6">
-      <div className="mb-10 border-b border-border-dark pb-8">
-        <p className="uppercase tracking-widest text-sm text-primary mb-2 font-bold">Eligibility and form preparation</p>
-        <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">Visa-on-Arrival for India</h1>
-        <p className="text-xl text-text-secondary leading-relaxed">This facility is limited to qualifying citizens of Japan, South Korea, and the United Arab Emirates. Complete every published gate before relying on it.</p>
-      </div>
-
-
-
-      <form onSubmit={checkEligibility} className="space-y-10" noValidate>
+    <FlowGuide title="Visa on Arrival" intro="For eligible citizens of Japan, South Korea and the UAE. Stay up to 60 days with double entry; the fee is ₹2,000 per person at the airport.">
+      <form onSubmit={checkEligibility} className="space-y-7" noValidate>
         <section>
-          <h2 className="text-2xl font-bold mb-5 text-gray-900">1. Journey details</h2>
+          <h2 className="text-2xl font-bold mb-5 text-gray-900">Your trip</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <label className="text-sm font-bold text-gray-800">Passport nationality
               <select className="input-field mt-2 font-normal" value={form.nationality} onChange={(e) => update('nationality', e.target.value)} required>
                 <option value="">Select nationality</option>
-                {nationalities.map((item) => <option key={item}>{item}</option>)}
+                {nationalities.map((item) => <option key={item} value={item}>{countryFlag(item)} {item}</option>)}
               </select>
             </label>
             <label className="text-sm font-bold text-gray-800">Permitted purpose
@@ -131,27 +152,25 @@ export default function VoaFlow() {
           )}
         </section>
 
-        <section>
-          <h2 className="text-2xl font-bold mb-3 text-gray-900">2. Published eligibility conditions</h2>
-          <p className="text-sm text-text-secondary mb-5">Confirm each condition. These declarations do not guarantee entry or replace the Government&apos;s assessment.</p>
+        <Disclosure title="Your eligibility answers" defaultOpen={!allConfirmed}>
           <div className="space-y-3">
             {confirmations.map(([key, label]) => (
-              <label key={key} className="flex items-start gap-3 border border-border rounded bg-white p-4 cursor-pointer">
-                <input type="checkbox" checked={Boolean(checked[key])} onChange={(e) => setChecked((current) => ({ ...current, [key]: e.target.checked }))} className="mt-1" />
+              <label key={key} className="flex items-start gap-3 py-2 cursor-pointer">
+                <input type="checkbox" checked={Boolean(checked[key])} onChange={(e) => updateConfirmation(key, e.target.checked)} className="mt-1" />
                 <span className="text-sm text-gray-800">{label}</span>
               </label>
             ))}
           </div>
-        </section>
+        </Disclosure>
 
-        <button type="submit" className="btn-primary">Check these answers</button>
+        <button type="submit" className="btn-primary">Check and continue</button>
 
         {attempted && (
           <section role="status" className={`border p-6 rounded ${eligible ? 'bg-green-50 border-green-300' : 'bg-red-50 border-red-300'}`}>
-            <h2 className={`text-xl font-bold mb-2 ${eligible ? 'text-green-950' : 'text-red-950'}`}>{eligible ? 'These answers meet the published basic gates' : 'Visa-on-Arrival is not available from these answers'}</h2>
+            <h2 className={`text-xl font-bold mb-2 ${eligible ? 'text-green-950' : 'text-red-950'}`}>{eligible ? 'Ready to prepare your form' : 'Check your trip details'}</h2>
             <p className={`text-sm ${eligible ? 'text-green-900' : 'text-red-900'}`}>
               {eligible
-                ? 'This is not approval. Recheck current rules, prepare Annexure I and arrival documents, complete e-Arrival, and present yourself to the Visa Officer.'
+                ? 'Prepare Annexure I and bring it to the airport. The Visa Officer makes the final decision.'
                 : !hasBasicAnswers || !allConfirmed
                   ? 'Complete every field and confirmation. If any condition is not true, use another official visa route.'
                   : 'The selected nationality, UAE history, purpose, duration, airport, or eligibility declaration does not meet the published scheme.'}
@@ -166,17 +185,14 @@ export default function VoaFlow() {
         )}
       </form>
 
-      <section className="mt-12 bg-blue-50 border-l-4 border-primary p-6">
-        <h2 className="text-xl font-bold mb-4 text-[#081e33]">3. Airport procedure</h2>
-        <ol className="list-decimal pl-5 space-y-3 text-gray-800">
-          <li>Complete and print the official Annexure I form in advance, complete it on arrival, or obtain it from the airline.</li>
-          <li>Complete the separate e-Arrival Card online within 72 hours before arrival. It is arrival information, not a visa.</li>
-          <li>Carry the completed VoA form, disembarkation card, passport, return/onward ticket, and evidence of sufficient funds.</li>
-          <li>Present the paperwork at one of the six listed airports and pay ₹2,000 or equivalent foreign currency per passenger, including children, before grant.</li>
-        </ol>
-        <p className="mt-4 font-bold text-blue-950">If granted, the Visa-on-Arrival may allow double entry for up to 60 days. It is non-extendable and non-convertible.</p>
-      </section>
-
-    </div>
+      <Disclosure title="What to bring to the airport">
+        <ul className="list-disc space-y-2 pl-5">
+          <li>Completed Annexure I form, passport, return or onward ticket and evidence of funds.</li>
+          <li>A completed <Link to="/e-arrival" className="text-primary underline">e-Arrival Card</Link>, submitted within 72 hours before arrival.</li>
+          <li>₹2,000 or equivalent foreign currency per person, including children. If granted, this visa cannot be extended or converted.</li>
+        </ul>
+      </Disclosure>
+      <a href={VOA_PAGE} target="_blank" rel="noreferrer" className="inline-block text-sm text-primary underline">Official Visa on Arrival guidance ↗</a>
+    </FlowGuide>
   );
 }

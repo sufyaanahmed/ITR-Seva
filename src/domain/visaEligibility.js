@@ -44,7 +44,7 @@ const recommendation = ({
 });
 
 const regularRoute = (description, rationale, cautions = []) => recommendation({
-  type: 'Regular / Paper Visa or Official Review',
+  type: 'Regular / paper visa',
   applicationType: 'regular',
   visaCategory: 'unconfirmed',
   path: '/flow/regular',
@@ -70,13 +70,13 @@ export function getFinderQuestions(answers) {
   const questions = [
     {
       id: 'passport',
-      title: 'Which country or territory issued your passport?',
+      title: 'Which country issued your passport?',
       type: 'country_select',
-      help: 'The reviewed e-Visa and Visa-on-Arrival programmes are limited by passport nationality.',
+      help: 'Your passport nationality determines which visa routes are available.',
     },
     {
       id: 'passportType',
-      title: 'What type of passport or travel document will you use?',
+      title: 'What type of passport do you have?',
       type: 'select',
       options: [
         { value: 'ordinary', label: 'Ordinary passport' },
@@ -84,11 +84,11 @@ export function getFinderQuestions(answers) {
         { value: 'official', label: 'Official / service passport' },
         { value: 'other-document', label: 'Laissez-passer or another travel document' },
       ],
-      help: 'The reviewed e-Visa and Visa-on-Arrival rules exclude Diplomatic/Official passports and non-passport travel documents.',
+      help: 'e-Visa and Visa on Arrival require an ordinary passport. Other documents need a different route.',
     },
     {
       id: 'pakistanOrigin',
-      title: 'Were you, either parent, or any grandparent born in—or permanently resident in—Pakistan?',
+      title: 'Were you, a parent or a grandparent born in or permanently resident in Pakistan?',
       type: 'select',
       options: [
         { value: 'no', label: 'No' },
@@ -107,7 +107,7 @@ export function getFinderQuestions(answers) {
     },
     {
       id: 'durationDays',
-      title: 'How many days do you intend to remain in India on this trip?',
+      title: 'How many days will you stay in India?',
       type: 'number',
       min: 1,
       max: 3650,
@@ -121,7 +121,6 @@ export function getFinderQuestions(answers) {
       options: [
         { value: 'yes', label: 'Yes' },
         { value: 'no', label: 'No' },
-        { value: 'unsure', label: 'I need to verify this' },
       ],
       when: (state) => state.purpose === 'study',
       help: 'The current portal includes e-Student routes, but eligibility depends on the recognised institution and course evidence.',
@@ -132,7 +131,7 @@ export function getFinderQuestions(answers) {
       type: 'select',
       options: [
         { value: 'yes', label: 'Yes' },
-        { value: 'no', label: 'No, this would be my first Indian visa' },
+        { value: 'no', label: 'No' },
         { value: 'unsure', label: 'I am not sure' },
       ],
       when: (state) => state.passport === 'United Arab Emirates' && VOA_PURPOSES.has(state.purpose),
@@ -140,15 +139,16 @@ export function getFinderQuestions(answers) {
     },
     {
       id: 'voaArrivalPort',
-      title: 'Would you arrive through a designated Visa-on-Arrival airport?',
+      title: 'Will you arrive at one of these airports?',
+      description: 'Bengaluru, Chennai, Delhi, Hyderabad, Kolkata or Mumbai.',
       type: 'select',
       options: [
-        { value: 'designated', label: 'Yes — Bengaluru, Chennai, Delhi, Hyderabad, Kolkata or Mumbai' },
-        { value: 'other', label: 'No — another airport, seaport or landport' },
+        { value: 'designated', label: 'Yes' },
+        { value: 'other', label: 'No' },
         { value: 'unsure', label: 'I have not decided' },
       ],
       when: isPotentialVoaJourney,
-      help: 'Visa-on-Arrival is available only at the six airports named in the reviewed Government guidance.',
+      help: 'Visa on Arrival is available only at these six airports.',
     },
     {
       id: 'voaIndiaResidenceOrOccupation',
@@ -164,10 +164,11 @@ export function getFinderQuestions(answers) {
     },
     {
       id: 'voaAdmissibility',
-      title: 'Are you free of the published adverse-admissibility exclusions?',
+      title: 'Are you free of any entry restrictions for India?',
+      description: 'Answer Yes if you have not been declared persona non grata or an undesirable person by the Indian authorities.',
       type: 'select',
       options: [
-        { value: 'yes', label: 'Yes — not persona non grata and not declared undesirable' },
+        { value: 'yes', label: 'Yes' },
         { value: 'no', label: 'No' },
         { value: 'unsure', label: 'I need official review' },
       ],
@@ -176,12 +177,18 @@ export function getFinderQuestions(answers) {
     },
     {
       id: 'travelReadiness',
-      title: 'Do you meet the passport and travel-readiness conditions?',
+      title: 'Are your passport and travel plans ready?',
+      requirements: [
+        'Passport valid for at least six months.',
+        'Two blank passport pages for an e-Visa.',
+        'A return or onward ticket.',
+        'Enough money for accommodation, meals and travel throughout your stay. Official guidance specifies no fixed minimum balance.',
+      ],
+      source: { label: 'Official travel requirements', url: 'https://indianvisaonline.gov.in/evisa/tvoa.html' },
       type: 'select',
       options: [
-        { value: 'yes', label: 'Yes — 6+ months validity, onward ticket/funds, and 2 blank pages if using e-Visa' },
+        { value: 'yes', label: 'Yes' },
         { value: 'no', label: 'No' },
-        { value: 'unsure', label: 'I need to verify' },
       ],
       help: 'These are published baseline conditions. Visa-on-Arrival also requires no residence or occupation in India and remains subject to assessment on arrival.',
     },
@@ -196,11 +203,11 @@ export function evaluateVisaRoute(answers) {
 
   if (answers.passport === 'Afghanistan') {
     return recommendation({
-      type: 'Dedicated Afghan Online Visa / ETA Route',
+      type: 'Afghan online visa',
       applicationType: 'afghan',
       visaCategory: 'unselected',
       path: '/flow/afghan',
-      description: 'Afghan nationals use the dedicated Afghan visa portal, not the standard e-Visa or ordinary paper-visa form.',
+      description: 'Apply through the dedicated portal for Afghan nationals.',
       rationale: [
         'The Government portal publishes a separate Afghan-national route with its own categories and documents.',
         answers.passportType === 'ordinary'
@@ -225,14 +232,14 @@ export function evaluateVisaRoute(answers) {
     return regularRoute(
       'Pakistani-origin cases require the regular visa route or individual official review.',
       [answers.pakistanOrigin === 'yes'
-        ? 'You reported a Pakistan birth, residence or ancestry connection covered by the reviewed exclusion.'
+        ? 'Your Pakistan birth, residence or ancestry connection requires an individual review.'
         : 'The Pakistan-origin question is unresolved, so this finder will not assert e-Visa eligibility.'],
     );
   }
 
   if (answers.passportType !== 'ordinary') {
     return regularRoute(
-      'The reviewed online programmes do not accept this passport or travel-document type.',
+      'This passport or travel document requires a different visa route.',
       ['e-Visa and Visa-on-Arrival require an eligible ordinary passport.'],
     );
   }
@@ -240,7 +247,7 @@ export function evaluateVisaRoute(answers) {
   if (!purpose || purpose.value === 'employment' || purpose.value === 'other') {
     return regularRoute(
       purpose?.value === 'employment'
-        ? 'Employment or paid work requires an appropriate regular visa; it is not covered by the e-Visa purposes reviewed here.'
+        ? 'Employment or paid work requires a regular visa.'
         : 'This purpose needs category-specific review and should not be guessed by an automated finder.',
       [`Trip purpose: ${purpose?.label || 'not confirmed'}.`],
     );
@@ -258,7 +265,7 @@ export function evaluateVisaRoute(answers) {
 
   if (answers.purpose === 'study' && answers.studyInIndiaInstitution !== 'yes') {
     return regularRoute(
-      'The current portal has an e-Student route, but this study journey does not yet satisfy its verified institution gate.',
+      'Confirm your institution’s Study in India registration before applying for an e-Student visa.',
       [answers.studyInIndiaInstitution === 'no'
         ? 'You indicated that the institution is not registered on Study in India.'
         : 'The institution registration is unconfirmed.'],
@@ -274,11 +281,11 @@ export function evaluateVisaRoute(answers) {
 
   if (canUseVoa) {
     return recommendation({
-      type: 'Visa on Arrival Option',
+      type: 'Visa on Arrival',
       applicationType: 'voa',
       visaCategory: purpose.evisaCategory,
       path: '/flow/voa',
-      description: 'Your answers match the published preliminary Visa-on-Arrival route. Final eligibility and grant are assessed by Indian immigration on arrival.',
+      description: 'You may qualify for a visa at the airport. Indian immigration makes the final decision on arrival.',
       rationale: [
         `${answers.passport} is one of the three published Visa-on-Arrival nationalities.`,
         `${purpose.label} is a permitted purpose and ${days} ${days === 1 ? 'day is' : 'days are'} within the 60-day maximum.`,
@@ -289,25 +296,24 @@ export function evaluateVisaRoute(answers) {
           : []),
       ],
       cautions: [
-        'Prepare Annexure I and the disembarkation card for presentation at the designated airport.',
-        'Complete the separate e-Arrival Card within 72 hours before arrival. It is arrival information, not a visa.',
+        'Bring a completed Annexure I form and submit your e-Arrival Card within 72 hours before arrival.',
       ],
-      actionLabel: 'Review Visa-on-Arrival flow',
+      actionLabel: 'Prepare for arrival',
     });
   }
 
   if (!Number.isFinite(days) || days < 1 || days > purpose.finderStayLimitDays) {
     return regularRoute(
       'The intended continuous stay is outside the conservative limit used by this finder for the selected online category.',
-      [`You entered ${Number.isFinite(days) ? `${days} days` : 'an invalid duration'}; the reviewed finder limit for ${purpose.label.toLowerCase()} is ${purpose.finderStayLimitDays} days.`],
+      [`You entered ${Number.isFinite(days) ? `${days} days` : 'an invalid duration'}; the limit used here for ${purpose.label.toLowerCase()} is ${purpose.finderStayLimitDays} days.`],
       ['Visa validity and permitted continuous stay are different. Ask the official service or an Indian Mission/Post to confirm the correct category.'],
     );
   }
 
   if (!EVISA_ELIGIBLE_NATIONALITIES.has(answers.passport)) {
     return regularRoute(
-      'This passport nationality is not in the reviewed e-Visa eligibility snapshot.',
-      [`${answers.passport} was not confirmed in the reviewed live e-Visa registration list.`],
+      'We could not confirm e-Visa eligibility for this passport.',
+      [`${answers.passport} was not found in the e-Visa nationality list used by this finder.`],
       ['Government lists can change; check the official portal and use an Indian Mission/Post if the nationality is still unavailable.'],
     );
   }
@@ -318,7 +324,7 @@ export function evaluateVisaRoute(answers) {
       voaFallback.push('Visa-on-Arrival is unavailable to a first-time or unconfirmed UAE visitor, so the online route is the safer recommendation.');
     }
     if (answers.voaArrivalPort !== 'designated') {
-      voaFallback.push('Your arrival port does not confirm the six-airport Visa-on-Arrival gate.');
+      voaFallback.push('Visa on Arrival requires entry through one of the six designated airports.');
     }
     if (answers.voaIndiaResidenceOrOccupation !== 'no' || answers.voaAdmissibility !== 'yes') {
       voaFallback.push('The Visa-on-Arrival residence/occupation or admissibility conditions are not fully confirmed.');
@@ -328,17 +334,17 @@ export function evaluateVisaRoute(answers) {
   }
 
   return recommendation({
-    type: purpose.value === 'study' ? 'e-Student Visa Route' : 'Standard e-Visa Route',
+    type: purpose.value === 'study' ? 'e-Student visa' : 'e-Visa',
     applicationType: 'evisa',
     visaCategory: purpose.evisaCategory,
     path: '/flow/normal',
-    description: 'Your answers match a reviewed online visa route, subject to the exact live purpose, document, arrival-port and application-date controls on the Government portal.',
+    description: 'You can apply online for this trip. Check the current requirements on the official portal before applying.',
     rationale: [
-      `${answers.passport} is present in the reviewed e-Visa nationality snapshot.`,
-      `${purpose.label} maps to the reviewed ${purpose.value === 'study' ? 'e-Student' : `e-${purpose.evisaCategory}`} category family.`,
+      `${answers.passport} is listed as an eligible e-Visa nationality.`,
+      `${purpose.label} uses the ${purpose.value === 'study' ? 'e-Student' : `e-${purpose.evisaCategory}`} category.`,
       ...voaFallback,
     ],
     cautions: [],
-    actionLabel: 'Continue to e-Visa Application',
+    actionLabel: 'Continue with e-Visa',
   });
 }

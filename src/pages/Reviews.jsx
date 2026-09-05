@@ -1,6 +1,8 @@
 import React from 'react';
 import reviewsData from '../../visa_seva_indianvisaonline_reviews_refined.json';
 
+const displayCopy = (text = '') => String(text ?? '').replace(/\s*\u2014\s*/g, ', ');
+
 const Reviews = () => {
   const reviews = reviewsData.reviews || [];
 
@@ -103,10 +105,10 @@ const Reviews = () => {
                 </div>
               )}
 
-              <h4 className="font-bold text-[#1E2A4F] text-sm mb-3 font-serif leading-snug">{review.title}</h4>
+              <h4 className="font-bold text-[#1E2A4F] text-sm mb-3 font-serif leading-snug">{displayCopy(review.title)}</h4>
 
               <p className="text-sm text-gray-700 mb-6 flex-1 italic relative before:content-['\201C'] before:absolute before:-left-2 before:-top-1 before:text-gray-300 before:text-xl leading-relaxed break-words whitespace-pre-wrap">
-                {review.text || review.thread_full_text || "No content available"}
+                {displayCopy(review.text || review.thread_full_text || "No content available")}
               </p>
 
               <div className="mt-auto pt-4 border-t border-gray-100">
